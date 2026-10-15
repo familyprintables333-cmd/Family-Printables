@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="pwaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="50%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="pageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+  </defs>
+  <!-- Background squircle -->
+  <rect width="512" height="512" rx="128" fill="url(#pwaGrad)"/>
+  <!-- Open Book Page Left -->
+  <path d="M120 180 C180 160 230 170 256 195 L256 360 C230 340 180 330 120 345 Z" fill="url(#pageGrad)" opacity="0.95"/>
+  <!-- Open Book Page Right -->
+  <path d="M392 180 C332 160 282 170 256 195 L256 360 C282 340 332 330 392 345 Z" fill="url(#pageGrad)" opacity="0.95"/>
+  <!-- Central Star -->
+  <polygon points="256,120 270,158 310,160 278,185 290,225 256,200 222,225 234,185 202,160 242,158" fill="#FDE047"/>
+  <!-- Magic sparkles -->
+  <circle cx="160" cy="140" r="10" fill="#FFFFFF"/>
+  <circle cx="360" cy="130" r="8" fill="#FFFFFF"/>
+  <circle cx="330" cy="230" r="6" fill="#FDE047"/>
+  <!-- Pencil -->
+  <path d="M320 290 L345 265 L365 285 L340 310 Z" fill="#FB923C"/>
+  <polygon points="320,290 310,320 340,310" fill="#38BDF8"/>
+</svg>
