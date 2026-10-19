@@ -1,333 +1,193 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Family Printables - Single-Page Clean Templates & Business Planners</title>
-  <meta name="description" content="Instant single-page printable templates: Daily & Weekly Timetables, Business Ledger & Sales Record, Invoices, Chore Boards, and Study Planners.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    /* 300 DPI Clean Home Printing Styles */
-    @media print {
-      body {
-        background: #ffffff !important;
-        color: #000000 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-      .printable-sheet {
-        box-shadow: none !important;
-        border: 1px solid #d1d5db !important;
-        margin: 0 !important;
-        padding: 10mm !important;
-        width: 100% !important;
-        min-height: auto !important;
-        page-break-inside: avoid !important;
-        page-break-after: avoid !important;
-      }
-      @page {
-        margin: 8mm;
-      }
-      @page size-a4 {
-        size: 210mm 297mm;
-      }
-      @page size-letter {
-        size: 8.5in 11in;
-      }
-    }
-    .sheet-a4 {
-      width: 210mm;
-      min-height: 297mm;
-    }
-    .sheet-letter {
-      width: 8.5in;
-      min-height: 11in;
-    }
-  </style>
-</head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col pb-20">
-
-  <!-- ===================================================================== -->
-  <!-- HEADER ROW 1: BRAND LOGO & TITLE + STRICTLY ONLY CURRENCY SELECTOR -->
-  <!-- ===================================================================== -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between gap-4 h-16">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white font-black flex items-center justify-center text-lg shadow-sm">
-            FP
-          </div>
-          <div>
-            <h1 class="text-xl font-black text-slate-900 tracking-tight">Family Printables</h1>
-            <p class="text-[11px] text-slate-500 font-medium">Smart Printables for Modern Families &amp; Global Businesses</p>
-          </div>
-        </div>
-
-        <!-- Top-Right: STRICTLY ONLY CURRENCY SELECTOR -->
-        <div>
-          <select id="currency-selector" class="text-xs font-bold bg-slate-100 text-slate-800 rounded-xl px-3 py-2 border border-slate-300 cursor-pointer shadow-2xs">
-            <option value="USD">USD ($) · United States</option>
-            <option value="EUR">EUR (€) · Eurozone</option>
-            <option value="GBP">GBP (£) · United Kingdom</option>
-            <option value="CAD">CAD ($) · Canada</option>
-            <option value="AUD">AUD ($) · Australia</option>
-            <option value="PKR">PKR (₨) · Pakistan</option>
-            <option value="INR">INR (₹) · India</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- HEADER ROW 2: STRICTLY ONLY PROFILE, CART & PTS (ZERO HORIZONTAL SCROLL) -->
-      <!-- ================================================================= -->
-      <div 
-        class="py-2 border-t border-slate-100 flex items-center justify-between w-full text-xs overflow-x-hidden"
-        style="justify-content: space-between; overflow-x: hidden;"
-      >
-        <div class="flex items-center gap-2">
-          <button class="p-2 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold flex items-center gap-1.5 shadow-2xs">
-            <span>👤 Profile</span>
-          </button>
-          <button class="p-2 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold flex items-center gap-1.5 shadow-2xs">
-            <span>🛍️ Cart (0)</span>
-          </button>
-        </div>
-
-        <div class="flex items-center">
-          <span class="px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl font-bold text-[11px]">
-            ⭐ 150 FP Pts
-          </span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ===================================================================== -->
-  <!-- MAIN APP: LIVE PRINT STUDIO & CUSTOMIZATION ENGINE -->
-  <!-- ===================================================================== -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Controls Toolbar: Theme Selector, Paper Size & Instant Print -->
-    <section class="bg-gradient-to-br from-[#f8f7ff] via-[#fdf6f9] to-[#fff8f3] rounded-3xl p-5 border-2 border-indigo-200/90 shadow-xl space-y-4 no-print backdrop-blur-sm">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-lg font-black text-slate-900">Interactive Live Print Studio (300 DPI Single-Page)</h2>
-          <p class="text-xs text-slate-500">Pick any template, choose your theme & paper size, customize headers, and print.</p>
-        </div>
+    <!-- Primary Search Engine Optimization (SEO) Title & Meta -->
+    <title>Smart Digital Printables for Families &amp; Business | Family Printables</title>
+    <meta 
+      name="description" 
+      content="Instantly download 100% free single-page daily timetables, productivity planners, and business sales ledgers in Standard A4 &amp; Universal formats, alongside premium kids' learning workbooks and greeting cards." 
+    />
+    <meta 
+      name="keywords" 
+      content="Smart Digital Printables, Free Printable Timetable, Business Ledger &amp; Sales Record, Printable Monthly Calendar, Kids Brain Teasers, Kindergarten Activity Workbooks, Printable Greeting Cards, study planner PDF, daily routine chore board, single-page printables 300 DPI" 
+    />
+    <meta name="author" content="Family Printables Studio" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href="https://familyprintables.com/" />
 
-        <div class="flex flex-wrap items-center gap-3">
-          <!-- Size Selector -->
-          <div class="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-300 text-xs font-bold shadow-2xs">
-            <button id="btn-size-a4" onclick="setPaperSize('a4')" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs">
-              A4 (210×297mm)
-            </button>
-            <button id="btn-size-letter" onclick="setPaperSize('letter')" class="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
-              US Letter (8.5×11")
-            </button>
-          </div>
+    <!-- Open Graph Protocol (Facebook, WhatsApp, Pinterest, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Family Printables" />
+    <meta property="og:title" content="Smart Digital Printables for Families &amp; Business | Family Printables" />
+    <meta 
+      property="og:description" 
+      content="Instantly download 100% free single-page daily timetables, productivity planners, and business sales ledgers in Standard A4 &amp; Universal formats, alongside premium kids' learning workbooks and greeting cards." 
+    />
+    <meta property="og:url" content="https://familyprintables.com/" />
+    <meta property="og:image" content="/assets/images/festivals_greeting_cards.jpg" />
+    <meta property="og:image:secure_url" content="/assets/images/festivals_greeting_cards.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Family Printables - Smart Digital Printables for Families & Business" />
+    <meta property="og:locale" content="en" />
 
-          <!-- Print Themes -->
-          <div class="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-300 text-xs font-bold shadow-2xs">
-            <button onclick="setTheme('pastel')" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">Pastel Dream</button>
-            <button onclick="setTheme('botanical')" class="px-2.5 py-1.5 rounded-lg text-emerald-800 hover:bg-slate-100">Botanical</button>
-            <button onclick="setTheme('sunshine')" class="px-2.5 py-1.5 rounded-lg text-amber-800 hover:bg-slate-100">Sunshine</button>
-            <button onclick="setTheme('minimalist')" class="px-2.5 py-1.5 rounded-lg text-slate-800 hover:bg-slate-100">Minimalist</button>
-          </div>
+    <!-- Twitter / X Social Share Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@FamilyPrintables" />
+    <meta name="twitter:creator" content="@FamilyPrintables" />
+    <meta name="twitter:title" content="Smart Digital Printables for Families &amp; Business" />
+    <meta 
+      name="twitter:description" 
+      content="Instantly download 100% free single-page daily timetables, productivity planners, and business sales ledgers in Standard A4 &amp; Universal formats, alongside premium kids' learning workbooks and greeting cards." 
+    />
+    <meta name="twitter:image" content="/assets/images/festivals_greeting_cards.jpg" />
+    <meta name="twitter:image:alt" content="Smart Digital Printables for Families & Business" />
 
-          <!-- Action Button -->
-          <button onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-md">
-            <span>🖨️ Print 300 DPI / Save PDF</span>
-          </button>
-        </div>
-      </div>
-    </section>
+    <!-- Progressive Web App & Mobile Status Bar Styling -->
+    <meta name="theme-color" content="#4F46E5" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Family Printables" />
+    
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
 
-    <!-- LIVE PRINTABLE SHEET PREVIEW (Clean Single-Page Format) -->
-    <div class="flex justify-center">
-      <div id="print-sheet" class="sheet-a4 bg-white rounded-2xl shadow-xl border border-slate-300 p-8 printable-sheet transition-all flex flex-col justify-between">
-        
-        <div class="space-y-4">
-          <!-- Clean Sheet Header: Strictly Only Main Template Title (Zero Category Label, Zero Pill Badge) -->
-          <div id="template-title-banner" class="p-3.5 rounded-2xl text-white text-center shadow-sm" style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);">
-            <h2 id="template-title-text" class="text-lg sm:text-xl font-black tracking-tight leading-tight">
-              Daily Timetable &amp; Schedule
-            </h2>
-          </div>
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
 
-          <!-- Editable Shop / Business Header Section (Used on Business Templates) -->
-          <div id="business-header" class="border-b-2 border-indigo-600 pb-4 flex justify-between items-start gap-4">
-            <div class="space-y-1">
-              <h3 contenteditable="true" class="text-xl font-black text-slate-900 outline-none hover:bg-amber-50 px-1 rounded">
-                Metro Hardware &amp; Supply Mart
-              </h3>
-              <p contenteditable="true" class="text-xs font-bold text-indigo-700 outline-none hover:bg-amber-50 px-1 rounded">
-                Proprietor: Robert Vance &amp; Sons · Tel: +1 (555) 349-2810
-              </p>
-              <p contenteditable="true" class="text-[11px] text-slate-500 outline-none hover:bg-amber-50 px-1 rounded">
-                142 Market Street, Industrial Suite #4B · Dover, DE 19901, USA · TAX-ID: US-94821038
-              </p>
-            </div>
-            <div class="text-right">
-              <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-800 text-xs font-black uppercase rounded-lg border border-indigo-200">
-                Commercial Business Ledger &amp; Sales Record
-              </span>
-            </div>
-          </div>
+    <!-- Gumroad Overlay Checkout In-App Script -->
+    <script src="https://gumroad.com/js/gumroad-embed.js" async></script>
 
-          <!-- Fixed Core Table Structure -->
-          <table class="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr class="bg-indigo-50 border-b border-indigo-200 text-indigo-950 font-bold">
-                <th class="p-2.5">Date</th>
-                <th class="p-2.5">Particulars / Customer Note</th>
-                <th class="p-2.5">Ref #</th>
-                <th class="p-2.5 text-right">Debit (-)</th>
-                <th class="p-2.5 text-right">Credit (+)</th>
-                <th class="p-2.5 text-right">Balance</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200">
-              <tr>
-                <td class="p-2 text-slate-500">2026-10-12</td>
-                <td class="p-2 font-medium">Opening Balance Forward</td>
-                <td class="p-2 font-mono">OB-001</td>
-                <td class="p-2 text-right font-mono text-slate-400">-</td>
-                <td class="p-2 text-right font-mono text-emerald-700 font-bold">$1,450.00</td>
-                <td class="p-2 text-right font-mono font-bold">$1,450.00</td>
-              </tr>
-              <tr>
-                <td class="p-2 text-slate-500">2026-10-14</td>
-                <td class="p-2 font-medium">Bulk Copper Wire &amp; Conduit Pipes</td>
-                <td class="p-2 font-mono">INV-841</td>
-                <td class="p-2 text-right font-mono text-rose-700 font-bold">$320.00</td>
-                <td class="p-2 text-right font-mono text-slate-400">-</td>
-                <td class="p-2 text-right font-mono font-bold">$1,130.00</td>
-              </tr>
-              <tr>
-                <td class="p-2 text-slate-500">2026-10-16</td>
-                <td class="p-2 font-medium">Customer Payment Received (Direct Wire)</td>
-                <td class="p-2 font-mono">REC-902</td>
-                <td class="p-2 text-right font-mono text-slate-400">-</td>
-                <td class="p-2 text-right font-mono text-emerald-700 font-bold">$500.00</td>
-                <td class="p-2 text-right font-mono font-bold">$1,630.00</td>
-              </tr>
-              <tr class="h-8"><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td></tr>
-              <tr class="h-8"><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td></tr>
-              <tr class="h-8"><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Clean Sheet Footer: Strictly Inspiring Quote (Zero Technical Metadata) -->
-        <div class="mt-8 pt-3 border-t border-slate-200 text-center text-[11px] font-semibold italic text-slate-500">
-          "Small daily steps lead to big family moments — Family Printables"
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ===================================================================== -->
-  <!-- LOCKED BOTTOM APP MENU BAR (STRICTLY 4 COLUMNS - NO HORIZONTAL SCROLL) -->
-  <!-- ===================================================================== -->
-  <nav 
-    class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 py-1.5 px-2 shadow-xl no-print overflow-x-hidden"
-    style="width: 100%; overflow-x: hidden;"
-  >
-    <div 
-      class="max-w-xl mx-auto w-full grid grid-cols-4 gap-1 overflow-x-hidden"
-      style="width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); overflow-x: hidden;"
-    >
-      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold bg-indigo-600 text-white shadow-xs truncate">
-        <span>▦ Categories</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-100 truncate">
-        <span>📥 Downloads</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-100 truncate">
-        <span>✨ Timetables</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-100 truncate">
-        <span>💬 AI Support</span>
-      </button>
-    </div>
-  </nav>
-
-  <script>
-    function setPaperSize(size) {
-      const sheet = document.getElementById('print-sheet');
-      const btnA4 = document.getElementById('btn-size-a4');
-      const btnLetter = document.getElementById('btn-size-letter');
-      if (size === 'letter') {
-        sheet.className = 'sheet-letter bg-white rounded-2xl shadow-xl border border-slate-300 p-8 printable-sheet transition-all flex flex-col justify-between';
-        btnLetter.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs';
-        btnA4.className = 'px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100';
-      } else {
-        sheet.className = 'sheet-a4 bg-white rounded-2xl shadow-xl border border-slate-300 p-8 printable-sheet transition-all flex flex-col justify-between';
-        btnA4.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs';
-        btnLetter.className = 'px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100';
-      }
-    }
-
-    function setTheme(theme) {
-      const banner = document.getElementById('template-title-banner');
-      const header = document.getElementById('business-header');
-      if (theme === 'botanical') {
-        banner.style.background = 'linear-gradient(135deg, #059669 0%, #047857 50%, #10B981 100%)';
-        header.style.borderColor = '#059669';
-      } else if (theme === 'sunshine') {
-        banner.style.background = 'linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #EA580C 100%)';
-        header.style.borderColor = '#D97706';
-      } else if (theme === 'minimalist') {
-        banner.style.background = 'linear-gradient(135deg, #18181B 0%, #27272A 100%)';
-        header.style.borderColor = '#18181B';
-      } else {
-        banner.style.background = 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)';
-        header.style.borderColor = '#6366F1';
-      }
-    }
-  </script>
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const installBtn = document.querySelector('button, [onclick*="install"], .install-btn');
-    if (installBtn) {
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                }
-                deferredPrompt = null;
-            } else {
-                alert('App is already installed or installation is not supported by your browser.');
+    <!-- ================================================================== -->
+    <!-- SCHEMA.ORG JSON-LD STRUCTURED DATA (RICH SNIPPETS & REVIEWS)       -->
+    <!-- ================================================================== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://familyprintables.com/#webapp",
+          "name": "Family Printables Studio",
+          "url": "https://familyprintables.com",
+          "applicationCategory": "EducationalApplication, BusinessApplication",
+          "operatingSystem": "All (Web, Android, iOS, Windows, macOS)",
+          "description": "Interactive printable studio for free printable timetables, business sales ledgers, monthly calendars, kids learning workbooks, and all-occasion greeting cards.",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD",
+            "lowPrice": "0.00",
+            "highPrice": "2.00",
+            "offerCount": "24",
+            "availability": "https://schema.org/InStock"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "1420",
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+        },
+        {
+          "@type": "Product",
+          "@id": "https://familyprintables.com/#timetable-product",
+          "name": "Free Printable Timetable & Daily Schedule Planner",
+          "image": "/assets/images/festivals_greeting_cards.jpg",
+          "description": "Single-page clean printable daily timetable and weekly study schedule in Standard A4 and Universal 300 DPI formats.",
+          "category": "Educational & Study Printables",
+          "offers": {
+            "@type": "Offer",
+            "price": "0.00",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "340"
+          }
+        },
+        {
+          "@type": "Product",
+          "@id": "https://familyprintables.com/#ledger-product",
+          "name": "Custom Business Ledger & Sales Record PDF",
+          "image": "/assets/images/festivals_greeting_cards.jpg",
+          "description": "Small business bookkeeping sales ledger with customizable owner header, debit/credit entries, and order booking receipt format.",
+          "category": "Shop & Business Ledgers",
+          "offers": {
+            "@type": "Offer",
+            "price": "2.00",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5.0",
+            "reviewCount": "180"
+          }
+        },
+        {
+          "@type": "Product",
+          "@id": "https://familyprintables.com/#greeting-cards-product",
+          "name": "Printable Greeting Cards & Holiday Crafts",
+          "image": "/assets/images/festivals_greeting_cards.jpg",
+          "description": "Elegant luxury foldable greeting cards collection covering Birthday, Mother's Day, Father's Day, Teacher's Day, Christmas, and Ramadan/Eid celebrations.",
+          "category": "Printable Greeting Cards & Holiday Crafts",
+          "offers": {
+            "@type": "Offer",
+            "price": "2.00",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5.0",
+            "reviewCount": "410"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://familyprintables.com/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do I download and print the Free Printable Timetable?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Navigate to the Timetables Studio, pick your favorite color theme (Pastel Dream, Botanical, Warm Sunshine, or Minimalist), select Standard A4 or Universal Size, and click Direct Home Print or Download 300 DPI PDF."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I customize the Business Name and Address on the Business Ledger PDF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! The Business Ledger & Sales Record includes live customizable header fields where you can enter your Business Name, Owner Name, Contact Phone, and Address before printing."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What occasions are included in the Printable Greeting Cards collection?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The collection includes designer printable cards for Birthday, Mother's Day, Father's Day, Teacher's Day, Christmas, and Ramadan/Eid celebrations with foldable trim marks."
+              }
             }
-        });
+          ]
+        }
+      ]
     }
-});
-
-function downloadPDF() {
-    window.print();
-}
-</script>
-
-</body>
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
