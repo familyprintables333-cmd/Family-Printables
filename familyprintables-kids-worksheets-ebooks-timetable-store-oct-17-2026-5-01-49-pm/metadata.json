@@ -1,6 +1,0 @@
-{
-  "name": "FamilyPrintables - Kids Worksheets, eBooks & Timetable Store",
-  "description": "Digital storefront and creator toolkit for kids worksheets, bedtime eBooks, and customizable family routine timetables with global digital fulfillment and Etsy/Amazon KDP export.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
