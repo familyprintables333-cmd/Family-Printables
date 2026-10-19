@@ -123,10 +123,10 @@ export const HowItWorksExplainer: React.FC<HowItWorksExplainerProps> = ({
             <div className="bg-white/10 rounded-2xl p-5 border border-white/10 space-y-2.5">
               <div className="flex items-center gap-2 text-indigo-300 font-bold text-sm">
                 <Layers className="w-4 h-4" />
-                <span>1. Standard US Letter &amp; A4 Sizing</span>
+                <span>1. Standard A4 &amp; Universal Sizing</span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
-                All workbooks are formatted for both standard US Letter (8.5" x 11") and international A4. High-resolution 300 DPI vector PDFs ensure zero margin clipping and sharp printing on any home printer.
+                All workbooks are formatted for both Standard A4 (210 × 297 mm) and Universal page formats. High-resolution 300 DPI vector PDFs ensure zero margin clipping and sharp printing on any home or commercial printer.
               </p>
             </div>
 

@@ -3,6 +3,7 @@ import { Eye, Download, Star, CheckCircle2, Sparkles, Lock, Unlock, Clock } from
 import { Product } from '../types';
 import { formatCurrency } from '../utils/currency';
 import { resolveImageUrl } from '../assets/images';
+import { resolveProductGumroadUrl } from '../utils/gumroad';
 
 interface ProductCardProps {
   product: Product;
@@ -29,8 +30,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   daysRemaining = 0,
   currency
 }) => {
-  // If isUnlocked prop is not explicitly passed, fallback to isPurchased
-  const canDownload = isPurchased && !isExpired && (isUnlocked || !isExpired);
+  const isFreeProduct = product.isFree === true || product.priceUSD === 0 || product.accessType === 'free';
+  // If isUnlocked prop is not explicitly passed, fallback to isPurchased or isFreeProduct
+  const canDownload = isFreeProduct || (isPurchased && !isExpired && (isUnlocked || !isExpired));
 
   return (
     <article className="group bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between relative">
@@ -40,14 +42,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         onClick={() => onPreview(product)}
       >
         <img
-          src={resolveImageUrl(product.image)}
+          src={resolveImageUrl(product.image, product.category)}
           alt={product.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           referrerPolicy="no-referrer"
           loading="lazy"
           onError={(e) => {
             e.currentTarget.onerror = null;
-            e.currentTarget.src = '/assets/images/cover_toddler.jpg';
+            e.currentTarget.src = resolveImageUrl(product.image, product.category);
           }}
         />
       </div>
@@ -67,8 +69,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <span>{product.targetAge}</span>
               </span>
 
-              {/* Status Badge */}
-              {isExpired ? (
+              {/* Status Badge: Free vs Locked vs Expired */}
+              {isFreeProduct ? (
+                <span className="inline-flex items-center gap-1 font-black text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md text-[11px] border border-emerald-300 shadow-2xs">
+                  <Unlock className="w-3 h-3 text-emerald-600" />
+                  <span>100% Free</span>
+                </span>
+              ) : isExpired ? (
                 <span className="inline-flex items-center gap-1 font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md text-[11px] border border-rose-200">
                   <Clock className="w-3 h-3 text-rose-600" />
                   <span>Expired</span>
@@ -78,7 +85,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   <Unlock className="w-3 h-3 text-emerald-600" />
                   <span>Unlocked ({daysRemaining}d)</span>
                 </span>
-              ) : null}
+              ) : (
+                <span className="inline-flex items-center gap-1 font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md text-[11px] border border-amber-200">
+                  <Lock className="w-3 h-3 text-amber-600" />
+                  <span>Locked</span>
+                </span>
+              )}
             </div>
 
             <button
@@ -115,10 +127,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Prominently Highlighted Price Callout */}
           <div className="flex flex-col">
             <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-              {isPurchased ? 'Your License' : 'Price'}
+              {isFreeProduct ? 'Instant Access' : isPurchased ? 'Your License' : 'Price'}
             </div>
             <div className="text-2xl font-black text-slate-900 tracking-tight tabular-nums flex items-baseline gap-1">
-              <span className="text-slate-900">{formatCurrency(product.priceUSD, currency)}</span>
+              {isFreeProduct ? (
+                <span className="text-emerald-600 font-black">FREE</span>
+              ) : (
+                <span className="text-slate-900">{formatCurrency(product.priceUSD, currency)}</span>
+              )}
             </div>
           </div>
 
@@ -131,15 +147,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <Eye className="w-4 h-4" />
             </button>
 
-            {isExpired ? (
+            {isFreeProduct ? (
               <button
-                onClick={() => onInstantBuy(product)}
-                className="px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-amber-600 via-rose-600 to-pink-600 hover:from-amber-500 hover:to-rose-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap"
-                title="3-month access lapsed. Click to renew access for another 90 days."
+                onClick={() => onFreeDownload && onFreeDownload(product)}
+                className="px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap"
+                title="100% Free Instant Download"
+              >
+                <Download className="w-4 h-4" />
+                <span>Free Download</span>
+              </button>
+            ) : isExpired ? (
+              <a
+                href={resolveProductGumroadUrl(product)}
+                data-gumroad-single-product="true"
+                className="gumroad-button px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-amber-600 via-rose-600 to-pink-600 hover:from-amber-500 hover:to-rose-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap cursor-pointer no-underline"
+                title="3-month access lapsed. Click to renew access for another 90 days via Gumroad."
+                onClick={(e) => {
+                  if (!(window as any).GumroadOverlay && !resolveProductGumroadUrl(product).includes('gumroad.com')) {
+                    e.preventDefault();
+                    onInstantBuy(product);
+                  }
+                }}
               >
                 <Clock className="w-3.5 h-3.5 text-amber-100" />
                 <span>Renew Access ✨</span>
-              </button>
+              </a>
             ) : canDownload ? (
               <button
                 onClick={() => onFreeDownload && onFreeDownload(product)}
@@ -150,14 +182,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <span>Download File</span>
               </button>
             ) : (
-              <button
-                onClick={() => onInstantBuy(product)}
-                className="px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 active:scale-95 rounded-xl transition-all shadow-md hover:shadow-emerald-600/30 flex items-center gap-1.5 whitespace-nowrap"
-                title={`Unlock and purchase for ${formatCurrency(product.priceUSD, currency)}`}
+              <a
+                href={resolveProductGumroadUrl(product)}
+                data-gumroad-single-product="true"
+                className="gumroad-button px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 active:scale-95 rounded-xl transition-all shadow-md hover:shadow-emerald-600/30 flex items-center gap-1.5 whitespace-nowrap cursor-pointer no-underline"
+                title={`Unlock and purchase for ${formatCurrency(product.priceUSD, currency)} via secure Gumroad overlay`}
+                onClick={(e) => {
+                  if (!(window as any).GumroadOverlay && !resolveProductGumroadUrl(product).includes('gumroad.com')) {
+                    e.preventDefault();
+                    onInstantBuy(product);
+                  }
+                }}
               >
                 <Lock className="w-3.5 h-3.5 text-emerald-100" />
                 <span>Buy Now ✨</span>
-              </button>
+              </a>
             )}
           </div>
         </div>

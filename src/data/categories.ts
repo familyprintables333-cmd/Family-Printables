@@ -1,145 +1,119 @@
 import { CategoryInfo } from '../types';
 import { IMAGES } from '../assets/images';
 
-/**
- * --------------------------------------------------------------------------
- * Category Catalog (Easy-to-Edit Configuration)
- * --------------------------------------------------------------------------
- * You can easily edit any category details below:
- * - title: Display name of the category
- * - shortDescription: Brief summary shown on cards
- * - image: Category cover image (Uses IMAGES.cover... or '/assets/images/...')
- * - targetAge: Recommended age group
- * - includedActivities: List of bulleted activities
- * --------------------------------------------------------------------------
- */
-
 export const CATEGORIES: CategoryInfo[] = [
   {
     id: 'toddlers',
     title: 'Toddlers & Preschool',
-    shortDescription: 'Pencil control, gentle curved tracing, bold alphabet strokes, color matching, and fine motor coordination.',
-    fullDescription: 'Crafted specifically for early learners taking their first steps in handwriting and pencil control. Features extra-thick guide lines, friendly animal companions, and intuitive arrow directions to prevent frustration.',
-    purpose: 'Early fine motor skill development, pencil grip control, and introductory hand-eye coordination.',
-    targetAge: 'Ages 2-4 (Toddlers & Pre-K)',
-    includedActivities: [
-      'Curved & zigzag line-following pencil tracks',
-      'Large format Alphabet (A-Z) & Numbers (1-10) stroke guides',
-      'Animal color-matching & shape sorting practice',
-      'Safe scissor-skill cutouts and beginner matching games'
-    ],
-    benefits: {
-      forKids: 'Builds pencil confidence, prevents early frustration, and develops fine motor finger muscles through cheerful animal play.',
-      forParents: 'Instant print-at-home worksheets that can be slipped into plastic sleeves for endless reusable dry-erase practice.'
-    },
+    shortTitle: 'Toddlers & Preschool',
+    tagline: 'Gentle Tracing, Dotted Lines & Hand-Eye Coordination',
+    description: 'Specially created for tiny fingers learning pencil grip, line following, basic shapes, numbers 1-10, and friendly alphabet tracing.',
+    shortDescription: 'Gentle tracing, big bold alphabet & animal coloring for early learners.',
+    ageRange: 'Ages 2-4',
+    accentColor: 'indigo',
+    badge: 'Popular for Pre-K',
+    itemCount: 16,
     image: IMAGES.coverToddler,
-    badge: 'Ages 2-4',
-    accentColor: 'from-pink-500 to-rose-500'
+    features: [
+      'Extra-thick tracing guidelines',
+      'Cute animal characters & shape matching',
+      'High contrast print-ready PDF formats',
+      'Laminate-friendly for dry-erase reuse'
+    ]
   },
   {
     id: 'early-learning',
-    title: 'Early Learning & Kindergarten',
-    shortDescription: 'Phonics letter sounds, sight words sentence builders, visual math counting, addition, and moral values.',
-    fullDescription: 'Comprehensive academic readiness printables designed by early childhood educators to build confidence for kindergarten and first grade, turning learning into a joyful daily habit.',
-    purpose: 'Academic foundation in early reading, phonetic awareness, visual mathematics, and positive character growth.',
-    targetAge: 'Ages 4-6 (Pre-K to 1st Grade)',
-    includedActivities: [
-      'Phonics letter-sound associations & blending worksheets',
-      'High-frequency Dolch sight words sentence builders',
-      'Visual counting frames, object addition & subtraction',
-      'Positive habits, good manners, and moral character stories'
-    ],
-    benefits: {
-      forKids: 'Accelerates reading readiness, makes numbers intuitive with visual counters, and sparks classroom excitement.',
-      forParents: 'Structured 15-minute daily practice sheets that ensure school readiness without screen fatigue.'
-    },
+    title: 'Early Learning & Phonics',
+    shortTitle: 'Early Learning & Phonics',
+    tagline: 'Sight Words, Phonics, Counting & Early Reading',
+    description: 'Foundational kindergarten curriculum materials covering phonics blends, basic math word problems, sentence building, and creative coloring.',
+    shortDescription: 'Sight words, foundational phonics, early math & sentence building.',
+    ageRange: 'Ages 4-7',
+    accentColor: 'violet',
+    badge: 'Kindergarten Ready',
+    itemCount: 16,
     image: IMAGES.productKidsWorkbook,
-    badge: 'Ages 4-6',
-    accentColor: 'from-indigo-500 to-purple-500'
+    features: [
+      'CVC words & early phonics decoding',
+      'Addition and subtraction visual counters',
+      'Daily handwriting practice sheets',
+      'Print-ready Standard A4 & Universal size'
+    ]
   },
   {
-    id: 'brain-teasers',
-    title: 'Brain Teasers & Puzzles',
-    shortDescription: 'Winding labyrinth mazes, vocabulary word searches, spot-the-difference, and logic challenges.',
-    fullDescription: 'Engaging screen-free brain workouts designed to keep curious minds captivated. Tiered difficulty levels guide children to build sustained concentration, deduction, and patience.',
-    purpose: 'Cognitive stimulation, spatial problem-solving, sustained focus, and screen-free entertainment.',
-    targetAge: 'Ages 6-10 (Elementary & Tweens)',
-    includedActivities: [
-      'Graded thematic mazes (Space, Jungle, Ocean, Castle)',
-      'Themed vocabulary word search puzzles with hidden words',
-      'Spot-the-7-differences visual comparison illustrations',
-      'Beginner Sudoku, crosswords, and logic riddles with complete answer keys'
-    ],
-    benefits: {
-      forKids: 'Strengthens logical deduction, spatial reasoning, and mental endurance while solving exciting detective quests.',
-      forParents: 'The ultimate screen-free boredom buster for road trips, flights, rainy weekends, and quiet afternoons.'
-    },
+    id: 'puzzles',
+    title: 'Brain Puzzles & STEM Mazes',
+    shortTitle: 'Brain Puzzles & STEM',
+    tagline: 'Logic Grids, Crosswords, Mazes & Critical Thinking',
+    description: 'Keep young brains sharp and screen-free with engaging logic puzzles, spot-the-difference, spatial reasoning, and word searches.',
+    shortDescription: 'Screen-free logic puzzles, spot the difference, and brain teasers.',
+    ageRange: 'Ages 5-10',
+    accentColor: 'amber',
+    badge: 'Screen-Free Fun',
+    itemCount: 16,
     image: IMAGES.coverPuzzles,
-    badge: 'Ages 6-10',
-    accentColor: 'from-amber-500 to-orange-500'
+    features: [
+      'Graduated difficulty levels (Easy to Master)',
+      'Spatial reasoning and dot-to-dot maps',
+      'Answer key included on final pages',
+      'Great for road trips & restaurants'
+    ]
   },
   {
-    id: 'planning',
-    title: 'Planning & Routines',
-    shortDescription: 'Customizable chore boards, morning & bedtime checklists, star reward charts, and family meal kits.',
-    fullDescription: 'Transform chaotic mornings and disorganized evenings into smooth family teamwork. Fillable PDF fields allow parents to easily type their children’s names and specific chores.',
-    purpose: 'Household structure, self-regulation, time management, and positive habit reinforcement.',
-    targetAge: 'Whole Family (Ages 4-14 & Parents)',
-    includedActivities: [
-      'Visual step-by-step morning & bedtime routine checklists',
-      'Weekly chore boards with printable star reward tokens',
-      'Family weekly dinner menu and healthy snack planner boards',
-      'Habit trackers for reading, hydration, and screen-time moderation'
-    ],
-    benefits: {
-      forKids: 'Fosters personal responsibility, pride of accomplishment, and predictable daily rhythm without feeling scolded.',
-      forParents: 'Eliminates morning battles and bedtime friction by replacing repetitive nagging with clear visual boards.'
-    },
+    id: 'routines',
+    title: 'Elite Planners & Digital Guides',
+    shortTitle: 'Elite Planners & Digital Guides',
+    tagline: 'Premium Daily Routines, Productivity Planners & Digital Guides',
+    description: 'Curated premium planning systems, visual routine charts, productivity guides, and customizable digital organizers for high-achieving parents, homeschoolers, and families.',
+    shortDescription: 'Visual morning, bedtime & chore charts that build peaceful habits.',
+    ageRange: 'All Ages & Families',
+    accentColor: 'emerald',
+    badge: 'Elite Collection',
+    itemCount: 15,
     image: IMAGES.productRoutineBoard,
-    badge: 'Whole Family',
-    accentColor: 'from-emerald-500 to-teal-500'
+    features: [
+      'Visual icon-based checklist routine cards',
+      'Interactive customizable schedules',
+      'Reduces morning & bedtime power struggles',
+      'Print & stick with Velcro or magnets'
+    ]
   },
   {
-    id: 'seasonal',
-    title: 'Festivals & Celebrations',
-    shortDescription: 'High-resolution printable greeting cards and stationery suites for Eid, Ramadan, Christmas, Diwali, Holi, Mother\'s Day, Father\'s Day, and family celebrations.',
-    fullDescription: 'Elegant, ready-to-print luxury greeting cards and celebration stationery suites designed for global holidays and cherished family milestones. Each bundle includes pre-formatted foldable card templates (5x7" and A6), matching gift tags, envelope liners, and heartfelt interior message prompts ready to print at home.',
-    purpose: 'Personalized heartfelt greetings, elegant celebration stationery, holiday gifting, and cherished family traditions.',
-    targetAge: 'Whole Family & All Ages (Adults, Teens & Kids)',
-    includedActivities: [
-      'Foldable 5x7" & A6 luxury Eid Mubarak & Ramadan Kareem greeting cards',
-      'Foil-inspired Merry Christmas & Holiday celebration card suites with gift tags',
-      'Vibrant Happy Diwali Diya & Happy Holi festive greeting cards',
-      'Heartwarming Mother’s Day, Father’s Day & family milestone cards',
-      'Matching printable envelope liners, decorative seals & heartfelt message inserts'
-    ],
-    benefits: {
-      forKids: 'Enables children and families to write heartfelt personal notes and share warm festive wishes with loved ones across the globe.',
-      forParents: 'Instant access to designer-grade luxury stationery that prints crisply on standard home cardstock without expensive store runs.'
-    },
+    id: 'festivals',
+    title: 'Printable Greeting Cards & Seasonal Celebrations',
+    shortTitle: 'Greeting Cards & Holidays',
+    tagline: 'All-Occasion Greeting Cards (Birthday, Mother’s Day, Father’s Day, Christmas, Eid), Calendars & Holiday Crafts',
+    description: 'Elegant, luxury all-occasion printable greeting cards (Birthday, Mother’s Day, Father’s Day, Teacher’s Day, Christmas, Ramadan & Eid), plus holiday countdown charts and celebration crafts.',
+    shortDescription: 'All-occasion printable cards (Birthday, Mother’s Day, Father’s Day, Christmas & Eid).',
+    ageRange: 'All Ages & Families',
+    accentColor: 'rose',
+    badge: 'Cards & Celebrations',
+    itemCount: 15,
     image: IMAGES.festivalsCards,
-    badge: 'Greeting Cards',
-    accentColor: 'from-teal-500 to-cyan-500'
+    features: [
+      'All-occasion greeting cards: Birthday, Mother’s & Father’s Day, Christmas, Eid',
+      'Foldable card layout with trim lines and matching envelope liners',
+      'Celebration countdowns, deeds charts & holiday stationery',
+      'Instant print-ready 300 DPI high-definition PDF files'
+    ]
   },
   {
     id: 'audio-stories',
-    title: 'Stories & Bedtime',
-    shortDescription: 'Illustrated picture eBooks paired with soothing 18-minute audio voiceovers and gentle lullaby music.',
-    fullDescription: 'Created with pediatric bedtime rhythms in mind. Whimsical full-color storybook illustrations accompanied by crystal-clear, calming voiceover narrations designed to ease energetic children into peaceful sleep.',
-    purpose: 'Bedtime relaxation, soothing evening anxiety, and gentle auditory imagination.',
-    targetAge: 'Ages 2-8 (Toddlers & Young Readers)',
-    includedActivities: [
-      'High-resolution full-color illustrated bedtime picture eBooks',
-      '18-Minute soothing MP3 audio narration with relaxing lullabies',
-      'Tablet-friendly EPUB and PDF editions for iPad, Kindle, or phone',
-      'Printable bedtime starlight coloring page for calming wind-down'
-    ],
-    benefits: {
-      forKids: 'Dispels fear of the dark and gently guides active imaginations into sweet, comforting dreams.',
-      forParents: 'A dependable wind-down ritual that eases bedtime struggles into a cozy, serene 15-minute bonding moment.'
-    },
+    title: 'Bedtime Audio Stories & Calming Tunes',
+    shortTitle: 'Bedtime Audio Stories',
+    tagline: 'Soothing Narrated Audio Stories, Lullabies & Concentration Sounds',
+    description: 'Calming, narrated bedtime audio stories, gentle ambient nature sounds, and confidence-building tales with built-in in-app audio player.',
+    shortDescription: 'Peaceful bedtime audio stories, gentle lullabies & concentration audio.',
+    ageRange: 'Ages 3-9',
+    accentColor: 'purple',
+    badge: 'Audio & Video Player',
+    itemCount: 15,
     image: IMAGES.productBedtime,
-    badge: 'eBook + Audio',
-    accentColor: 'from-purple-500 to-indigo-500'
+    features: [
+      'Built-in in-app audio & video player (No external app needed)',
+      'Soothing professional English voice narration',
+      'Ambient white noise & bedtime lullaby tracks',
+      'Companion printable illustrated storybooks'
+    ]
   }
 ];

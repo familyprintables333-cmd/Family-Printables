@@ -1,0 +1,323 @@
+/**
+ * Complete standalone HTML/CSS/JS export for Family Printables Layout
+ * Features:
+ * - 300 DPI high-resolution vector print CSS
+ * - Standard A4 (210x297mm) and Universal (216x279mm) page sizing
+ * - 4 Print Themes: Pastel Dream, Botanical Forest, Warm Sunshine, Modern Minimalist
+ * - Strict Customizable Printables:
+ *   1. Educational & Study: Daily/Weekly Timetables, Monthly Calendar, Single-Page Study Planner
+ *   2. Shop & Business: Business Ledger & Sales Record, Order Booking, Billing Invoice, Inventory Sheet (with editable header)
+ *   3. Personal & Home: Routine/Chore Board, Grocery List, Monthly Budget, Meal Planner
+ * - Header layout: Only Currency Selector next to title; sub-row strictly has Profile, Cart, and Pts badge (no duplicates, no horizontal scroll)
+ * - Bottom Bar: Strictly 4-column grid (Categories, Downloads, Timetables, AI Support) with zero horizontal scroll
+ * - Soft modern gradient on selector container
+ * - Canvas header with ONLY main printable title
+ * - Canvas footer with warm, inspiring one-line quote
+ */
+
+export function generateCompleteLayoutHtml(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Printables - Single-Page Clean Printables & Business Planners</title>
+  <meta name="description" content="Instant single-page printables: Daily & Weekly Timetables, Business Ledger & Sales Record, Invoices, Chore Boards, and Study Planners.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* 300 DPI Clean Home Printing Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .printable-sheet {
+        box-shadow: none !important;
+        border: 1px solid #d1d5db !important;
+        margin: 0 !important;
+        padding: 10mm !important;
+        width: 100% !important;
+        min-height: auto !important;
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+      }
+      @page {
+        margin: 8mm;
+      }
+      @page size-a4 {
+        size: 210mm 297mm;
+      }
+      @page size-letter {
+        size: 8.5in 11in;
+      }
+    }
+    .sheet-a4 {
+      width: 210mm;
+      min-height: 297mm;
+    }
+    .sheet-letter {
+      width: 8.5in;
+      min-height: 11in;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col pb-20">
+
+  <!-- ===================================================================== -->
+  <!-- HEADER ROW 1: BRAND LOGO & TITLE + STRICTLY ONLY CURRENCY SELECTOR -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between gap-4 h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white font-black flex items-center justify-center text-lg shadow-sm">
+            FP
+          </div>
+          <div>
+            <h1 class="text-xl font-black text-slate-900 tracking-tight">Family Printables</h1>
+            <p class="text-[11px] text-slate-500 font-medium">Smart Printables for Modern Families &amp; Global Businesses</p>
+          </div>
+        </div>
+
+        <!-- Top-Right: STRICTLY ONLY CURRENCY SELECTOR -->
+        <div>
+          <select id="currency-selector" class="text-xs font-bold bg-slate-100 text-slate-800 rounded-xl px-3 py-2 border border-slate-300 cursor-pointer shadow-2xs">
+            <option value="USD">USD ($) · United States</option>
+            <option value="EUR">EUR (€) · Eurozone</option>
+            <option value="GBP">GBP (£) · United Kingdom</option>
+            <option value="CAD">CAD ($) · Canada</option>
+            <option value="AUD">AUD ($) · Australia</option>
+            <option value="PKR">PKR (₨) · Pakistan</option>
+            <option value="INR">INR (₹) · India</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- HEADER ROW 2: STRICTLY ONLY PROFILE, CART & PTS (ZERO HORIZONTAL SCROLL) -->
+      <!-- ================================================================= -->
+      <div 
+        class="py-2 border-t border-slate-100 flex items-center justify-between w-full text-xs overflow-x-hidden"
+        style="justify-content: space-between; overflow-x: hidden;"
+      >
+        <div class="flex items-center gap-2">
+          <button class="p-2 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold flex items-center gap-1.5 shadow-2xs">
+            <span>👤 Profile</span>
+          </button>
+          <button class="p-2 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold flex items-center gap-1.5 shadow-2xs">
+            <span>🛍️ Cart (0)</span>
+          </button>
+        </div>
+
+        <div class="flex items-center">
+          <span class="px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl font-bold text-[11px]">
+            ⭐ 150 FP Pts
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN APP: LIVE PRINT STUDIO & CUSTOMIZATION ENGINE -->
+  <!-- ===================================================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
+    
+    <!-- Controls Toolbar: Theme Selector, Paper Size & Instant Print -->
+    <section class="bg-gradient-to-br from-[#f8f7ff] via-[#fdf6f9] to-[#fff8f3] rounded-3xl p-5 border-2 border-indigo-200/90 shadow-xl space-y-4 no-print backdrop-blur-sm">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-black text-slate-900">Interactive Live Print Studio (300 DPI Single-Page)</h2>
+          <p class="text-xs text-slate-500">Pick any template, choose your theme & paper size, customize headers, and print.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Size Selector -->
+          <div class="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-300 text-xs font-bold shadow-2xs">
+            <button id="btn-size-a4" onclick="setPaperSize('a4')" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs">
+              A4 (210×297mm)
+            </button>
+            <button id="btn-size-letter" onclick="setPaperSize('letter')" class="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
+              Universal Standard (216×279mm)
+            </button>
+          </div>
+
+          <!-- Print Themes -->
+          <div class="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-300 text-xs font-bold shadow-2xs">
+            <button onclick="setTheme('pastel')" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">Pastel Dream</button>
+            <button onclick="setTheme('botanical')" class="px-2.5 py-1.5 rounded-lg text-emerald-800 hover:bg-slate-100">Botanical</button>
+            <button onclick="setTheme('sunshine')" class="px-2.5 py-1.5 rounded-lg text-amber-800 hover:bg-slate-100">Sunshine</button>
+            <button onclick="setTheme('minimalist')" class="px-2.5 py-1.5 rounded-lg text-slate-800 hover:bg-slate-100">Minimalist</button>
+          </div>
+
+          <!-- Action Button -->
+          <button onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+            <span>🖨️ Print 300 DPI</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE PRINTABLE SHEET PREVIEW (Clean Single-Page Format) -->
+    <div class="flex justify-center">
+      <div id="print-sheet" class="sheet-a4 bg-white rounded-2xl shadow-xl border border-slate-300 p-8 printable-sheet transition-all flex flex-col justify-between">
+        
+        <div class="space-y-4">
+          <!-- Clean Sheet Header: Strictly Only Main Template Title (Zero Category Label, Zero Pill Badge) -->
+          <div id="template-title-banner" class="p-3.5 rounded-2xl text-white text-center shadow-sm" style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);">
+            <h2 id="template-title-text" class="text-lg sm:text-xl font-black tracking-tight leading-tight">
+              Daily Timetable &amp; Schedule
+            </h2>
+          </div>
+
+          <!-- Editable Shop / Business Header Section (Used on Business Templates) -->
+          <div id="business-header" class="border-b-2 border-indigo-600 pb-4 flex justify-between items-start gap-4">
+            <div class="space-y-1">
+              <h3 contenteditable="true" class="text-xl font-black text-slate-900 outline-none hover:bg-amber-50 px-1 rounded">
+                Metro Hardware &amp; Supply Mart
+              </h3>
+              <p contenteditable="true" class="text-xs font-bold text-indigo-700 outline-none hover:bg-amber-50 px-1 rounded">
+                Proprietor: Robert Vance &amp; Sons · Tel: +1 (555) 349-2810
+              </p>
+              <p contenteditable="true" class="text-[11px] text-slate-500 outline-none hover:bg-amber-50 px-1 rounded">
+                142 Market Street, Industrial Suite #4B · Dover, DE 19901, USA · TAX-ID: US-94821038
+              </p>
+            </div>
+            <div class="text-right">
+              <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-800 text-xs font-black uppercase rounded-lg border border-indigo-200">
+                Commercial Business Ledger &amp; Sales Record
+              </span>
+            </div>
+          </div>
+
+          <!-- Fixed Core Table Structure -->
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-indigo-50 border-b border-indigo-200 text-indigo-950 font-bold">
+                <th class="p-2.5">Date</th>
+                <th class="p-2.5">Particulars / Customer Note</th>
+                <th class="p-2.5">Ref #</th>
+                <th class="p-2.5 text-right">Debit (-)</th>
+                <th class="p-2.5 text-right">Credit (+)</th>
+                <th class="p-2.5 text-right">Balance</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-2 text-slate-500">2026-10-12</td>
+                <td class="p-2 font-medium">Opening Balance Forward</td>
+                <td class="p-2 font-mono">OB-001</td>
+                <td class="p-2 text-right font-mono text-slate-400">-</td>
+                <td class="p-2 text-right font-mono text-emerald-700 font-bold">$1,450.00</td>
+                <td class="p-2 text-right font-mono font-bold">$1,450.00</td>
+              </tr>
+              <tr>
+                <td class="p-2 text-slate-500">2026-10-14</td>
+                <td class="p-2 font-medium">Bulk Copper Wire &amp; Conduit Pipes</td>
+                <td class="p-2 font-mono">INV-841</td>
+                <td class="p-2 text-right font-mono text-rose-700 font-bold">$320.00</td>
+                <td class="p-2 text-right font-mono text-slate-400">-</td>
+                <td class="p-2 text-right font-mono font-bold">$1,130.00</td>
+              </tr>
+              <tr>
+                <td class="p-2 text-slate-500">2026-10-16</td>
+                <td class="p-2 font-medium">Customer Payment Received (Direct Wire)</td>
+                <td class="p-2 font-mono">REC-902</td>
+                <td class="p-2 text-right font-mono text-slate-400">-</td>
+                <td class="p-2 text-right font-mono text-emerald-700 font-bold">$500.00</td>
+                <td class="p-2 text-right font-mono font-bold">$1,630.00</td>
+              </tr>
+              <tr class="h-8"><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td></tr>
+              <tr class="h-8"><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td></tr>
+              <tr class="h-8"><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td><td class="p-2"></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Clean Sheet Footer: Strictly Inspiring Quote (Zero Technical Metadata) -->
+        <div class="mt-8 pt-3 border-t border-slate-200 text-center text-[11px] font-semibold italic text-slate-500">
+          "Small daily steps lead to big family moments — Family Printables"
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- LOCKED BOTTOM APP MENU BAR (STRICTLY 4 COLUMNS - NO HORIZONTAL SCROLL) -->
+  <!-- ===================================================================== -->
+  <nav 
+    class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 py-1.5 px-2 shadow-xl no-print overflow-x-hidden"
+    style="width: 100%; overflow-x: hidden;"
+  >
+    <div 
+      class="max-w-xl mx-auto w-full grid grid-cols-4 gap-1 overflow-x-hidden"
+      style="width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); overflow-x: hidden;"
+    >
+      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold bg-indigo-600 text-white shadow-xs truncate">
+        <span>▦ Categories</span>
+      </button>
+      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-100 truncate">
+        <span>📥 Downloads</span>
+      </button>
+      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-100 truncate">
+        <span>✨ Timetables</span>
+      </button>
+      <button class="flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-100 truncate">
+        <span>💬 AI Support</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    function setPaperSize(size) {
+      const sheet = document.getElementById('print-sheet');
+      const btnA4 = document.getElementById('btn-size-a4');
+      const btnLetter = document.getElementById('btn-size-letter');
+      if (size === 'letter') {
+        sheet.className = 'sheet-letter bg-white rounded-2xl shadow-xl border border-slate-300 p-8 printable-sheet transition-all flex flex-col justify-between';
+        btnLetter.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs';
+        btnA4.className = 'px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100';
+      } else {
+        sheet.className = 'sheet-a4 bg-white rounded-2xl shadow-xl border border-slate-300 p-8 printable-sheet transition-all flex flex-col justify-between';
+        btnA4.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs';
+        btnLetter.className = 'px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100';
+      }
+    }
+
+    function setTheme(theme) {
+      const banner = document.getElementById('template-title-banner');
+      const header = document.getElementById('business-header');
+      if (theme === 'botanical') {
+        banner.style.background = 'linear-gradient(135deg, #059669 0%, #047857 50%, #10B981 100%)';
+        header.style.borderColor = '#059669';
+      } else if (theme === 'sunshine') {
+        banner.style.background = 'linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #EA580C 100%)';
+        header.style.borderColor = '#D97706';
+      } else if (theme === 'minimalist') {
+        banner.style.background = 'linear-gradient(135deg, #18181B 0%, #27272A 100%)';
+        header.style.borderColor = '#18181B';
+      } else {
+        banner.style.background = 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)';
+        header.style.borderColor = '#6366F1';
+      }
+    }
+  </script>
+</body>
+</html>`;
+}

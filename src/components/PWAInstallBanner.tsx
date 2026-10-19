@@ -1,147 +1,178 @@
-import React, { useState } from 'react';
-import { DownloadCloud, Smartphone, X, Share2, PlusSquare } from 'lucide-react';
-import { usePWAInstall } from '../hooks/usePWAInstall';
+import React, { useState, useEffect } from 'react';
+import { Smartphone, Download, X, CheckCircle2, Share, PlusSquare } from 'lucide-react';
+import { trackMonetizationEvent } from '../utils/monetization';
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
 
 export const PWAInstallBanner: React.FC = () => {
-  const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
-  const [showIOSGuide, setShowIOSGuide] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isInstalled, setIsInstalled] = useState<boolean>(false);
+  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
+    return sessionStorage.getItem('fp_pwa_banner_dismissed') === 'true';
+  });
+  const [showIOSGuide, setShowIOSGuide] = useState<boolean>(false);
+  const [isIOS, setIsIOS] = useState<boolean>(false);
 
-  // If already installed as standalone or dismissed, hide banner
-  if (isInstalled || dismissed) {
+  useEffect(() => {
+    // Detect if already installed standalone
+    if (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as unknown as { standalone?: boolean }).standalone === true
+    ) {
+      setIsInstalled(true);
+    }
+
+    // Detect iOS devices
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
+    setIsIOS(isIosDevice);
+
+    // Listen for BeforeInstallPromptEvent (Chromium / Android)
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    };
+
+    // Listen for appinstalled event
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+      trackMonetizationEvent('app_install', 'PWA App Installed to Home Screen', 0.25, 'Native install completed');
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice.outcome === 'accepted') {
+        setIsInstalled(true);
+        trackMonetizationEvent('app_install', 'PWA Installed via Native Prompt', 0.25, 'User accepted install modal');
+      }
+      setDeferredPrompt(null);
+    } else if (isIOS) {
+      setShowIOSGuide(true);
+    } else {
+      // Generic fallback instructions
+      alert('To install: tap your browser menu (⋮ or ...) and select "Add to Home screen" or "Install App"');
+    }
+  };
+
+  const handleDismiss = () => {
+    setIsDismissed(true);
+    sessionStorage.setItem('fp_pwa_banner_dismissed', 'true');
+  };
+
+  if (isInstalled || isDismissed) {
     return null;
   }
 
-  // Android / Chrome flow
-  if (isInstallable) {
-    return (
-      <aside aria-label="Install App Banner" className="bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-600 text-white px-4 py-2.5 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
+  return (
+    <>
+      {/* Prominent Floating / Top PWA Install Bar */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 text-white px-4 py-2.5 shadow-md relative z-30 no-print border-b border-indigo-700/60">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs">
+          
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0">
-              <Smartphone className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-xs">
+              <Smartphone className="w-4 h-4 text-amber-300" />
             </div>
             <div>
-              <span className="font-bold">Install Family Printables App</span>
-              <span className="hidden sm:inline text-indigo-200 ml-1.5">
-                · Fast 1-tap home-screen access &amp; offline downloads
-              </span>
+              <div className="font-extrabold text-white flex items-center gap-1.5">
+                <span>Install Family Printables App</span>
+                <span className="bg-emerald-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                  Fast &amp; Offline
+                </span>
+              </div>
+              <p className="text-[11px] text-indigo-200">
+                Access timetables, workbooks &amp; greeting cards directly from your home screen.
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
-              onClick={install}
-              className="px-3.5 py-1.5 bg-white text-indigo-700 hover:bg-indigo-50 font-bold rounded-lg shadow-xs transition-transform active:scale-95 flex items-center gap-1.5 whitespace-nowrap"
+              onClick={handleInstallClick}
+              className="px-4 py-1.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
             >
-              <DownloadCloud className="w-3.5 h-3.5" />
-              <span>Install App</span>
+              <Download className="w-3.5 h-3.5" />
+              <span>📲 Install App / Add to Home Screen</span>
             </button>
+
             <button
-              onClick={() => setDismissed(true)}
-              className="p-1 text-white/70 hover:text-white rounded-md"
+              onClick={handleDismiss}
+              className="p-1.5 text-indigo-300 hover:text-white rounded-lg hover:bg-white/10 transition cursor-pointer"
+              title="Dismiss for now"
               aria-label="Dismiss banner"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
         </div>
-      </aside>
-    );
-  }
+      </div>
 
-  // iOS Safari flow
-  if (isIOS) {
-    return (
-      <>
-        <aside aria-label="iOS Install Banner" className="bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-600 text-white px-4 py-2.5 shadow-md">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0">
-                <Smartphone className="w-4 h-4 text-white" />
+      {/* iOS Safari Instruction Modal */}
+      {showIOSGuide && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full text-slate-900 shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 font-black text-sm text-indigo-950">
+                <Smartphone className="w-5 h-5 text-indigo-600" />
+                <span>Install on iPhone or iPad</span>
               </div>
-              <div>
-                <span className="font-bold">Add to iPhone / iPad Home Screen</span>
-                <span className="hidden sm:inline text-indigo-200 ml-1.5">
-                  · Operates smoothly like a native iOS app
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
               <button
-                onClick={() => setShowIOSGuide(true)}
-                className="px-3.5 py-1.5 bg-white text-indigo-700 hover:bg-indigo-50 font-bold rounded-lg shadow-xs transition-transform active:scale-95 flex items-center gap-1.5 whitespace-nowrap"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                <span>Add to Home</span>
-              </button>
-              <button
-                onClick={() => setDismissed(true)}
-                className="p-1 text-white/70 hover:text-white rounded-md"
-                aria-label="Dismiss banner"
+                onClick={() => setShowIOSGuide(false)}
+                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-          </div>
-        </aside>
 
-        {showIOSGuide && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-            <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Smartphone className="w-5 h-5 text-indigo-600" />
-                  <span>Install on iPhone / iPad</span>
-                </h3>
-                <button
-                  onClick={() => setShowIOSGuide(false)}
-                  className="p-1 text-slate-400 hover:text-slate-800 rounded-md"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="space-y-3 text-xs text-slate-600">
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center shrink-0">
-                    1
-                  </span>
-                  <span>
-                    Tap the <strong>Share button</strong> (<Share2 className="w-3.5 h-3.5 inline text-indigo-600" />) in your Safari toolbar at the bottom.
-                  </span>
-                </div>
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center shrink-0">
-                    2
-                  </span>
-                  <span>
-                    Scroll down and tap <strong>"Add to Home Screen"</strong> (<PlusSquare className="w-3.5 h-3.5 inline text-indigo-600" />).
-                  </span>
-                </div>
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center shrink-0">
-                    3
-                  </span>
-                  <span>
-                    Tap <strong>Add</strong> in the top right corner. Family Printables will launch like a native app with offline support!
-                  </span>
+            <div className="space-y-3 text-xs text-slate-600 leading-relaxed">
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-indigo-600 text-white font-black flex items-center justify-center shrink-0 text-xs">
+                  1
+                </span>
+                <div>
+                  <strong className="text-slate-900 block font-extrabold mb-0.5">Tap the Share Button</strong>
+                  <span>Tap the <Share className="w-3.5 h-3.5 inline text-indigo-600" /> Share icon at the bottom of Safari.</span>
                 </div>
               </div>
 
-              <button
-                onClick={() => setShowIOSGuide(false)}
-                className="w-full rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition"
-              >
-                Got it!
-              </button>
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-indigo-600 text-white font-black flex items-center justify-center shrink-0 text-xs">
+                  2
+                </span>
+                <div>
+                  <strong className="text-slate-900 block font-extrabold mb-0.5">Select "Add to Home Screen"</strong>
+                  <span>Scroll down and tap <PlusSquare className="w-3.5 h-3.5 inline text-indigo-600" /> <strong>Add to Home Screen</strong>.</span>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-      </>
-    );
-  }
 
-  return null;
+            <button
+              onClick={() => {
+                setShowIOSGuide(false);
+                trackMonetizationEvent('app_install', 'iOS Safari PWA Add to Home Screen Guided', 0.25);
+              }}
+              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-md transition"
+            >
+              Got It, Thanks!
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };

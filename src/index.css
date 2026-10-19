@@ -1,12 +1,31 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
-    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  :root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  *, *::before, *::after {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  html, body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #1e293b;
     background-color: #f9fafb;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.025em;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  button, input, select, textarea {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 }
 
@@ -14,10 +33,11 @@
   body * {
     visibility: hidden;
   }
-  #printable-canvas, #printable-canvas * {
+  #printable-canvas, #printable-canvas *,
+  #printable-sheet, #printable-sheet * {
     visibility: visible;
   }
-  #printable-canvas {
+  #printable-canvas, #printable-sheet {
     position: absolute;
     left: 0;
     top: 0;
@@ -26,6 +46,7 @@
     margin: 0 !important;
     padding: 24px !important;
     box-shadow: none !important;
+    transform: none !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -34,4 +55,3 @@
     visibility: hidden !important;
   }
 }
-

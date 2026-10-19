@@ -1,4 +1,4 @@
-export type CurrencyCode = 'USD' | 'INR' | 'PKR' | 'EUR' | 'GBP' | 'AED' | 'CAD';
+export type CurrencyCode = 'USD' | 'INR' | 'PKR' | 'EUR' | 'GBP' | 'AED' | 'CAD' | 'AUD' | 'SAR';
 
 export interface CurrencyConfig {
   code: CurrencyCode;
@@ -16,7 +16,14 @@ export const CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
   GBP: { code: 'GBP', symbol: '£', label: 'GBP (£)', rateFromUSD: 0.79, decimals: 2 },
   AED: { code: 'AED', symbol: 'د.إ ', label: 'AED (د.إ)', rateFromUSD: 3.67, decimals: 2 },
   CAD: { code: 'CAD', symbol: '$', label: 'CAD ($)', rateFromUSD: 1.36, decimals: 2 },
+  AUD: { code: 'AUD', symbol: '$', label: 'AUD ($)', rateFromUSD: 1.52, decimals: 2 },
+  SAR: { code: 'SAR', symbol: '﷼ ', label: 'SAR (﷼)', rateFromUSD: 3.75, decimals: 2 },
 };
+
+export function getCurrencySymbol(currencyCode: string = 'USD'): string {
+  const config = CURRENCIES[currencyCode as CurrencyCode] || CURRENCIES.USD;
+  return config.symbol.trim();
+}
 
 export function formatCurrency(amountUSD: number, currencyCode: string = 'USD'): string {
   const config = CURRENCIES[currencyCode as CurrencyCode] || CURRENCIES.USD;

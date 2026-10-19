@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Star, CheckCircle2, MessageSquare } from 'lucide-react';
 import { Product, UserReview } from '../types';
+import { formatReviewTimestamp } from '../utils/reviews';
 
 interface ReviewsModalProps {
   product: Product | null;
@@ -26,11 +27,14 @@ export const ReviewsModal: React.FC<ReviewsModalProps> = ({
     e.preventDefault();
     if (!comment.trim()) return;
 
+    const now = Date.now();
     const newReview: UserReview = {
-      id: Date.now().toString(),
+      id: now.toString(),
       author: authorName.trim() || 'Verified Parent',
       rating,
-      date: 'Just now',
+      timestamp: now,
+      createdAt: new Date(now).toISOString(),
+      date: new Date(now).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       comment: comment.trim(),
       verifiedPurchase: true
     };
@@ -152,7 +156,7 @@ export const ReviewsModal: React.FC<ReviewsModalProps> = ({
               <div key={rev.id} className="p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 space-y-1.5 text-xs">
                 <div className="flex items-center justify-between">
                   <div className="font-bold text-slate-900">{rev.author}</div>
-                  <span className="text-[11px] text-slate-400">{rev.date}</span>
+                  <span className="text-[11px] text-slate-400 font-medium">{formatReviewTimestamp(rev.timestamp || rev.createdAt || rev.date, rev.date)}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="flex text-amber-500">

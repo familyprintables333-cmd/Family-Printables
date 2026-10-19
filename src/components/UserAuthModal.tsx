@@ -59,12 +59,6 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({
     }
   };
 
-  const handleFillDemo = () => {
-    setEmail('emily.davis@gmail.com');
-    setPassword('family123');
-    setErrorMessage(null);
-  };
-
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div className="relative bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden my-6">
@@ -210,20 +204,6 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({
                 <span>{mode === 'login' ? 'Sign In to Account' : 'Create Free Account'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-
-              {/* Demo 1-Click Credentials Helper */}
-              {mode === 'login' && (
-                <div className="pt-1">
-                  <button
-                    type="button"
-                    onClick={handleFillDemo}
-                    className="w-full py-2 bg-slate-100 hover:bg-slate-200/80 text-slate-600 rounded-xl text-[11px] font-semibold transition flex items-center justify-center gap-1.5"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Quick Demo: emily.davis@gmail.com</span>
-                  </button>
-                </div>
-              )}
             </form>
           )}
 

@@ -14,22 +14,38 @@ export const createAccessGrant = (days: number = ACCESS_DURATION_DAYS): AccessGr
 
 export interface ProductAccessStatus {
   isPurchased: boolean;
-  isUnlocked: boolean; // Purchased AND not expired
+  isUnlocked: boolean; // Purchased AND not expired, or 100% Free
   isExpired: boolean;  // Purchased but 90 days have lapsed
+  isFree?: boolean;    // Free printable (no purchase needed)
   daysRemaining: number;
   expiresAt: string | null;
 }
 
 export const getProductAccessStatus = (
   productId: string,
-  account: UserAccount
+  account: UserAccount,
+  product?: { isFree?: boolean; priceUSD?: number; isLocked?: boolean; accessType?: string }
 ): ProductAccessStatus => {
+  // If explicitly designated Free or price is $0: Instant Free Access for everyone!
+  const isFreeItem = product?.isFree === true || product?.accessType === 'free' || product?.priceUSD === 0;
+  if (isFreeItem) {
+    return {
+      isPurchased: true,
+      isUnlocked: true,
+      isExpired: false,
+      isFree: true,
+      daysRemaining: 999,
+      expiresAt: null,
+    };
+  }
+
   const isPurchased = account.purchasedProductIds.includes(productId);
   if (!isPurchased) {
     return {
       isPurchased: false,
       isUnlocked: false,
       isExpired: false,
+      isFree: false,
       daysRemaining: 0,
       expiresAt: null,
     };

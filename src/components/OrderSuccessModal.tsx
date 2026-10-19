@@ -36,13 +36,13 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
   const handleDownloadFile = (fileName: string, title: string) => {
     setDownloadingFile(fileName);
     setTimeout(() => {
-      const content = `==========================================================\nFAMILY PRINTABLES - OFFICIAL DIGITAL DELIVERABLE\n==========================================================\nOrder ID: ${order.id}\nCustomer: ${order.customerName} (${order.customerEmail})\nProduct: ${title}\nLicense: Personal, Family & Homeschool Use\nPaper Format: US Letter (8.5" x 11") Standard & International A4\nResolution: 300 DPI Print-Ready\n\nPRINTING INSTRUCTIONS:\n1. Open file in free Adobe Acrobat Reader or web browser.\n2. In Print Dialog, select "Actual Size" (Do not scale or shrink).\n3. Recommended Paper: 28lb or 32lb Bright White Paper, or 65lb Cardstock.\n4. For reusable charts, laminate with 3mil or 5mil pouch and use fine-tip dry erase markers.\n\nThank you for supporting Family Printables!\nCustomer Care: 24/7 AI Instant Support Desk & Download Vault (Online)\n==========================================================`;
+      const content = `==========================================================\nFAMILY PRINTABLES - OFFICIAL DIGITAL DELIVERABLE\n==========================================================\nOrder ID: ${order.id}\nCustomer: ${order.customerName} (${order.customerEmail})\nProduct: ${title}\nLicense: Personal, Family & Homeschool Use\nPaper Format: Standard A4 (210 x 297 mm) & Universal Page Size\nResolution: 300 DPI Print-Ready\n\nPRINTING INSTRUCTIONS:\n1. Open file in free Adobe Acrobat Reader or web browser.\n2. In Print Dialog, select "Actual Size" (Do not scale or shrink).\n3. Recommended Paper: 28lb or 32lb Bright White Paper, or 65lb Cardstock.\n4. For reusable charts, laminate with 3mil or 5mil pouch and use fine-tip dry erase markers.\n\nThank you for supporting Family Printables!\nCustomer Care: 24/7 AI Instant Support Desk & Download Vault (Online)\n==========================================================`;
 
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${title.replace(/[^a-zA-Z0-9]/g, '_')}_US_Letter.txt`;
+      link.download = `${title.replace(/[^a-zA-Z0-9]/g, '_')}_A4_Deliverable.txt`;
       link.click();
       URL.revokeObjectURL(url);
       setDownloadingFile(null);
@@ -157,7 +157,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                         className="px-3 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-indigo-600 rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        <span>US Letter (8.5x11")</span>
+                        <span>Universal Standard</span>
                       </button>
 
                       <button

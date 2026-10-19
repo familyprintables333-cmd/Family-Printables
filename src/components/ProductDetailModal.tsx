@@ -1,8 +1,24 @@
-import React, { useState } from 'react';
-import { X, Star, Check, ArrowRight, ArrowLeft, Printer, ShieldCheck, Download, Layers, Sparkles, CheckCircle2, Lock, Unlock, Clock } from 'lucide-react';
+import React from 'react';
+import { 
+  X, 
+  Download, 
+  Star, 
+  CheckCircle2, 
+  Sparkles, 
+  Lock, 
+  Unlock, 
+  Clock, 
+  Printer, 
+  ShieldCheck, 
+  ShoppingCart, 
+  FileText, 
+  Layers, 
+  Share2 
+} from 'lucide-react';
 import { Product } from '../types';
-import { formatCurrency } from '../utils/currency';
 import { resolveImageUrl } from '../assets/images';
+import { formatCurrency } from '../utils/currency';
+import { resolveProductGumroadUrl } from '../utils/gumroad';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -29,250 +45,239 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   isUnlocked = false,
   isExpired = false,
   daysRemaining = 0,
-  currency
+  currency,
 }) => {
-  const [activePageIndex, setActivePageIndex] = useState(0);
-
   if (!product) return null;
 
-  const canDownload = isPurchased && !isExpired && (isUnlocked || !isExpired);
-
-  const samplePages = product.samplePages || [];
+  const displayPrice = formatCurrency(product.priceUSD, currency);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="relative bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden my-6">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 text-slate-400 hover:text-slate-800 bg-white/80 hover:bg-white rounded-full shadow-xs transition-colors"
-          aria-label="Close Modal"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity" 
+        onClick={onClose} 
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-12 max-h-[85vh] overflow-y-auto">
-          {/* Left Column: Image & Sample Page Viewer */}
-          <div className="md:col-span-6 bg-slate-50 p-6 sm:p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200">
-            <div>
-              {/* Main Cover Image - Pristine without overlapping text/badges */}
-              <div className="rounded-2xl overflow-hidden bg-white shadow-md border border-slate-200/80 mb-5 relative">
+      {/* Modal Dialog */}
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-100 z-10 animate-in fade-in zoom-in-95 duration-200">
+        {/* Header Bar */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/80 shrink-0">
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">
+              {product.categoryLabel || product.category}
+            </span>
+            <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-full flex items-center gap-1">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span>{product.rating}</span>
+              <span className="text-amber-500/80">({product.reviewsCount})</span>
+            </span>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-full transition-colors"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Scrollable Body */}
+        <div className="overflow-y-auto p-6 md:p-8 space-y-8 flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            {/* Product Cover Art */}
+            <div className="space-y-4">
+              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-md">
                 <img
-                  src={resolveImageUrl(product.image)}
+                  src={resolveImageUrl(product.image, product.category)}
                   alt={product.title}
-                  className="w-full h-auto aspect-[4/3] object-cover"
-                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.onerror = null;
-                    e.currentTarget.src = '/assets/images/cover_toddler.jpg';
+                    e.currentTarget.src = resolveImageUrl(product.image, product.category);
                   }}
                 />
+
+                {isUnlocked && (
+                  <div className="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-bold px-3 py-1.5 rounded-xl backdrop-blur-xs flex items-center gap-1.5 shadow-md">
+                    <Unlock className="w-3.5 h-3.5" />
+                    <span>Unlocked ({daysRemaining}d access)</span>
+                  </div>
+                )}
               </div>
 
-              {/* Sample Page Previewer */}
-              {samplePages.length > 0 && (
-                <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs space-y-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>Look Inside (Sample Spread)</span>
-                    </span>
-                    <span className="text-[11px] font-mono text-slate-400">
-                      {activePageIndex + 1} / {samplePages.length}
-                    </span>
-                  </div>
+              {/* Quick Specs Badges */}
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+                  <div className="text-slate-400 font-medium">Pages</div>
+                  <div className="font-extrabold text-slate-800 text-sm mt-0.5">{product.pages} pgs</div>
+                </div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+                  <div className="text-slate-400 font-medium">Age Group</div>
+                  <div className="font-extrabold text-slate-800 text-sm mt-0.5">{product.targetAge}</div>
+                </div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+                  <div className="text-slate-400 font-medium">Resolution</div>
+                  <div className="font-extrabold text-slate-800 text-sm mt-0.5">300 DPI</div>
+                </div>
+              </div>
+            </div>
 
-                  <div className="min-h-[75px] bg-indigo-50/40 rounded-xl p-3 border border-indigo-100">
-                    <h4 className="text-xs font-bold text-slate-900">
-                      {samplePages[activePageIndex].title}
+            {/* Product Details & Actions */}
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
+                  {product.title}
+                </h2>
+                <p className="mt-2 text-slate-600 text-sm leading-relaxed">
+                  {product.shortDesc || product.description}
+                </p>
+              </div>
+
+              {/* Educational Highlight */}
+              {product.educationalBenefit && (
+                <div className="bg-indigo-50/80 border border-indigo-100 rounded-2xl p-4 flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-bold text-indigo-950 uppercase tracking-wider">
+                      Learning &amp; Developmental Benefit
                     </h4>
-                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                      {samplePages[activePageIndex].subtitle}
+                    <p className="text-xs text-indigo-800 mt-1 leading-relaxed">
+                      {product.educationalBenefit}
                     </p>
-                    <p className="text-xs text-slate-600 italic mt-2 border-t border-indigo-100/70 pt-1.5 font-serif">
-                      {samplePages[activePageIndex].previewText}
-                    </p>
-                  </div>
-
-                  {/* Navigation buttons */}
-                  <div className="flex items-center justify-between pt-1">
-                    <button
-                      onClick={() => setActivePageIndex((prev) => (prev > 0 ? prev - 1 : samplePages.length - 1))}
-                      className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-slate-100"
-                    >
-                      <ArrowLeft className="w-3 h-3" />
-                      <span>Previous</span>
-                    </button>
-                    <div className="flex items-center gap-1">
-                      {samplePages.map((_, idx) => (
-                        <div
-                          key={idx}
-                          className={`w-1.5 h-1.5 rounded-full transition-all ${
-                            idx === activePageIndex ? 'bg-indigo-600 w-3' : 'bg-slate-300'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <button
-                      onClick={() => setActivePageIndex((prev) => (prev < samplePages.length - 1 ? prev + 1 : 0))}
-                      className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-slate-100"
-                    >
-                      <span>Next</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
                   </div>
                 </div>
               )}
-            </div>
 
-            {/* Print advice */}
-            <div className="mt-5 pt-3 border-t border-slate-200 text-xs text-slate-500 flex items-start gap-2">
-              <Printer className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
-              <span>
-                Formatted for 8.5" x 11" US Letter &amp; A4. Laminate or use sheet protectors for reusable dry-erase practice.
-              </span>
-            </div>
-          </div>
-
-          {/* Right Column: Details & Buy Module */}
-          <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-5">
-            <div className="space-y-3.5">
-              {/* Category & Ratings */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="uppercase tracking-wider font-bold text-indigo-600">
-                  {product.categoryLabel}
-                </span>
-
-                <button
-                  onClick={() => onOpenReviews(product)}
-                  className="flex items-center gap-1 text-amber-500 hover:text-amber-600 font-semibold"
-                >
-                  <Star className="w-3.5 h-3.5 fill-amber-500" />
-                  <span className="font-bold text-slate-900 tabular-nums">{product.rating}</span>
-                  <span className="text-slate-400 underline">({product.reviewsCount} reviews)</span>
-                </button>
-              </div>
-
-              {/* Title */}
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
-                {product.title}
-              </h2>
-
-              {/* Prominently Highlighted Price Section */}
-              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 via-rose-50 to-pink-50 border border-rose-200/70 flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-rose-700">
-                    {isPurchased ? 'Unlocked License' : 'Special Digital Price'}
-                  </div>
-                  <div className="text-3xl font-black text-slate-900 tabular-nums tracking-tight">
-                    {formatCurrency(product.priceUSD, currency)}
-                  </div>
-                </div>
-                <div className="text-right">
-                  {isPurchased ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black text-emerald-800 bg-emerald-100 border border-emerald-300">
-                      <Unlock className="w-3.5 h-3.5 text-emerald-600" />
-                      UNLOCKED
+              {/* Price & Purchase Actions */}
+              <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 space-y-4">
+                <div className="flex items-baseline justify-between">
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium block">One-Time Download Price</span>
+                    <span className="text-3xl font-black text-slate-900 tracking-tight">
+                      {displayPrice}
                     </span>
+                  </div>
+                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-100/70 px-2.5 py-1 rounded-full">
+                    Instant 90-Day Access
+                  </span>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  {isUnlocked ? (
+                    <button
+                      onClick={() => onFreeDownload ? onFreeDownload(product) : onInstantBuy(product)}
+                      className="w-full py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-transform active:scale-98"
+                    >
+                      <Download className="w-5 h-5" />
+                      <span>Download PDF Files Now</span>
+                    </button>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold text-indigo-800 bg-indigo-100 border border-indigo-200">
-                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                      Instant Delivery
-                    </span>
+                    <>
+                      <a
+                        href={resolveProductGumroadUrl(product)}
+                        data-gumroad-single-product="true"
+                        className="gumroad-button w-full py-3.5 px-6 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold rounded-2xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer no-underline text-center"
+                        title="Instant Buy & Download with Secure Gumroad In-App Overlay"
+                        onClick={(e) => {
+                          if (!(window as any).GumroadOverlay && !resolveProductGumroadUrl(product).includes('gumroad.com')) {
+                            e.preventDefault();
+                            onInstantBuy(product);
+                            onClose();
+                          }
+                        }}
+                      >
+                        <Sparkles className="w-5 h-5 text-amber-300" />
+                        <span>Instant Buy &amp; Download · {displayPrice}</span>
+                      </a>
+
+                      <button
+                        onClick={() => {
+                          onAddToCart(product);
+                          onClose();
+                        }}
+                        className="w-full py-3 px-6 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
+                      >
+                        <ShoppingCart className="w-4 h-4 text-slate-500" />
+                        <span>Add to Cart</span>
+                      </button>
+                    </>
                   )}
-                  <div className="text-[10px] text-slate-500 mt-0.5">High-Res PDF Download</div>
+                </div>
+
+                {/* Trust Guarantee */}
+                <div className="flex items-center justify-center gap-4 text-xs text-slate-500 pt-1">
+                  <span className="flex items-center gap-1">
+                    <Printer className="w-3.5 h-3.5 text-indigo-600" />
+                    Standard A4 &amp; Universal Size
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    Secure Checkout
+                  </span>
+                  <span>•</span>
+                  <button 
+                    onClick={() => {
+                      onClose();
+                      onOpenReviews(product);
+                    }}
+                    className="text-indigo-600 hover:underline font-semibold"
+                  >
+                    Read Reviews ({product.reviewsCount})
+                  </button>
                 </div>
               </div>
 
-              {/* Educational Benefit */}
-              <div className="p-3 bg-indigo-50/70 rounded-xl border border-indigo-100 text-xs text-indigo-950 flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold text-indigo-900">Educational Benefit: </span>
-                  <span>{product.educationalBenefit}</span>
+              {/* What's Included */}
+              {product.includedItems && product.includedItems.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-indigo-600" />
+                    <span>What's Inside This Pack</span>
+                  </h4>
+                  <ul className="grid grid-cols-1 gap-2">
+                    {product.includedItems.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-700">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-
-              {/* Description */}
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                {product.description}
-              </p>
-
-              {/* Included Items Checklist */}
-              <div className="space-y-1.5 pt-1">
-                <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  Included in this PDF Package:
-                </div>
-                <ul className="space-y-1 text-xs text-slate-600">
-                  {product.includedItems.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* CTAs */}
-            <div className="pt-4 border-t border-slate-200 space-y-2.5">
-              {isExpired ? (
-                <button
-                  onClick={() => {
-                    onInstantBuy(product);
-                    onClose();
-                  }}
-                  className="w-full py-3.5 px-4 text-xs font-black text-white bg-gradient-to-r from-amber-600 via-rose-600 to-pink-600 hover:from-amber-500 hover:to-rose-500 rounded-2xl transition-all shadow-md active:scale-98 flex items-center justify-center gap-2"
-                >
-                  <Clock className="w-4 h-4 text-amber-100" />
-                  <span>Renew 3-Month Access ({formatCurrency(product.priceUSD, currency)})</span>
-                </button>
-              ) : canDownload ? (
-                <button
-                  onClick={() => {
-                    onFreeDownload && onFreeDownload(product);
-                    onClose();
-                  }}
-                  className="w-full py-3.5 px-4 text-xs font-black text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-2xl transition-all shadow-md active:scale-98 flex items-center justify-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download File from Vault ({daysRemaining}d left)</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    onInstantBuy(product);
-                    onClose();
-                  }}
-                  className="w-full py-3.5 px-4 text-xs font-black text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 rounded-2xl transition-all shadow-md hover:shadow-emerald-600/30 active:scale-98 flex items-center justify-center gap-2"
-                >
-                  <Lock className="w-4 h-4 text-emerald-100" />
-                  <span>Buy Now ✨ ({formatCurrency(product.priceUSD, currency)})</span>
-                </button>
               )}
-
-              {!canDownload && !isExpired && (
-                <button
-                  onClick={() => {
-                    onAddToCart(product);
-                    onClose();
-                  }}
-                  className="w-full py-2.5 px-4 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all flex items-center justify-center gap-2"
-                >
-                  <span>Add to Shopping Bag</span>
-                </button>
-              )}
-
-              <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400 pt-1">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>3-Month Access Vault</span>
-                </span>
-                <span aria-hidden="true">·</span>
-                <span>Unlimited Re-downloads during active period</span>
-              </div>
             </div>
           </div>
+
+          {/* Sample Page Previews */}
+          {product.samplePages && product.samplePages.length > 0 && (
+            <div className="pt-6 border-t border-slate-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-indigo-600" />
+                  <span>Sample Page Activity Previews</span>
+                </h3>
+                <span className="text-xs text-slate-500">Preview 3 sample sheets</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {product.samplePages.map((sample, idx) => (
+                  <div key={idx} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2">
+                    <div className="text-xs font-bold text-indigo-600 uppercase tracking-wide">
+                      {sample.title}
+                    </div>
+                    <div className="font-extrabold text-sm text-slate-800">
+                      {sample.subtitle}
+                    </div>
+                    <p className="text-xs text-slate-600 italic">
+                      "{sample.previewText}"
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

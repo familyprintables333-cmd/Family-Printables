@@ -247,3 +247,63 @@ export function recordCompletedPurchase(
   saveActiveSession(updatedAccount);
   return updatedAccount;
 }
+
+/**
+ * Mandatory Sign-Up Gate: Register or Sign-In with Full Name & Gmail/Email
+ * Saves registered user data to persistent database so they appear in Admin Panel!
+ */
+export function quickRegisterOrSignIn(
+  name: string,
+  email: string
+): { success: boolean; account?: UserAccount; error?: string } {
+  const cleanEmail = email.trim().toLowerCase();
+  const cleanName = name.trim();
+
+  if (!cleanName) {
+    return { success: false, error: 'Please enter your Full Name.' };
+  }
+  if (!cleanEmail || !cleanEmail.includes('@')) {
+    return { success: false, error: 'Please enter a valid Gmail / Email address.' };
+  }
+
+  const users = getAllRegisteredUsers();
+  const existingIdx = users.findIndex((u) => u.email.toLowerCase() === cleanEmail);
+
+  let targetUser: StoredUserRecord;
+
+  if (existingIdx !== -1) {
+    users[existingIdx] = {
+      ...users[existingIdx],
+      name: cleanName || users[existingIdx].name,
+      isLoggedIn: true,
+    };
+    targetUser = users[existingIdx];
+  } else {
+    targetUser = {
+      name: cleanName,
+      email: cleanEmail,
+      passwordHash: 'family123',
+      isLoggedIn: true,
+      purchasedProductIds: [],
+      purchasedAccess: {},
+      orderHistory: [],
+      createdAt: new Date().toISOString(),
+    };
+    users.unshift(targetUser);
+  }
+
+  saveRegisteredUsers(users);
+
+  const sessionAccount: UserAccount = {
+    name: targetUser.name,
+    email: targetUser.email,
+    isLoggedIn: true,
+    purchasedProductIds: targetUser.purchasedProductIds || [],
+    purchasedAccess: targetUser.purchasedAccess || {},
+    orderHistory: targetUser.orderHistory || [],
+  };
+
+  saveActiveSession(sessionAccount);
+  return { success: true, account: sessionAccount };
+}
+

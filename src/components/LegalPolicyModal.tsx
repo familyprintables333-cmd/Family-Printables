@@ -1,24 +1,35 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, FileText, RotateCcw, CheckCircle2, Lock, AlertCircle, Building2, Mail, ExternalLink } from 'lucide-react';
+import { 
+  X, 
+  ShieldCheck, 
+  FileText, 
+  RotateCcw, 
+  CheckCircle2, 
+  Lock, 
+  AlertCircle, 
+  Building2, 
+  Mail, 
+  ExternalLink 
+} from 'lucide-react';
 
 export type PolicyTab = 'privacy' | 'terms' | 'refund';
 
 interface LegalPolicyModalProps {
   isOpen: boolean;
-  initialTab?: PolicyTab;
   onClose: () => void;
+  initialTab?: PolicyTab;
 }
 
 export const LegalPolicyModal: React.FC<LegalPolicyModalProps> = ({
   isOpen,
-  initialTab = 'privacy',
-  onClose
+  onClose,
+  initialTab = 'privacy'
 }) => {
   const [activeTab, setActiveTab] = useState<PolicyTab>(initialTab);
 
-  // Sync initial tab when opened
+  // Sync initialTab when modal opens
   React.useEffect(() => {
-    if (isOpen && initialTab) {
+    if (isOpen) {
       setActiveTab(initialTab);
     }
   }, [isOpen, initialTab]);
@@ -26,42 +37,41 @@ export const LegalPolicyModal: React.FC<LegalPolicyModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
+      {/* Backdrop */}
       <div 
-        className="relative bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-200 flex flex-col max-h-[90vh] overflow-hidden my-auto"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="legal-modal-title"
-      >
-        {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-100">
+        className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity" 
+        onClick={onClose} 
+      />
+
+      {/* Modal Dialog */}
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-100 z-10 animate-in fade-in zoom-in-95 duration-200">
+        {/* Top Header */}
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h2 id="legal-modal-title" className="text-lg font-black text-slate-900 tracking-tight">
-                Family Printables Legal &amp; Store Policies
-              </h2>
-              <p className="text-xs text-slate-500 font-medium">
-                Official Digital Store Guidelines • Effective Date: January 1, 2026
-              </p>
+              <h2 className="text-base font-extrabold text-slate-900">Legal Compliance &amp; Store Policies</h2>
+              <p className="text-xs text-slate-500">Family Printables LLC · Effective as of 2026</p>
             </div>
           </div>
+
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-200/60 transition"
-            aria-label="Close modal"
+            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-full transition-colors"
+            aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex border-b border-slate-200 bg-white px-6 gap-2 sm:gap-4 overflow-x-auto scrollbar-none">
+        {/* Tab Switcher */}
+        <div className="px-6 pt-3 bg-white border-b border-slate-200/70 flex gap-2 shrink-0 overflow-x-auto">
           <button
             onClick={() => setActiveTab('privacy')}
-            className={`py-3.5 px-3 sm:px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
               activeTab === 'privacy'
                 ? 'border-indigo-600 text-indigo-600'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
@@ -73,7 +83,7 @@ export const LegalPolicyModal: React.FC<LegalPolicyModalProps> = ({
 
           <button
             onClick={() => setActiveTab('terms')}
-            className={`py-3.5 px-3 sm:px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
               activeTab === 'terms'
                 ? 'border-indigo-600 text-indigo-600'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
@@ -85,210 +95,155 @@ export const LegalPolicyModal: React.FC<LegalPolicyModalProps> = ({
 
           <button
             onClick={() => setActiveTab('refund')}
-            className={`py-3.5 px-3 sm:px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
               activeTab === 'refund'
                 ? 'border-indigo-600 text-indigo-600'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
             <RotateCcw className="w-4 h-4" />
-            <span>Refund &amp; Return Policy</span>
+            <span>Refund &amp; Download Policy</span>
           </button>
         </div>
 
-        {/* Content Body */}
-        <div className="p-6 sm:p-8 overflow-y-auto space-y-6 text-slate-700 text-sm leading-relaxed">
-          {/* ---------------- PRIVACY POLICY ---------------- */}
+        {/* Policy Body */}
+        <div className="overflow-y-auto p-6 md:p-8 space-y-6 text-xs sm:text-sm text-slate-600 leading-relaxed flex-1">
           {activeTab === 'privacy' && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="p-4 bg-indigo-50/70 border border-indigo-100 rounded-2xl flex items-start gap-3 text-indigo-900">
-                <ShieldCheck className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm space-y-1">
-                  <p className="font-bold">Your Privacy is Protected</p>
-                  <p className="text-indigo-800/90 text-xs">
-                    Family Printables Publishing LLC adheres to stringent consumer privacy protections (including GDPR, CCPA, and COPPA). We never sell, rent, or trade your personal data.
-                  </p>
-                </div>
+            <div className="space-y-6">
+              <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 text-indigo-900">
+                <h4 className="font-bold text-sm mb-1 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600" />
+                  <span>Privacy Summary: We Respect Your Family's Data</span>
+                </h4>
+                <p className="text-xs text-indigo-700">
+                  Family Printables does not sell or lease personal data. We only process email addresses for sending instant digital PDF download receipts and maintaining your 90-day download vault.
+                </p>
               </div>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">1. Data Controller &amp; Scope</h3>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">1. Information We Collect</h3>
                 <p>
-                  This Privacy Policy applies to all services, downloadable printables, routine builders, and transactions provided by <strong>Family Printables Publishing LLC</strong> ("we," "us," or "our"), with business headquarters located at <strong>123 Learning Way, Suite 400, Dover, DE 19901, USA</strong>.
+                  When you purchase educational printables or register a vault account, we collect your name, email address, and order transaction details. Payment details (card numbers, Apple Pay tokens) are processed securely through Level 1 PCI-compliant payment gateways (such as Stripe or Payoneer) and never stored on our servers.
                 </p>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">2. Information We Collect</h3>
-                <p>We collect only the minimum information necessary to deliver your digital purchases and maintain access to your personal downloads vault:</p>
-                <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-                  <li><strong>Account &amp; Order Identifiers:</strong> Name and email address provided during checkout or account registration to transmit printable deliverables, purchase receipts, and unlock keys.</li>
-                  <li><strong>Transaction Records:</strong> Order timestamp, purchased workbook IDs, amount paid, and invoice identifiers. <em>Note: All credit card processing is handled by encrypted PCI-DSS Level 1 compliant processors (Stripe). We never receive or store full card numbers.</em></li>
-                  <li><strong>Local Vault Access:</strong> Browser local storage (`localStorage`) used exclusively on your client device to maintain your 90-day download access window without tracking your activity across third-party websites.</li>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">2. How We Use Information</h3>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>To generate personalized, high-resolution PDF download links and licenses.</li>
+                  <li>To provide 90-day device access and re-print recovery in your downloads vault.</li>
+                  <li>To provide automated AI customer assistance and answer educational questions.</li>
+                  <li>To prevent unauthorized commercial re-distribution of copyrighted materials.</li>
                 </ul>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">3. Children’s Online Privacy Protection Act (COPPA)</h3>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">3. Children's Online Privacy Protection (COPPA)</h3>
                 <p>
-                  Our workbooks and learning printables are crafted for children's educational development; however, <strong>all store transactions, account creations, and customer communications must be conducted solely by parents, legal guardians, or educators aged 18 or older</strong>. We do not knowingly solicit or collect personal information directly from children under 13.
+                  Our services and workbooks are intended for purchase by parents, legal guardians, homeschool educators, and teachers. We do not intentionally solicit or collect personally identifiable information from children under 13.
                 </p>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">4. Data Sharing &amp; Third Parties</h3>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">4. Contact &amp; Data Officer</h3>
                 <p>
-                  We do not sell, license, or monetize customer data to advertising brokers. Data is shared exclusively with critical infrastructure partners under strict confidentiality:
-                </p>
-                <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-                  <li><strong>Payment Gateways:</strong> Stripe for secure, tokenized payment settlement.</li>
-                  <li><strong>Hosting &amp; CDN:</strong> Netlify and cloud infrastructure for fast, global delivery of digital PDF deliverables.</li>
-                </ul>
-              </section>
-
-              <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">5. Your Legal Rights (GDPR &amp; CCPA)</h3>
-                <p>
-                  Depending on your jurisdiction, you have the right to request access to the personal data we hold about you, request rectification of erroneous records, or request complete erasure of your customer profile. Contact our 24/7 AI Instant Support Desk or corporate office to submit a verifiable data privacy request.
+                  For data inquiries or account deletion requests, reach our compliance team at:
+                  <br />
+                  <strong className="text-slate-800">Family Printables LLC</strong>
+                  <br />
+                  123 Learning Way, Suite 400, Dover, DE 19901, USA
                 </p>
               </section>
             </div>
           )}
 
-          {/* ---------------- TERMS OF SERVICE ---------------- */}
           {activeTab === 'terms' && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="p-4 bg-emerald-50/70 border border-emerald-100 rounded-2xl flex items-start gap-3 text-emerald-900">
-                <FileText className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm space-y-1">
-                  <p className="font-bold">Digital Delivery Notice</p>
-                  <p className="text-emerald-800/90 text-xs">
-                    All items sold in this digital store are instant, downloadable electronic files (PDF, MP3, PNG). No physical paper, books, or dry-erase sleeves are shipped via postal mail.
-                  </p>
-                </div>
+            <div className="space-y-6">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-slate-800">
+                <h4 className="font-bold text-sm mb-1 flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-slate-700" />
+                  <span>Personal &amp; Classroom Educational License</span>
+                </h4>
+                <p className="text-xs text-slate-600">
+                  Every purchase grants an unlimited personal home or single-classroom license to print and reuse the digital files for educational purposes.
+                </p>
               </div>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">1. Acceptance of Terms</h3>
-                <p>
-                  By browsing, purchasing, or downloading content from Family Printables, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you should not access our digital store or services.
-                </p>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">1. Permitted Uses</h3>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Printing unlimited copies for your immediate children or classroom students.</li>
+                  <li>Laminating workbooks for repeated dry-erase use.</li>
+                  <li>Re-downloading clean copies from your vault within your 90-day access window.</li>
+                </ul>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">2. License Grant &amp; Permitted Uses</h3>
-                <p>
-                  Upon confirmed payment, Family Printables Publishing LLC grants you a perpetual, non-exclusive, non-transferable license to download and print the purchased materials subject to the following terms:
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-                    <p className="font-bold text-emerald-700 flex items-center gap-1.5 mb-1">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      Permitted Uses:
-                    </p>
-                    <ul className="list-disc pl-4 space-y-1 text-slate-600">
-                      <li>Printing unlimited copies for your own household children.</li>
-                      <li>Printing copies for a single physical classroom or homeschool co-op.</li>
-                      <li>Laminating pages for repeated dry-erase marker practice.</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-                    <p className="font-bold text-rose-700 flex items-center gap-1.5 mb-1">
-                      <AlertCircle className="w-4 h-4 text-rose-600" />
-                      Strictly Prohibited:
-                    </p>
-                    <ul className="list-disc pl-4 space-y-1 text-slate-600">
-                      <li>Reselling or redistributing original or modified digital PDF files.</li>
-                      <li>Uploading files to Amazon KDP, Etsy, Creative Fabrica, or file shares.</li>
-                      <li>Extracting individual vector graphics, clip art, or mascot illustrations.</li>
-                    </ul>
-                  </div>
-                </div>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">2. Prohibited Uses</h3>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Re-selling, distributing, sub-licensing, or uploading raw PDF files to file-sharing clouds or torrent networks.</li>
+                  <li>Claiming artwork, illustrations, or workbook design as your own creation.</li>
+                  <li>Modifying or extracting individual graphics for commercial merchandise without a commercial license.</li>
+                </ul>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">3. 90-Day Download Access Policy</h3>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">3. Governing Law</h3>
                 <p>
-                  Purchased digital files remain unlocked in your device's <strong>My Downloads Vault</strong> for a period of <strong>90 days (3 months)</strong> following purchase. Customers are strongly encouraged to download and save permanent backup copies to their local computer, tablet, or external drive immediately following checkout.
-                </p>
-              </section>
-
-              <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">4. Intellectual Property &amp; Copyright</h3>
-                <p>
-                  All educational curricula, puzzle layouts, illustrations, audio narrations, character designs, and digital code are the sole intellectual property of Family Printables Publishing LLC and protected by United States and international copyright treaties. All rights not expressly granted herein are reserved.
-                </p>
-              </section>
-
-              <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">5. Limitation of Liability</h3>
-                <p>
-                  Our printables are educational support materials and are provided "as-is" without warranties of any specific academic outcome. In no event shall Family Printables Publishing LLC be liable for any indirect, incidental, or consequential damages.
+                  These terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles.
                 </p>
               </section>
             </div>
           )}
 
-          {/* ---------------- REFUND POLICY ---------------- */}
           {activeTab === 'refund' && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="p-4 bg-amber-50/70 border border-amber-100 rounded-2xl flex items-start gap-3 text-amber-900">
-                <RotateCcw className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm space-y-1">
-                  <p className="font-bold">Digital Goods Refund Standard</p>
-                  <p className="text-amber-800/90 text-xs">
-                    Because our digital printables and workbooks are delivered immediately upon order completion and cannot be physically returned, standard return policies for physical goods do not apply. However, we stand behind the quality of our educational content with our 30-Day Defective File &amp; Satisfaction Guarantee.
-                  </p>
-                </div>
+            <div className="space-y-6">
+              <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-emerald-950">
+                <h4 className="font-bold text-sm mb-1 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>100% Happiness &amp; Print Clarity Guarantee</span>
+                </h4>
+                <p className="text-xs text-emerald-800">
+                  Because digital items are delivered instantly, standard physical return shipping does not apply. However, if you experience formatting errors or corrupt files, our support desk will replace them or issue a refund.
+                </p>
               </div>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">1. Instant Download Nature</h3>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">1. 90-Day Download Access</h3>
                 <p>
-                  Under United States commercial law and European Union consumer regulations, digital downloads that have begun download or deliver access with customer consent are generally exempt from statutory right of withdrawal. Once an unlock key is issued, the digital deliverable is considered fulfilled.
+                  Every purchase grants an active 90-day download window. Your files are backed up in your local device vault, allowing you to re-download fresh clean copies anytime across multiple devices without paying again.
                 </p>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">2. Our 30-Day Technical &amp; Quality Guarantee</h3>
-                <p>We will gladly issue a <strong>100% full refund or replacement</strong> within 30 days of purchase under the following circumstances:</p>
-                <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-                  <li><strong>Corrupted or Defective Files:</strong> If a downloaded PDF or audio file cannot be opened, has unreadable text, or contains corrupted pages that our support team cannot rectify.</li>
-                  <li><strong>Accidental Duplicate Purchases:</strong> If you accidentally purchased the exact same printable twice within a 24-hour period.</li>
-                  <li><strong>Material Description Discrepancy:</strong> If the delivered printable significantly deviates from the preview pages and product specifications listed in the store catalog.</li>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">2. Refund Conditions</h3>
+                <p>We gladly issue prompt refunds or file replacements if:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>The digital PDF file cannot be opened or exhibits corrupted font rendering.</li>
+                  <li>Duplicate transactions occurred due to payment network timeouts.</li>
+                  <li>You contact our 24/7 AI or human support desk within 14 days of purchase.</li>
                 </ul>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">3. Non-Refundable Circumstances</h3>
-                <p>Refunds cannot be granted for:</p>
-                <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-                  <li>Purchaser remorse or change of mind after successful file download.</li>
-                  <li>Customer hardware printer malfunctions, low home printer ink levels, or personal device paper feeding issues.</li>
-                  <li>Claims submitted beyond the 30-day purchase window.</li>
-                </ul>
-              </section>
-
-              <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">4. How to Request a Refund</h3>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">3. Support Assistance</h3>
                 <p>
-                  To request assistance or a refund, open our <strong>24/7 AI Support Desk</strong> or contact our administrative office with your Order ID (e.g., <code>ORD-...</code>), purchase email address, and a brief explanation of the technical issue. Valid refund requests are processed within 1–3 business days directly to the original payment method.
+                  For immediate support with downloads or printer settings (A4 vs US Letter fit-to-page margins), use the 24/7 AI Support Desk button on any page.
                 </p>
               </section>
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-slate-400" />
-            <span>Family Printables Publishing LLC • Dover, Delaware, USA</span>
+        {/* Footer Bar */}
+        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
+          <div className="text-xs text-slate-500">
+            Official Store Policies · Family Printables
           </div>
+
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold transition shadow-sm"
+            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors"
           >
             I Understand &amp; Close
           </button>

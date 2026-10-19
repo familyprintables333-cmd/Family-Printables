@@ -98,7 +98,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     title: 'Home Printing Masterclass: Paper Weights, Scaling & Ink-Saving Settings',
     excerpt: 'Everything you need to know about printing 300 DPI vector PDFs perfectly on standard home inkjet or laser printers.',
     content: [
-      'All Family Printables deliverables are delivered in high-resolution 300 DPI vector PDF format formatted to standard US Letter (8.5" x 11") and A4 dimensions.',
+      'All Family Printables deliverables are delivered in high-resolution 300 DPI vector PDF format formatted to Standard A4 (210 × 297 mm) and Universal page dimensions.',
       'For tracing workbooks and color-heavy activity sheets, standard 20lb copy paper can cause ink bleed-through. Upgrading to 24lb or 28lb bright white paper gives a silky smooth writing surface and vibrant colors.',
       'Printer Setting Tip: In your print dialog, select "Actual Size" or "Fit to Page" with 100% scaling to prevent accidental page cropping. Use "Draft" or "Normal" mode for daily practice to conserve printer ink.'
     ],
