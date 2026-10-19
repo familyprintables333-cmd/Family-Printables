@@ -20,9 +20,11 @@ import coverPuzzlesBrain from './cover_puzzles_brain_1791896015957.jpg';
 import productFamilyRoutineBoard from './product_family_routine_board_1791829276295.jpg';
 import coverRamadanHoliday from './cover_ramadan_holiday_1791896015891.jpg';
 import festivalsGreetingCards from './festivals_greeting_cards_1791903827189.jpg';
+import seasonalHolidaysPoster from './seasonal_holidays_poster_1792151772339.jpg';
 import productBedtimeEbook from './product_bedtime_ebook_1791829261806.jpg';
 import heroFamilyPrintables from './hero_family_printables_1791829224882.jpg';
 import officialBrandLogo from './official_brand_logo_1791979048406.jpg';
+import elitePlannersGuide from './elite_planners_guide.svg';
 
 export const IMAGES = {
   // Primary Product & Category Cover Art (Bundled Assets)
@@ -30,9 +32,13 @@ export const IMAGES = {
   coverPreschool: coverToddlerPreschool,
   productKidsWorkbook: productKidsWorkbook,
   coverPuzzles: coverPuzzlesBrain,
-  productRoutineBoard: productFamilyRoutineBoard,
+  productRoutineBoard: elitePlannersGuide,
+  coverElitePlanners: elitePlannersGuide,
+  productElitePlanners: elitePlannersGuide,
   coverRamadan: coverRamadanHoliday,
   festivalsCards: festivalsGreetingCards,
+  coverSeasonalHolidays: seasonalHolidaysPoster,
+  coverFestivals: seasonalHolidaysPoster,
   productBedtime: productBedtimeEbook,
   heroBanner: heroFamilyPrintables,
   officialLogo: officialBrandLogo,
@@ -44,7 +50,8 @@ export const IMAGES = {
     puzzles: '/assets/images/cover_puzzles.jpg',
     routine: '/assets/images/product_family_routine_board.jpg',
     ramadan: '/assets/images/cover_ramadan.jpg',
-    festivals: '/assets/images/festivals_greeting_cards.jpg',
+    festivals: '/assets/images/seasonal_holidays_poster.jpg',
+    seasonal: '/assets/images/seasonal_holidays_poster.jpg',
     bedtime: '/assets/images/product_bedtime_ebook.jpg',
     hero: '/assets/images/hero_family_printables.jpg',
     logo: '/assets/images/official_brand_logo.jpg',
@@ -90,12 +97,21 @@ const ASSET_REGISTRY: Record<string, string> = {
   'cover_ramadan.jpg': coverRamadanHoliday,
   'cover_ramadan_holiday_1791896015891.jpg': coverRamadanHoliday,
   ramadan: coverRamadanHoliday,
+  ramadan_eid: coverRamadanHoliday,
 
-  // Festivals & Holidays
+  // Seasonal & Holidays
+  cover_seasonal_holidays: seasonalHolidaysPoster,
+  seasonal_holidays_poster: seasonalHolidaysPoster,
+  'seasonal_holidays_poster.jpg': seasonalHolidaysPoster,
+  'seasonal_holidays_poster_1792151772339.jpg': seasonalHolidaysPoster,
+  seasonal: seasonalHolidaysPoster,
+  holidays: seasonalHolidaysPoster,
+
+  // Festivals & Greeting Cards
   festivals_greeting_cards: festivalsGreetingCards,
   'festivals_greeting_cards.jpg': festivalsGreetingCards,
   'festivals_greeting_cards_1791903827189.jpg': festivalsGreetingCards,
-  festivals: festivalsGreetingCards,
+  festivals: festivalsGreetingCards, // Elegant all-occasion Greeting Cards banner
   greeting_cards: festivalsGreetingCards,
 
   // Bedtime Audio & eBook
@@ -119,15 +135,35 @@ const ASSET_REGISTRY: Record<string, string> = {
  * Universal safe helper to resolve any image string into a 100% working URL
  * on localhost, Netlify, or any production static CDN.
  */
-export function resolveImageUrl(path: string | undefined): string {
-  if (!path) return coverToddlerPreschool;
+export function resolveImageUrl(path: string | undefined, contextCategory?: string): string {
+  // If context category indicates seasonal/festivals/greeting cards, return dedicated elegant Greeting Cards banner
+  if (!path) {
+    if (contextCategory === 'festivals' || contextCategory === 'seasonal' || contextCategory?.includes('cards')) {
+      return festivalsGreetingCards;
+    }
+    return coverToddlerPreschool;
+  }
 
   // 1. If it's already an active data URL or absolute web URL, return as-is
   if (path.startsWith('data:') || path.startsWith('http://') || path.startsWith('https://')) {
     return path;
   }
 
-  // 2. Strip leading paths to extract the base name (e.g. "src/assets/images/cover_puzzles.jpg" -> "cover_puzzles.jpg")
+  // 2. Contextual check for greeting cards, seasonal & ramadan printables in path or category
+  const lowerPath = path.toLowerCase();
+  if (
+    lowerPath.includes('greeting') ||
+    lowerPath.includes('cards') ||
+    lowerPath.includes('festival') || 
+    contextCategory === 'festivals'
+  ) {
+    return festivalsGreetingCards;
+  }
+  if (lowerPath.includes('ramadan') || lowerPath.includes('seasonal')) {
+    return coverRamadanHoliday;
+  }
+
+  // 3. Strip leading paths to extract the base name (e.g. "src/assets/images/cover_puzzles.jpg" -> "cover_puzzles.jpg")
   const cleanKey = path
     .replace(/^(\.\/|\/)?(src\/)?assets\/images\//, '')
     .trim();
@@ -141,7 +177,7 @@ export function resolveImageUrl(path: string | undefined): string {
     return ASSET_REGISTRY[keyWithoutExt];
   }
 
-  // 3. Fallback to public assets directory path
+  // 4. Fallback to public assets directory path
   if (path.startsWith('/src/assets/images/')) {
     return path.replace('/src/assets/images/', '/assets/images/');
   }

@@ -13,6 +13,7 @@ interface DownloadsDrawerProps {
   onRestorePurchases?: (email: string) => boolean;
   onRenewAccess?: (product: Product) => void;
   onToggleSimulateExpiry?: (productId: string) => void;
+  onRequireSignUp?: (actionType: 'download' | 'print', onComplete: () => void) => void;
   logoUrl?: string;
 }
 
@@ -24,6 +25,7 @@ export const DownloadsDrawer: React.FC<DownloadsDrawerProps> = ({
   onLoginClick,
   onRenewAccess,
   onToggleSimulateExpiry,
+  onRequireSignUp,
   logoUrl = '/logo.png'
 }) => {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -36,6 +38,11 @@ export const DownloadsDrawer: React.FC<DownloadsDrawerProps> = ({
   );
 
   const handleDownloadFile = (product: Product, formatName: string) => {
+    if (onRequireSignUp && (!account.isLoggedIn || !account.email || !account.name)) {
+      onRequireSignUp('download', () => handleDownloadFile(product, formatName));
+      return;
+    }
+
     // STRICT 3-MONTH EXPIRATION CHECK: Verify access has not expired
     const status = getProductAccessStatus(product.id, account);
     if (!status.isUnlocked) {
@@ -255,21 +262,21 @@ export const DownloadsDrawer: React.FC<DownloadsDrawerProps> = ({
                       ) : (
                         <div className="pt-2 border-t border-slate-100 flex flex-wrap gap-2">
                           <button
-                            onClick={() => handleDownloadFile(prod, 'US_Letter_PDF')}
-                            disabled={downloadingId === `${prod.id}-US_Letter_PDF`}
+                            onClick={() => handleDownloadFile(prod, 'Standard_A4_PDF')}
+                            disabled={downloadingId === `${prod.id}-Standard_A4_PDF`}
                             className="px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
                           >
                             <Download className="w-3.5 h-3.5" />
-                            <span>Download US Letter (8.5x11")</span>
+                            <span>Download Standard A4 PDF</span>
                           </button>
 
                           <button
-                            onClick={() => handleDownloadFile(prod, 'A4_International_PDF')}
-                            disabled={downloadingId === `${prod.id}-A4_International_PDF`}
+                            onClick={() => handleDownloadFile(prod, 'Universal_Standard_PDF')}
+                            disabled={downloadingId === `${prod.id}-Universal_Standard_PDF`}
                             className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors flex items-center gap-1.5"
                           >
                             <Download className="w-3.5 h-3.5 text-slate-500" />
-                            <span>A4 PDF</span>
+                            <span>Universal Size PDF</span>
                           </button>
 
                           {prod.category === 'audio-stories' && (

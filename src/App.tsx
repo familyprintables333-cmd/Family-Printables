@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { StoreHero } from './components/StoreHero';
 import { CategoryCard } from './components/CategoryCard';
@@ -17,23 +17,205 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { DownloadsDrawer } from './components/DownloadsDrawer';
 import { UserAuthModal } from './components/UserAuthModal';
+import { MandatorySignUpGateModal } from './components/MandatorySignUpGateModal';
 import { ReviewsModal } from './components/ReviewsModal';
-import { AdminPanelModal } from './components/AdminPanelModal';
+import { AdminPortal } from './components/AdminPortal';
 import { ContactSupportModal } from './components/ContactSupportModal';
 import { GuidesBlogSection } from './components/GuidesBlogSection';
+import { LivePrintStudio } from './components/LivePrintStudio';
+import { ReviewsAndRewards } from './components/ReviewsAndRewards';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
+import { AdBanner } from './components/AdBanner';
 import { Footer } from './components/Footer';
 import { CATEGORIES } from './data/categories';
 import { PRODUCTS } from './data/products';
-import { Product, CartItem, Order, CategoryId, UserAccount, UserReview, MerchantSettings } from './types';
+import { Product, CartItem, Order, CategoryId, CategoryInfo, UserAccount, UserReview, MerchantSettings } from './types';
 import { createAccessGrant, getProductAccessStatus, AccessGrant } from './utils/access';
 import { getActiveSession, saveActiveSession, clearActiveSession, recordCompletedPurchase } from './utils/authStorage';
-import { Sparkles, ShieldCheck, CheckCircle2, Printer } from 'lucide-react';
+import { trackMonetizationEvent } from './utils/monetization';
+import { ensureGumroadScriptLoaded } from './utils/gumroad';
+import { 
+  Sparkles, 
+  ShieldCheck, 
+  CheckCircle2, 
+  Printer, 
+  Home, 
+  BookOpen, 
+  Download, 
+  ShoppingBag,
+  LayoutGrid,
+  MessageSquare
+} from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'catalog' | 'studio' | 'how-it-works' | 'guides' | 'etsy-kdp'>('catalog');
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [activeTab, setActiveTab] = useState<'catalog' | 'studio' | 'how-it-works' | 'guides' | 'reviews' | 'etsy-kdp'>('catalog');
+  
+  // Reward Points State
+  const [userPoints, setUserPoints] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('fp_user_reward_points');
+      if (saved) return parseInt(saved, 10);
+    } catch {}
+    return 150;
+  });
+
+  // Persistent Categories state with full CRUD support
+  const [categories, setCategories] = useState<CategoryInfo[]>(() => {
+    try {
+      const saved = localStorage.getItem('fp_custom_categories');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((cat: CategoryInfo) => {
+            let title = cat.title || '';
+            if (cat.id === 'routines' && (title === 'Family Routines & Visual Timetables' || !title)) {
+              title = 'Elite Planners & Digital Guides';
+            }
+            title = title.replace(/\s*\([^)]*age[^)]*\)/gi, '').trim();
+            const shortTitle = (cat.shortTitle || title).replace(/\s*\([^)]*age[^)]*\)/gi, '').trim();
+            return {
+              ...cat,
+              title,
+              shortTitle: cat.id === 'routines' ? 'Elite Planners & Digital Guides' : shortTitle
+            };
+          });
+        }
+      }
+    } catch {}
+    return CATEGORIES;
+  });
+
+  // Persistent Products with custom flexible price support
+  const [products, setProducts] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem('fp_custom_products');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((p: Product) => {
+            if (p.category === 'routines' && p.categoryLabel === 'Family Routines & Visual Timetables') {
+              return { ...p, categoryLabel: 'Elite Planners & Digital Guides' };
+            }
+            return p;
+          });
+        }
+      }
+    } catch {}
+    return PRODUCTS;
+  });
+
   const [selectedCategoryId, setSelectedCategoryId] = useState<CategoryId | null>(null);
+
+  // Hidden Admin Route Detection (/admin or #admin)
+  const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => {
+    return (
+      window.location.pathname === '/admin' ||
+      window.location.pathname.startsWith('/admin') ||
+      window.location.hash === '#admin'
+    );
+  });
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash.toLowerCase();
+
+      if (path === '/admin' || path.startsWith('/admin') || hash === '#admin') {
+        setIsAdminRoute(true);
+        return;
+      }
+
+      setIsAdminRoute(false);
+
+      if (hash === '#studio' || hash === '#timetables' || hash === '#printable-studio') {
+        setActiveTab('studio');
+        setSelectedCategoryId(null);
+      } else if (hash === '#reviews' || hash === '#rewards' || hash === '#testimonials') {
+        setActiveTab('reviews');
+        setSelectedCategoryId(null);
+      } else if (hash === '#how-it-works') {
+        setActiveTab('how-it-works');
+        setSelectedCategoryId(null);
+      } else if (hash === '#guides' || hash === '#blog') {
+        setActiveTab('guides');
+        setSelectedCategoryId(null);
+      } else if (hash === '#etsy-kdp' || hash === '#kdp') {
+        setActiveTab('etsy-kdp');
+        setSelectedCategoryId(null);
+      } else if (hash.startsWith('#category-')) {
+        const catId = hash.replace('#category-', '') as CategoryId;
+        const exists = categories.some((c) => c.id === catId);
+        if (exists) {
+          setSelectedCategoryId(catId);
+          setActiveTab('catalog');
+        }
+      }
+    };
+
+    // Run on initial mount
+    handleUrlChange();
+
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, [categories]);
+
+  // Ensure Gumroad In-App Overlay Script is Active
+  useEffect(() => {
+    ensureGumroadScriptLoaded();
+  }, []);
+
+  // Synchronize High-Impact SEO Page Titles & Meta Descriptions across Views
+  useEffect(() => {
+    let title = 'Smart Digital Printables for Families & Business | Family Printables';
+    let desc = 'Instantly download 100% free single-page daily timetables, productivity planners, and business sales ledgers in Standard A4 & Universal formats, alongside premium kids\' learning workbooks and greeting cards.';
+
+    if (isAdminRoute) {
+      title = 'Store Admin Console & Revenue Dashboard | Family Printables';
+      desc = 'Owner control portal for dynamic pricing, workbook locking, monetization tracking, and catalog management.';
+    } else if (activeTab === 'studio') {
+      title = 'Free Printable Timetable & Custom Schedule Studio (300 DPI) | Family Printables';
+      desc = 'Design and print free daily schedules, study timetables, weekly routine charts, and habit trackers in 300 DPI high resolution.';
+    } else if (activeTab === 'catalog' && selectedCategoryId) {
+      const catObj = categories.find((c) => c.id === selectedCategoryId);
+      if (catObj) {
+        title = `${catObj.title} - Printable PDF Workbooks | Family Printables`;
+        desc = `${catObj.description} Instant download in Standard A4 & Universal 300 DPI formats.`;
+      }
+    } else if (activeTab === 'reviews') {
+      title = 'Customer Ratings, Verified Reviews & Rewards Program | Family Printables';
+      desc = 'Read authentic feedback from parents, teachers, and shop owners. Submit your review to earn reward points.';
+    } else if (activeTab === 'guides') {
+      title = 'Printing & Lamination Master Guides | Family Printables';
+      desc = 'Expert advice on printing 300 DPI PDFs, choosing cardstock paper, and laminating for dry-erase reuse.';
+    } else if (activeTab === 'how-it-works') {
+      title = 'How It Works: Instant 300 DPI Digital Downloads & Access Vault | Family Printables';
+      desc = 'Learn how to purchase, download, and reprint your educational workbooks with 90 days vault access.';
+    } else if (activeTab === 'etsy-kdp') {
+      title = 'Etsy & Amazon KDP Seller Export Hub | Family Printables';
+      desc = 'Commercial licensing, high-res PDF exports, and metadata tools for digital printable sellers.';
+    }
+
+    document.title = title;
+
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', desc);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', title);
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', desc);
+
+    const twTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twTitle) twTitle.setAttribute('content', title);
+
+    const twDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twDesc) twDesc.setAttribute('content', desc);
+  }, [activeTab, selectedCategoryId, isAdminRoute, categories]);
 
   // User Account & My Downloads Vault state (Persistent via authStorage)
   const [account, setAccount] = useState<UserAccount>(() => getActiveSession());
@@ -47,9 +229,33 @@ export default function App() {
   // Drawers and Modals
   const [isDownloadsOpen, setIsDownloadsOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isContactSupportOpen, setIsContactSupportOpen] = useState(false);
   const [reviewProduct, setReviewProduct] = useState<Product | null>(null);
+
+  // Mandatory Sign-Up Gate State (Requires Full Name & Gmail before any download or print)
+  const [isSignUpGateOpen, setIsSignUpGateOpen] = useState(false);
+  const [pendingGateAction, setPendingGateAction] = useState<{
+    type: 'download' | 'print' | 'checkout';
+    title?: string;
+    onProceed: (authAccount: UserAccount) => void;
+  } | null>(null);
+
+  const requireAuthGate = (
+    actionType: 'download' | 'print' | 'checkout',
+    actionTitle: string,
+    onProceed: (authAccount: UserAccount) => void
+  ) => {
+    if (account.isLoggedIn && account.email && account.name) {
+      onProceed(account);
+      return;
+    }
+    setPendingGateAction({
+      type: actionType,
+      title: actionTitle,
+      onProceed,
+    });
+    setIsSignUpGateOpen(true);
+  };
 
   // Merchant & Payoneer Payout Settings state
   const [merchantSettings, setMerchantSettings] = useState<MerchantSettings>(() => {
@@ -75,14 +281,12 @@ export default function App() {
   // Multi-Currency (USD, INR, PKR, EUR, GBP, AED, CAD)
   const [currency, setCurrency] = useState(() => merchantSettings.currency || 'USD');
 
-  // Global Brand Logo state (auto-syncs across entire store and persists in localStorage)
+  // Global Brand Logo state (persists in localStorage)
   const [logoUrl, setLogoUrl] = useState<string>(() => {
     try {
       const savedLogo = localStorage.getItem('fp_custom_logo');
       if (savedLogo) return savedLogo;
-    } catch {
-      // fallback
-    }
+    } catch {}
     return '/logo.png';
   });
 
@@ -91,23 +295,39 @@ export default function App() {
     setLogoUrl(finalLogo);
     try {
       localStorage.setItem('fp_custom_logo', finalLogo);
-    } catch {
-      // fallback
-    }
+    } catch {}
   };
 
   // Cart & Buy Handlers
   const handleAddToCart = (product: Product) => {
-    setCart((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
+    setCart((prevCart) => {
+      const existing = prevCart.find((item) => item.product.id === product.id);
       if (existing) {
-        return prev.map((i) =>
-          i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
+        return prevCart.map((item) =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prevCart, { product, quantity: 1 }];
     });
     setIsCartOpen(true);
+  };
+
+  const handleRemoveFromCart = (productId: string) => {
+    setCart((prev) => prev.filter((item) => item.product.id !== productId));
+  };
+
+  const handleUpdateQuantity = (productId: string, qty: number) => {
+    if (qty <= 0) {
+      handleRemoveFromCart(productId);
+      return;
+    }
+    setCart((prev) =>
+      prev.map((item) =>
+        item.product.id === productId ? { ...item, quantity: qty } : item
+      )
+    );
   };
 
   const handleInstantBuy = (product: Product) => {
@@ -115,88 +335,55 @@ export default function App() {
     setIsCheckoutOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string, delta: number) => {
-    setCart((prev) =>
-      prev
-        .map((i) => (i.product.id === productId ? { ...i, quantity: i.quantity + delta } : i))
-        .filter((i) => i.quantity > 0)
-    );
-  };
-
-  const handleRemoveFromCart = (productId: string) => {
-    setCart((prev) => prev.filter((i) => i.product.id !== productId));
-  };
-
-  // Order Completion - Single item protected unlock
+  // Order Complete Handler
   const handleOrderComplete = (orderData: {
     customerName: string;
     customerEmail: string;
     country: string;
     city: string;
-    paymentMethod: 'card' | 'applepay' | 'googlepay' | 'stripe' | 'paypal' | 'payoneer';
+    paymentMethod: any;
     totalUSD: number;
     transactionId?: string;
   }) => {
-    const purchasedIds = cart.map((i) => i.product.id);
-
+    const orderId = `ORD-${Date.now()}`;
     const newOrder: Order = {
-      id: `FP-${Math.floor(10000 + Math.random() * 90000)}`,
+      id: orderId,
       customerName: orderData.customerName,
       customerEmail: orderData.customerEmail,
-      country: orderData.country,
-      city: orderData.city,
-      date: 'Just now',
       items: [...cart],
       totalUSD: orderData.totalUSD,
+      currency,
+      totalConverted: orderData.totalUSD,
       paymentMethod: orderData.paymentMethod,
-      downloadToken: `DL-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      status: 'completed',
+      downloadToken: `DL-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
+      country: orderData.country,
+      city: orderData.city,
+      transactionId: orderData.transactionId || `TXN-${Date.now()}`,
     };
-
-    // Unlock purchased items in the user's personal vault with 90-day timer and persist
-    const updatedAccount = recordCompletedPurchase(newOrder, {
-      ...account,
-      name: orderData.customerName,
-      email: orderData.customerEmail,
-    });
-    setAccount(updatedAccount);
 
     setCompletedOrder(newOrder);
     setIsCheckoutOpen(false);
     setCart([]);
+
+    // Track Monetization Event for Owner Revenue Dashboard
+    trackMonetizationEvent(
+      'workbook_sale',
+      `Workbook Order: #${newOrder.id.slice(-6)}`,
+      newOrder.totalUSD,
+      `${newOrder.items.length} item(s) purchased by ${newOrder.customerName}`
+    );
+
+    // Persist completed purchase & 90-day access grants in account
+    const updatedAccount = recordCompletedPurchase(newOrder, account);
+    setAccount(updatedAccount);
   };
 
-  // Toggle simulate expiration (for demo and automated test verification)
-  const handleToggleSimulateExpiry = (productId: string) => {
-    setAccount((prev) => {
-      const existing = prev.purchasedAccess?.[productId];
-      const newGrants = { ...(prev.purchasedAccess || {}) };
-      if (!existing || new Date(existing.expiresAt).getTime() > Date.now()) {
-        // Force expire: set expiration timestamp to yesterday
-        newGrants[productId] = {
-          purchasedAt: new Date(Date.now() - 91 * 24 * 60 * 60 * 1000).toISOString(),
-          expiresAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        };
-      } else {
-        // Reset to active 90-day access grant
-        newGrants[productId] = createAccessGrant(90);
-      }
-      return {
-        ...prev,
-        purchasedAccess: newGrants,
-      };
-    });
-  };
+  // Instant File Download Handler with Mandatory Sign-Up Gate
+  const executeDownload = (product: Product, currentAccount: UserAccount) => {
+    const accessStatus = getProductAccessStatus(product.id, currentAccount, product);
 
-  // Renew access to an expired item
-  const handleRenewAccess = (product: Product) => {
-    setIsDownloadsOpen(false);
-    handleInstantBuy(product);
-  };
-
-  // Verified re-download of strictly purchased workbook with 3-month access check
-  const handleFreeDownload = (product: Product) => {
-    // STRICT ACCESS & EXPIRATION LOCK: Verify item is purchased and 3-month access has not lapsed
-    const accessStatus = getProductAccessStatus(product.id, account);
     if (!accessStatus.isUnlocked) {
       if (accessStatus.isExpired) {
         alert(`Access Expired: Your 3-month access to "${product.title}" has lapsed. Please renew your access to download.`);
@@ -207,88 +394,138 @@ export default function App() {
       return;
     }
 
-    const content = `==========================================================\nFAMILY PRINTABLES - VAULT SECURE DOWNLOAD\n==========================================================\nProduct: ${product.title}\nCategory: ${product.categoryLabel}\nTarget Age: ${product.targetAge}\nFormat: US Letter (8.5x11") & A4 PDF (300 DPI)\nStatus: UNLOCKED FOR ${account.email || 'CUSTOMER'}\nAccess Duration: 3 Months (90 Days) - ${accessStatus.daysRemaining} days remaining\nPrice Paid: $${product.priceUSD.toFixed(2)} USD\nVerification: 100% CONFIRMED PAYMENT & VERIFIED RECEIPT\n\nPRINTING GUIDE:\n1. Open in free Adobe Acrobat Reader or mobile browser.\n2. In printer settings, set Scale to 100% (Actual Size).\n3. Recommended paper: 28lb to 32lb bright white paper, or 65lb cardstock.\n4. For reusable dry-erase activities, slip sheets into plastic protectors or laminate.\n\nThank you for choosing Family Printables!\n==========================================================`;
+    const content = `==========================================================\nFAMILY PRINTABLES - VAULT SECURE DOWNLOAD\n==========================================================\nProduct: ${product.title}\nCategory: ${product.categoryLabel}\nTarget Age: ${product.targetAge}\nFormat: Standard A4 & Universal PDF (300 DPI)\nStatus: UNLOCKED FOR ${currentAccount.name || 'CUSTOMER'} (${currentAccount.email})\nAccess Duration: 3 Months (90 Days) - ${accessStatus.daysRemaining} days remaining\nPrice Paid: $${product.priceUSD.toFixed(2)} USD\nVerification: 100% CONFIRMED REGISTERED ACCOUNT\n\nPRINTING GUIDE:\n1. Open in free Adobe Acrobat Reader or mobile browser.\n2. In printer settings, set Scale to 100% (Actual Size).\n3. Recommended paper: 28lb to 32lb bright white paper, or 65lb cardstock.\n4. For reusable dry-erase activities, slip sheets into plastic protectors or laminate.\n\nThank you for choosing Family Printables!\n==========================================================`;
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${product.title.replace(/[^a-zA-Z0-9]/g, '_')}_US_Letter.txt`;
+    link.download = `${product.title.replace(/[^a-zA-Z0-9]/g, '_')}_A4_Download.txt`;
     link.click();
     URL.revokeObjectURL(url);
   };
 
-  // Restore past purchases by email - STRICT: Only restores if verified paid order exists
-  const handleRestorePurchases = (email: string): boolean => {
-    const cleanEmail = email.trim().toLowerCase();
-    const matchingOrders = account.orderHistory.filter(
-      (order) => order.customerEmail.trim().toLowerCase() === cleanEmail
-    );
-
-    if (matchingOrders.length === 0) {
-      return false; // No paid purchases found, files remain strictly locked
-    }
-
-    const restoredIds: string[] = [];
-    matchingOrders.forEach((o) => {
-      o.items.forEach((item) => {
-        restoredIds.push(item.product.id);
-      });
+  const handleFreeDownload = (product: Product) => {
+    requireAuthGate('download', product.title, (authAccount) => {
+      executeDownload(product, authAccount);
     });
-
-    const uniqueRestoredIds = Array.from(new Set(restoredIds));
-    const restoredGrants: Record<string, AccessGrant> = { ...(account.purchasedAccess || {}) };
-    uniqueRestoredIds.forEach((id) => {
-      if (!restoredGrants[id]) {
-        restoredGrants[id] = createAccessGrant(90);
-      }
-    });
-
-    setAccount((prev) => ({
-      ...prev,
-      email: cleanEmail,
-      isLoggedIn: true,
-      purchasedProductIds: Array.from(new Set([...prev.purchasedProductIds, ...uniqueRestoredIds])),
-      purchasedAccess: restoredGrants
-    }));
-    return true;
   };
 
   // Reviews submission
   const handleAddReview = (productId: string, review: UserReview) => {
-    setProducts((prev) =>
-      prev.map((p) => {
-        if (p.id !== productId) return p;
-        const currentReviews = p.reviews || [];
-        const updatedReviews = [review, ...currentReviews];
-        const avgRating = parseFloat(
-          (updatedReviews.reduce((sum, r) => sum + r.rating, 0) / updatedReviews.length).toFixed(1)
-        );
-        return {
-          ...p,
-          rating: avgRating,
-          reviewsCount: p.reviewsCount + 1,
-          reviews: updatedReviews
-        };
-      })
+    const updated = products.map((p) => {
+      if (p.id !== productId) return p;
+      const currentReviews = p.userReviews || [];
+      const updatedReviews = [review, ...currentReviews];
+      const avgRating = parseFloat(
+        (updatedReviews.reduce((sum, r) => sum + r.rating, 0) / updatedReviews.length).toFixed(1)
+      );
+      return {
+        ...p,
+        rating: avgRating,
+        reviewsCount: p.reviewsCount + 1,
+        userReviews: updatedReviews
+      };
+    });
+    setProducts(updated);
+    try {
+      localStorage.setItem('fp_custom_products', JSON.stringify(updated));
+    } catch {}
+
+    trackMonetizationEvent(
+      'review_submitted',
+      `Verified Parent Review: ${review.author || 'User'}`,
+      0.10,
+      `Rated ${review.rating} Stars`
     );
   };
 
-  // Admin handlers
-  const handleAddProduct = (newProd: Product) => {
-    setProducts((prev) => [newProd, ...prev]);
+  const handleTabChange = (tab: 'catalog' | 'studio' | 'how-it-works' | 'guides' | 'reviews' | 'etsy-kdp') => {
+    setSelectedCategoryId(null);
+    setActiveTab(tab);
+    if (tab === 'catalog') {
+      if (window.location.hash) {
+        window.history.pushState(null, '', window.location.pathname);
+      }
+    } else {
+      window.location.hash = `#${tab}`;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleUpdatePrice = (productId: string, newPrice: number) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === productId ? { ...p, priceUSD: newPrice } : p))
+  const handleSelectCategory = (catId: CategoryId) => {
+    setSelectedCategoryId(catId);
+    setActiveTab('catalog');
+    window.location.hash = `#category-${catId}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategoryId(null);
+    if (window.location.hash) {
+      window.history.pushState(null, '', window.location.pathname);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const activeCategoryObj = categories.find((c) => c.id === selectedCategoryId);
+
+  // Cart count & Unlocked download count for mobile badges
+  const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const unlockedCount = (account.purchasedProductIds || []).filter((id) => {
+    return getProductAccessStatus(id, account).isUnlocked;
+  }).length;
+
+  // --------------------------------------------------------------------------
+  // SECURE HIDDEN ADMIN ROUTE (/admin or #admin)
+  // Regular users will NEVER see this view on normal routes!
+  // --------------------------------------------------------------------------
+  if (isAdminRoute) {
+    return (
+      <AdminPortal
+        products={products}
+        onUpdateProducts={(updated) => {
+          setProducts(updated);
+          try {
+            localStorage.setItem('fp_custom_products', JSON.stringify(updated));
+          } catch {}
+        }}
+        categories={categories}
+        onUpdateCategories={(updated) => {
+          setCategories(updated);
+          try {
+            localStorage.setItem('fp_custom_categories', JSON.stringify(updated));
+          } catch {}
+        }}
+        merchantSettings={merchantSettings}
+        onUpdateMerchantSettings={(newSettings) => {
+          setMerchantSettings(newSettings);
+          setCurrency(newSettings.currency);
+          try {
+            localStorage.setItem('fp_merchant_settings', JSON.stringify(newSettings));
+          } catch {}
+        }}
+        logoUrl={logoUrl}
+        onUpdateLogoUrl={handleUpdateLogoUrl}
+        currency={currency}
+        orders={account.orders || []}
+        onClose={() => {
+          setIsAdminRoute(false);
+          if (window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin')) {
+            window.history.pushState(null, '', '/');
+          } else {
+            window.location.hash = '';
+          }
+        }}
+      />
     );
-  };
+  }
 
-  const activeCategoryObj = CATEGORIES.find((c) => c.id === selectedCategoryId);
-
+  // --------------------------------------------------------------------------
+  // PUBLIC-FACING INTERFACE (Standard Mobile & Desktop Web App View)
+  // --------------------------------------------------------------------------
   return (
-    <div className="min-h-screen flex flex-col bg-[#f9fafb] text-slate-800 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#f9fafb] text-slate-800 font-sans pb-16 md:pb-0">
       {/* PWA Home-Screen Install Banner for Android and iOS */}
       <PWAInstallBanner />
 
@@ -302,40 +539,40 @@ export default function App() {
             </span>
           </div>
           <div className="hidden sm:flex items-center gap-4 text-slate-400 text-[11px]">
-            <span>US Letter 8.5"x11" &amp; A4 PDFs</span>
+            <span>Standard A4 &amp; Universal PDFs</span>
             <span aria-hidden="true">·</span>
             <span>Credit Card · Apple Pay · Google Pay</span>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Clean Public Navigation Bar (Zero Admin Controls) */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         cart={cart}
         setIsCartOpen={setIsCartOpen}
         onOpenDownloads={() => setIsDownloadsOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenContactSupport={() => setIsContactSupportOpen(true)}
         account={account}
         currency={currency}
         setCurrency={setCurrency}
-        onReturnToCategories={() => setSelectedCategoryId(null)}
+        onReturnToCategories={handleBackToCategories}
         logoUrl={logoUrl}
+        userPoints={userPoints}
       />
 
       {/* Main View Router */}
       <main className="flex-1">
         {activeTab === 'catalog' && (
           <div>
-            {/* If a category is selected: Show Sub-Category Product Listing View (Prices and Buy Buttons appear here ONLY!) */}
+            {/* If a category is selected: Show Sub-Category Product Listing View */}
             {selectedCategoryId && activeCategoryObj ? (
               <CategoryDetailView
                 category={activeCategoryObj}
                 products={products}
-                onBackToCategories={() => setSelectedCategoryId(null)}
+                onBackToCategories={handleBackToCategories}
                 onPreviewProduct={(p) => setSelectedProduct(p)}
                 onInstantBuy={(p) => handleInstantBuy(p)}
                 onOpenReviews={(p) => setReviewProduct(p)}
@@ -345,42 +582,44 @@ export default function App() {
                 currency={currency}
               />
             ) : (
-              /* If no category is selected: UNIFIED CLEAN TOP SECTION (BLUE THEME CONTAINER) WITH RESTORED HERO BANNER & CATEGORY CARDS DIRECTLY UNDERNEATH */
+              /* Public Home Page: Hero Banner, Category Cards & Value Props */
               <div>
-                {/* 1. UNIFIED CLEAN TOP SECTION (BLUE THEME CONTAINER) */}
                 <section className="bg-gradient-to-b from-[#0e2a47] via-[#0b1d33] to-[#081424] text-white border-b border-slate-800">
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-14 sm:pb-20">
-                    {/* Restored Hero Banner in its original prominent position at the top */}
-                    <StoreHero />
+                  <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-5 sm:pt-12 pb-8 sm:pb-16">
+                    <StoreHero
+                      currency={currency}
+                      onQuickNav={(target) => {
+                        if (target.startsWith('category-')) {
+                          handleSelectCategory(target.replace('category-', '') as CategoryId);
+                        } else {
+                          handleTabChange(target as any);
+                        }
+                      }}
+                    />
 
-                    {/* Category Cards: Neatly aligned directly underneath the main introduction without any 'QUICK JUMP' heading or fragmented boxes */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                      {CATEGORIES.map((category) => (
+                    {/* Category Cards (Dynamic from persistent state) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 lg:gap-8">
+                      {categories.map((category) => (
                         <CategoryCard
                           key={category.id}
                           category={category}
-                          onSelect={(catId) => {
-                            setSelectedCategoryId(catId);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }}
+                          onSelect={handleSelectCategory}
                         />
                       ))}
                     </div>
                   </div>
                 </section>
 
-
-                {/* 3. VALUE-PROPOSITIONS RIGHT ABOVE FOOTER */}
+                {/* Value Propositions */}
                 <section className="bg-slate-50/90 border-t border-slate-200/70 py-12 sm:py-16">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* 3 Key Value-Prop Points Cleanly Adjusted */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-start gap-3.5">
                         <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
                           <Printer className="w-5 h-5" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-slate-900">1. Standard 8.5" x 11" &amp; A4 Formats</h4>
+                          <h4 className="text-sm font-bold text-slate-900">1. Standard A4 &amp; Universal Formats</h4>
                           <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                             Crystal-clear vector print quality. Reuse workbooks repeatedly with dry-erase plastic sleeves.
                           </p>
@@ -413,29 +652,59 @@ export default function App() {
                     </div>
                   </div>
                 </section>
+
+                {/* Ratings, Reviews & Rewards Showcase Section */}
+                <section className="border-t border-slate-200">
+                  <ReviewsAndRewards
+                    onPointsUpdated={(newPts) => setUserPoints(newPts)}
+                    onExploreTemplates={() => handleTabChange('studio')}
+                  />
+                </section>
               </div>
             )}
           </div>
         )}
 
-        {activeTab === 'studio' && <InteractiveTimetableStudio />}
+        {/* Interactive Live Print Studio */}
+        {activeTab === 'studio' && (
+          <LivePrintStudio 
+            currency={currency} 
+            isUnlockedDefault={true}
+            account={account}
+            onRequireSignUp={(type, callback) => {
+              requireAuthGate(type, 'Printable Studio Document', callback);
+            }}
+            onTemplateExported={(tplId) => {
+              trackMonetizationEvent(
+                'template_export',
+                `Printable Template Exported: ${tplId}`,
+                0.05,
+                'Single-page 300 DPI PDF print'
+              );
+            }}
+          />
+        )}
+
+        {/* Dedicated Ratings, Reviews & Earn Points Tab */}
+        {activeTab === 'reviews' && (
+          <div className="pt-6">
+            <ReviewsAndRewards
+              onPointsUpdated={(newPts) => setUserPoints(newPts)}
+              onExploreTemplates={() => handleTabChange('studio')}
+            />
+          </div>
+        )}
 
         {activeTab === 'how-it-works' && (
           <HowItWorksExplainer
-            onExploreProducts={() => {
-              setSelectedCategoryId(null);
-              setActiveTab('catalog');
-            }}
+            onExploreProducts={() => handleTabChange('catalog')}
           />
         )}
 
         {activeTab === 'guides' && (
           <GuidesBlogSection
-            onBackToStore={() => {
-              setSelectedCategoryId(null);
-              setActiveTab('catalog');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+            onBackToStore={() => handleTabChange('catalog')}
+            onSelectCategory={(catId) => handleSelectCategory(catId as CategoryId)}
           />
         )}
 
@@ -484,19 +753,36 @@ export default function App() {
         logoUrl={logoUrl}
       />
 
-      {/* My Downloads Slide-Over Drawer */}
       <DownloadsDrawer
         isOpen={isDownloadsOpen}
         onClose={() => setIsDownloadsOpen(false)}
         products={products}
         account={account}
-        onLoginClick={() => {
-          setIsDownloadsOpen(false);
-          setIsAuthOpen(true);
+        onLoginClick={() => setIsAuthOpen(true)}
+        onRenewAccess={(product) => handleInstantBuy(product)}
+        onRequireSignUp={(type, callback) => {
+          requireAuthGate(type, 'Vault Item Download', callback);
         }}
-        onRestorePurchases={handleRestorePurchases}
-        onRenewAccess={handleRenewAccess}
-        onToggleSimulateExpiry={handleToggleSimulateExpiry}
+        logoUrl={logoUrl}
+      />
+
+      {/* Mandatory Sign-Up Gate Modal (Full Name + Gmail required before download/print) */}
+      <MandatorySignUpGateModal
+        isOpen={isSignUpGateOpen}
+        onClose={() => {
+          setIsSignUpGateOpen(false);
+          setPendingGateAction(null);
+        }}
+        onSuccess={(registeredAcc) => {
+          setAccount(registeredAcc);
+          saveActiveSession(registeredAcc);
+          if (pendingGateAction?.onProceed) {
+            pendingGateAction.onProceed(registeredAcc);
+          }
+          setPendingGateAction(null);
+        }}
+        actionTitle={pendingGateAction?.title || 'this item'}
+        actionType={pendingGateAction?.type || 'download'}
         logoUrl={logoUrl}
       />
 
@@ -530,36 +816,83 @@ export default function App() {
         onAddReview={handleAddReview}
       />
 
-      {/* Store Owner Mobile Admin Panel Modal */}
-      <AdminPanelModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-        products={products}
-        onAddProduct={handleAddProduct}
-        onUpdatePrice={handleUpdatePrice}
-        logoUrl={logoUrl}
-        onUpdateLogoUrl={handleUpdateLogoUrl}
-        merchantSettings={merchantSettings}
-        onUpdateMerchantSettings={(newSettings) => {
-          setMerchantSettings(newSettings);
-          setCurrency(newSettings.currency);
-        }}
-      />
+      {/* Owner Monetization & Sponsor Supplies Slot */}
+      <AdBanner position="footer-top" />
 
-      {/* Footer with Educational Blog Hub, USA Business Address, and AI Support Desk */}
+      {/* Professional Legal Footer */}
       <Footer
-        onTabChange={(tab) => {
-          setSelectedCategoryId(null);
-          setActiveTab(tab);
-        }}
-        onSelectCategory={(catId) => {
-          setSelectedCategoryId(catId as CategoryId);
-          setActiveTab('catalog');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onTabChange={handleTabChange}
+        onSelectCategory={(catId) => handleSelectCategory(catId as CategoryId)}
+        onOpenDownloads={() => setIsDownloadsOpen(true)}
         onOpenContactSupport={() => setIsContactSupportOpen(true)}
         logoUrl={logoUrl}
       />
+
+      {/* =================================================================== */}
+      {/* LOCKED BOTTOM APP MENU BAR (Zero Truncation - Full Labels Fit 100%) */}
+      {/* =================================================================== */}
+      <nav 
+        aria-label="App Bottom Navigation"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 py-1 sm:py-1.5 px-1 sm:px-3 shadow-xl no-print pb-[max(0.35rem,env(safe-area-inset-bottom))]"
+        style={{ width: '100%', overflowX: 'hidden' }}
+      >
+        <div 
+          className="w-full max-w-sm sm:max-w-md mx-auto grid grid-cols-4 gap-1 items-center"
+        >
+          {/* 1. Catalog */}
+          <button
+            onClick={() => handleTabChange('catalog')}
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 px-0.5 sm:px-1 rounded-xl transition-all cursor-pointer ${
+              activeTab === 'catalog'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+            title="Browse Catalog"
+          >
+            <LayoutGrid className="w-4 h-4 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-bold leading-none tracking-tight whitespace-nowrap">Catalog</span>
+          </button>
+
+          {/* 2. Downloads Vault */}
+          <button
+            onClick={() => setIsDownloadsOpen(true)}
+            className="relative flex flex-col items-center justify-center gap-0.5 py-1 px-0.5 sm:px-1 rounded-xl text-slate-600 hover:text-indigo-600 hover:bg-slate-100 transition-all cursor-pointer"
+            title="My Downloads Vault"
+          >
+            <Download className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-bold leading-none tracking-tight whitespace-nowrap">Vault</span>
+            {unlockedCount > 0 && (
+              <span className="absolute top-0.5 right-1.5 bg-emerald-600 text-white text-[8px] font-black px-1 rounded-full tabular-nums shadow-2xs">
+                {unlockedCount}
+              </span>
+            )}
+          </button>
+
+          {/* 3. Studio */}
+          <button
+            onClick={() => handleTabChange('studio')}
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 px-0.5 sm:px-1 rounded-xl transition-all cursor-pointer ${
+              activeTab === 'studio'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+            title="Live Printable Studio"
+          >
+            <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-bold leading-none tracking-tight whitespace-nowrap">Studio</span>
+          </button>
+
+          {/* 4. Support */}
+          <button
+            onClick={() => setIsContactSupportOpen(true)}
+            className="flex flex-col items-center justify-center gap-0.5 py-1 px-0.5 sm:px-1 rounded-xl text-slate-600 hover:text-indigo-600 hover:bg-slate-100 transition-all active:scale-95 cursor-pointer"
+            title="Customer Support Desk"
+          >
+            <MessageSquare className="w-4 h-4 text-indigo-600 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-bold leading-none tracking-tight whitespace-nowrap">Support</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

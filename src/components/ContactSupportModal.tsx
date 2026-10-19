@@ -18,7 +18,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string }[] = [
   {
     keywords: ['print', 'printer', 'scale', 'actual size', 'size', 'paper', 'margins'],
     response:
-      '🖨️ **Printing Tips for Best Quality:**\n\n1. Always open your downloaded PDF in free Adobe Acrobat Reader or your tablet browser.\n2. In your print settings, set **Scale to 100% ("Actual Size")** instead of "Fit to Page" so tracing lines and grid activities remain perfectly proportioned.\n3. We recommend standard 24lb–32lb bright white paper for daily tracing, or 65lb cardstock for durable routine boards.\n4. Both standard US Letter (8.5" x 11") and International A4 formats are provided with every order!'
+      '🖨️ **Printing Tips for Best Quality:**\n\n1. Always open your downloaded PDF in free Adobe Acrobat Reader or your tablet browser.\n2. In your print settings, set **Scale to 100% ("Actual Size")** instead of "Fit to Page" so tracing lines and grid activities remain perfectly proportioned.\n3. We recommend standard 24lb–32lb bright white paper for daily tracing, or 65lb cardstock for durable routine boards.\n4. Both Standard A4 (210 × 297 mm) and Universal formats are provided with every order!'
   },
   {
     keywords: ['laminate', 'dry erase', 'marker', 'reusable', 'sleeve'],
@@ -28,7 +28,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string }[] = [
   {
     keywords: ['vault', 'download', 'downloads', 'find', 'where', 'access', 'file'],
     response:
-      '📂 **Accessing Your Download Vault:**\n\nYour purchases unlock instantly in the top navigation under **"My Downloads"**. Each item is available with 1-click downloads for US Letter PDF, A4 PDF, and MP3 audio files. Your downloads are securely saved to your device session and parent account.'
+      '📂 **Accessing Your Download Vault:**\n\nYour purchases unlock instantly in the top navigation under **"My Downloads"**. Each item is available with 1-click downloads for Standard A4 PDF, Universal Format PDF, and MP3 audio files. Your downloads are securely saved to your device session and parent account.'
   },
   {
     keywords: ['90', 'expire', 'expired', '3 month', 'period', 're-lock', 'time limit', 'renew'],
@@ -38,7 +38,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string }[] = [
   {
     keywords: ['ipad', 'tablet', 'phone', 'mobile', 'iphone', 'android'],
     response:
-      '📱 **Using on iPad & Mobile Tablets:**\n\nYes! Tap "Download US Letter" and choose "Save to Files" or open in apps like GoodNotes, Notability, Apple Books, or Adobe Reader. Kids can even use the Apple Pencil or stylus to complete worksheets directly on screen!'
+      '📱 **Using on iPad & Mobile Tablets:**\n\nYes! Tap "Download Standard A4" and choose "Save to Files" or open in apps like GoodNotes, Notability, Apple Books, or Adobe Reader. Kids can even use the Apple Pencil or stylus to complete worksheets directly on screen!'
   },
   {
     keywords: ['classroom', 'school', 'teacher', 'license', 'homeschool', 'commercial'],
@@ -48,7 +48,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string }[] = [
   {
     keywords: ['address', 'location', 'company', 'office', 'where are you'],
     response:
-      '📍 **USA Corporate Publishing Office:**\n\nFamily Printables Publishing LLC\n123 Learning Way, Suite 400\nDover, DE 19901, USA\n\nOperating Hours: Monday – Friday, 9:00 AM – 5:00 PM EST.\nOur AI Customer Care Desk is active 24/7/365 to assist you immediately!'
+      '📍 **Global Publishing Office & Headquarters:**\n\nFamily Printables Global Publishing\n100 Central Business Boulevard, Suite 500\nGlobal Tech District, International Hub\n\nOperating Hours: Monday – Friday, 9:00 AM – 5:00 PM UTC.\nOur AI Customer Care Desk is active 24/7/365 to assist you immediately!'
   }
 ];
 
@@ -83,7 +83,7 @@ export const ContactSupportModal: React.FC<ContactSupportModalProps> = ({
       }
     }
 
-    return `Thank you for reaching out! Regarding "${query}":\n\nOur educational digital workbooks are delivered instantly as high-resolution 300 DPI vector PDFs in both US Letter and A4 formats with 90-day vault download access. \n\nIf you have questions regarding printer scaling, please select "Actual Size (100%)" in your print dialog. You can also view our complete Printing Guide in the How It Works section!`;
+    return `Thank you for reaching out! Regarding "${query}":\n\nOur educational digital workbooks are delivered instantly as high-resolution 300 DPI vector PDFs in Standard A4 and Universal formats with 90-day vault download access. \n\nIf you have questions regarding printer scaling, please select "Actual Size (100%)" in your print dialog. You can also view our complete Printing Guide in the How It Works section!`;
   };
 
   const handleSendMessage = (textToSend?: string) => {
