@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312E81"/>
+      <stop offset="45%" stop-color="#4338CA"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+
+    <!-- F Letter Gradient: Emerald to Teal -->
+    <linearGradient id="fGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+
+    <!-- P Letter Gradient: Amber to Rose -->
+    <linearGradient id="pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="50%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#F43F5E"/>
+    </linearGradient>
+
+    <!-- Star Sparkle Gradient -->
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+
+    <filter id="tileShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#1E1B4B" flood-opacity="0.45"/>
+    </filter>
+
+    <filter id="sheetShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0F172A" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- App Squircle Tile -->
+  <rect x="16" y="16" width="480" height="480" rx="110" fill="url(#bgGrad)" filter="url(#tileShadow)"/>
+  
+  <!-- Subtle Inner Border Highlight -->
+  <rect x="18" y="18" width="476" height="476" rx="108" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="4"/>
+
+  <!-- Printable Paper Base Layer -->
+  <g filter="url(#sheetShadow)">
+    <path d="M110 88 H320 L402 170 V412 C402 423.046 393.046 432 382 432 H130 C118.954 432 110 423.046 110 412 Z" fill="#FFFFFF"/>
+    <!-- Folded Corner -->
+    <path d="M320 88 V154 C320 162.837 327.163 170 336 170 H402 Z" fill="#E2E8F0"/>
+  </g>
+
+  <!-- Colorful "FP" Emblem (Family Printables) -->
+  <g id="emblem-fp">
+    <!-- Letter F -->
+    <!-- Vertical stem -->
+    <rect x="156" y="168" width="34" height="196" rx="17" fill="url(#fGrad)"/>
+    <!-- Top bar -->
+    <rect x="156" y="168" width="102" height="34" rx="17" fill="url(#fGrad)"/>
+    <!-- Middle bar -->
+    <rect x="156" y="244" width="76" height="30" rx="15" fill="url(#fGrad)"/>
+
+    <!-- Letter P -->
+    <!-- Vertical stem -->
+    <rect x="282" y="168" width="34" height="196" rx="17" fill="url(#pGrad)"/>
+    <!-- Upper loop arc -->
+    <path d="M282 168 H344 C372.719 168 396 191.281 396 220 C396 248.719 372.719 272 344 272 H282 Z" fill="url(#pGrad)"/>
+    <!-- Inner cutout for P loop -->
+    <path d="M316 202 H340 C351.046 202 360 210.954 360 222 C360 233.046 351.046 242 340 242 H316 Z" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Sparkling Golden Star Emblem -->
+  <path d="M392 108 L400 126 L418 134 L400 142 L392 160 L384 142 L366 134 L384 126 Z" fill="url(#starGrad)"/>
+  
+  <!-- Mini Sparkle -->
+  <circle cx="160" cy="130" r="10" fill="#38BDF8"/>
+  <circle cx="396" cy="380" r="8" fill="#F43F5E"/>
+  
+  <!-- Small Bottom Brand Bar Line -->
+  <rect x="160" y="388" width="192" height="10" rx="5" fill="#E0E7FF"/>
+</svg>

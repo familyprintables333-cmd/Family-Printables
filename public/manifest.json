@@ -1,0 +1,39 @@
+{
+  "id": "/",
+  "name": "Family Printables - Smart Digital Printables",
+  "short_name": "Printables",
+  "description": "Instantly download 100% free single-page daily timetables, productivity planners, and business sales ledgers in Standard A4 & Universal formats, alongside premium kids' learning workbooks.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#4F46E5",
+  "background_color": "#F9FAFB",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["education", "business", "shopping", "lifestyle"]
+}
