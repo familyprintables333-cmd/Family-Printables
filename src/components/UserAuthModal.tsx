@@ -83,10 +83,10 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({
             </div>
             <h3 className="text-xl font-black text-slate-900">
               {account.isLoggedIn
-                ? 'Parent Account Profile'
+                ? 'Account Profile'
                 : mode === 'login'
-                ? 'Parent Account Sign In'
-                : 'Create Parent Account'}
+                ? 'Account Sign In'
+                : 'Create Account'}
             </h3>
             <p className="text-xs text-slate-500">
               {account.isLoggedIn
@@ -244,7 +244,7 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({
 
           <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Secure 256-Bit Encrypted Parent Session</span>
+            <span>Secure 256-Bit Encrypted User Session</span>
           </div>
         </div>
       </div>

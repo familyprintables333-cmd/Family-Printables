@@ -65,6 +65,7 @@ import {
   saveStoredHtmlSnippets, 
   HtmlSnippetRecord 
 } from '../utils/gumroad';
+import { syncSaveProduct, syncDeleteProduct } from '../utils/syncService';
 
 interface AdminPortalProps {
   products: Product[];
@@ -215,14 +216,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       return;
     }
 
+    let savedItem: Product | undefined;
     const updated = products.map((p) => {
       if (p.id === productId) {
-        return { 
+        const isFree = parsed === 0;
+        savedItem = { 
           ...p, 
           priceUSD: parsed,
-          accessType: parsed === 0 ? ('free' as const) : ('paid' as const),
-          isFree: parsed === 0
+          accessType: isFree ? ('free' as const) : ('paid' as const),
+          isFree,
+          // STRICT RECORD INTEGRITY: Preserves locked state
+          isLocked: isFree ? false : p.isLocked
         };
+        return savedItem;
       }
       return p;
     });
@@ -231,14 +237,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     try {
       localStorage.setItem('fp_custom_products', JSON.stringify(updated));
     } catch {}
-    showToast(`Price updated to ${formatCurrency(parsed, currency)} for ${products.find(p => p.id === productId)?.title.slice(0, 24)}...`);
+    if (savedItem) {
+      syncSaveProduct(savedItem);
+    }
+    showToast(`Price updated to ${formatCurrency(parsed, currency)} and saved across all devices.`);
   };
 
   const handleToggleLock = (productId: string) => {
+    let savedItem: Product | undefined;
     const updated = products.map((p) => {
       if (p.id === productId) {
         const nextState = !p.isLocked;
-        return { ...p, isLocked: nextState };
+        savedItem = { ...p, isLocked: nextState };
+        return savedItem;
       }
       return p;
     });
@@ -246,20 +257,25 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     try {
       localStorage.setItem('fp_custom_products', JSON.stringify(updated));
     } catch {}
-    showToast('Workbook Lock/Unlock status updated.');
+    if (savedItem) {
+      syncSaveProduct(savedItem);
+    }
+    showToast(`Workbook ${savedItem?.isLocked ? 'Locked' : 'Unlocked'} and synced across all devices.`);
   };
 
   const handleToggleFreePaid = (productId: string) => {
+    let savedItem: Product | undefined;
     const updated = products.map((p) => {
       if (p.id === productId) {
         const nextIsFree = p.accessType !== 'free';
-        return { 
+        savedItem = { 
           ...p, 
           isFree: nextIsFree,
           accessType: nextIsFree ? ('free' as const) : ('paid' as const),
           isLocked: !nextIsFree,
           priceUSD: nextIsFree ? 0 : (p.priceUSD > 0 ? p.priceUSD : 2.50)
         };
+        return savedItem;
       }
       return p;
     });
@@ -267,39 +283,59 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     try {
       localStorage.setItem('fp_custom_products', JSON.stringify(updated));
     } catch {}
-    showToast('Product Free / Paid status toggled.');
+    if (savedItem) {
+      syncSaveProduct(savedItem);
+    }
+    showToast('Product Free / Paid status toggled and synced across all devices.');
   };
 
   // --------------------------------------------------------------------------
   // PRODUCT CRUD HANDLERS
   // --------------------------------------------------------------------------
   const handleDeleteProduct = (productId: string) => {
-    if (!confirm('Are you sure you want to delete this workbook? This cannot be undone.')) return;
+    if (!confirm('Are you sure you want to delete this listing? This will permanently purge it across all devices.')) return;
     const updated = products.filter((p) => p.id !== productId);
     onUpdateProducts(updated);
     try {
       localStorage.setItem('fp_custom_products', JSON.stringify(updated));
     } catch {}
-    showToast('Workbook deleted successfully.');
+    syncDeleteProduct(productId);
+    showToast('Listing permanently purged from all devices.');
   };
 
   const handleSaveProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const title = (formData.get('title') as string) || 'New Printable Workbook';
-    const cat = (formData.get('category') as CategoryId) || 'early-learning';
+    const title = (formData.get('title') as string) || (editingProduct?.title ?? 'New Digital Item');
+    const cat = (formData.get('category') as CategoryId) || (editingProduct?.category ?? 'early-learning');
     const priceUSD = parseFloat((formData.get('priceUSD') as string) || '2.50');
     const isFree = formData.get('isFree') === 'on' || priceUSD === 0;
     const isLocked = formData.get('isLocked') === 'on';
-    const targetAge = (formData.get('targetAge') as string) || 'Ages 3-8';
-    const pages = parseInt((formData.get('pages') as string) || '30', 10);
+
+    // Strict preservation of user inputs without forcing print defaults
+    const targetAgeRaw = formData.get('targetAge') as string;
+    const targetAge = targetAgeRaw !== null ? targetAgeRaw.trim() : (editingProduct?.targetAge || '');
+
+    const isAudio = cat === 'audio-stories';
+    const pagesRaw = formData.get('pages') as string;
+    let pages = 0;
+    if (!isAudio) {
+      pages = pagesRaw ? parseInt(pagesRaw, 10) : (editingProduct?.pages || 0);
+      if (isNaN(pages)) pages = 0;
+    }
+
     const shortDesc = (formData.get('shortDesc') as string) || '';
     const description = (formData.get('description') as string) || '';
-    const educationalBenefit = (formData.get('educationalBenefit') as string) || 'Screen-Free Early Developmental Skills';
-    const customImage = (formData.get('customImage') as string) || '';
 
-    let chosenImage = formCoverImage || customImage || IMAGES.productKidsWorkbook;
-    if (!formCoverImage && !customImage) {
+    const educationalBenefitRaw = formData.get('educationalBenefit') as string;
+    const educationalBenefit = educationalBenefitRaw !== null ? educationalBenefitRaw.trim() : (editingProduct?.educationalBenefit || '');
+
+    const customImage = (formData.get('customImage') as string) || '';
+    const gumroadUrl = ((formData.get('gumroadUrl') as string) || editingProduct?.gumroadUrl || '').trim();
+    const audioDuration = ((formData.get('audioDuration') as string) || editingProduct?.audioDuration || '').trim();
+
+    let chosenImage = formCoverImage || customImage || editingProduct?.image || IMAGES.productKidsWorkbook;
+    if (!formCoverImage && !customImage && !editingProduct?.image) {
       if (cat === 'festivals') chosenImage = IMAGES.festivalsCards;
       else if (cat === 'puzzles') chosenImage = IMAGES.coverPuzzles;
       else if (cat === 'routines') chosenImage = IMAGES.productRoutineBoard;
@@ -307,80 +343,97 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       else if (cat === 'audio-stories') chosenImage = IMAGES.productBedtime;
     }
 
+    const categoryObj = categories.find(c => c.id === cat);
+    const categoryLabel = categoryObj ? categoryObj.title : 'Digital Collection';
+
+    const defaultFormats = isAudio
+      ? ['High-Fidelity MP3 Audio', 'Printable Storybook PDF', 'Narration Script']
+      : ['Standard A4 PDF', 'Universal PDF', '300 DPI Vector Print'];
+
+    const defaultIncluded = isAudio
+      ? ['Calming MP3 Audio Narration', 'Companion Storybook PDF', 'Bedtime Routine Listening Guide']
+      : ['High-Resolution Vector Worksheets', 'Print-ready Standard A4 & Universal PDFs', 'Unlimited Re-prints'];
+
     if (editingProduct) {
-      const updated = products.map((p) => {
-        if (p.id === editingProduct.id) {
-          return {
-            ...p,
-            title,
-            category: cat,
-            priceUSD: isFree ? 0 : priceUSD,
-            isFree,
-            accessType: isFree ? ('free' as const) : ('paid' as const),
-            isLocked,
-            targetAge,
-            pages,
-            shortDesc,
-            description,
-            educationalBenefit,
-            image: chosenImage,
-            documentFileUrl: formDocumentFile?.url || p.documentFileUrl || '',
-            documentFileName: formDocumentFile?.name || p.documentFileName || `${p.id}_document.pdf`,
-            documentFileType: formDocumentFile?.type || p.documentFileType || 'pdf',
-            fileSize: formDocumentFile?.size || p.fileSize || `${(pages * 0.35 + 2.5).toFixed(1)} MB`,
-            audioVideoUrl: formAudioVideoFile?.url || p.audioVideoUrl || '',
-            mediaType: formAudioVideoFile?.type || p.mediaType || (cat === 'audio-stories' ? 'audio' : 'none'),
-          };
-        }
-        return p;
-      });
+      const updatedProduct: Product = {
+        ...editingProduct,
+        title,
+        category: cat,
+        categoryLabel,
+        priceUSD: isFree ? 0 : priceUSD,
+        isFree,
+        accessType: isFree ? ('free' as const) : ('paid' as const),
+        isLocked,
+        targetAge,
+        pages,
+        shortDesc,
+        description,
+        educationalBenefit,
+        image: chosenImage,
+        gumroadUrl,
+        audioDuration: isAudio ? (audioDuration || '10 mins') : undefined,
+        format: isAudio ? defaultFormats : (editingProduct.format && editingProduct.format.length > 0 ? editingProduct.format : defaultFormats),
+        includedItems: isAudio ? defaultIncluded : (editingProduct.includedItems && editingProduct.includedItems.length > 0 ? editingProduct.includedItems : defaultIncluded),
+        documentFileUrl: formDocumentFile?.url || editingProduct.documentFileUrl || '',
+        documentFileName: formDocumentFile?.name || editingProduct.documentFileName || `${editingProduct.id}_document.pdf`,
+        documentFileType: formDocumentFile?.type || editingProduct.documentFileType || 'pdf',
+        fileSize: formDocumentFile?.size || editingProduct.fileSize || (isAudio ? '18.5 MB' : `${Math.max(1, pages * 0.35 + 2.5).toFixed(1)} MB`),
+        audioVideoUrl: formAudioVideoFile?.url || editingProduct.audioVideoUrl || '',
+        mediaType: formAudioVideoFile?.type || editingProduct.mediaType || (isAudio ? 'audio' : 'none'),
+      };
+
+      const updated = products.map((p) => p.id === editingProduct.id ? updatedProduct : p);
       onUpdateProducts(updated);
       try {
         localStorage.setItem('fp_custom_products', JSON.stringify(updated));
       } catch {}
+      syncSaveProduct(updatedProduct);
       setEditingProduct(null);
       setFormCoverImage('');
       setFormDocumentFile(null);
       setFormAudioVideoFile(null);
-      showToast('Workbook updated successfully with multi-format files!');
+      showToast('Listing updated & locked successfully across all devices!');
     } else {
       const newProd: Product = {
         id: `prod-custom-${Date.now()}`,
         title,
         category: cat,
-        categoryLabel: categories.find(c => c.id === cat)?.title || 'Educational Printables',
+        categoryLabel,
         priceUSD: isFree ? 0 : priceUSD,
         isFree,
         accessType: isFree ? 'free' : 'paid',
         isLocked,
-        rating: 5.0,
-        reviewsCount: 1,
+        rating: 0,
+        reviewsCount: 0,
         pages,
         targetAge,
         educationalBenefit,
-        includedItems: ['High-Resolution Vector Worksheets', 'Print-ready Standard A4 & Universal PDFs', 'Unlimited Re-prints'],
-        format: ['Standard A4 PDF', 'Universal PDF', '300 DPI Vector Print'],
+        includedItems: defaultIncluded,
+        format: defaultFormats,
         image: chosenImage,
         shortDesc,
         description,
-        features: ['Instant digital download', 'High-definition 300 DPI', 'Single-page & workbook options'],
-        fileSize: formDocumentFile?.size || `${(pages * 0.35 + 2.5).toFixed(1)} MB`,
+        features: isAudio ? ['In-app audio player', 'Narrated story', 'Instant download'] : ['Instant digital download', 'High-definition 300 DPI', 'Single-page & workbook options'],
+        fileSize: formDocumentFile?.size || (isAudio ? '18.5 MB' : `${Math.max(1, pages * 0.35 + 2.5).toFixed(1)} MB`),
         documentFileUrl: formDocumentFile?.url || '',
-        documentFileName: formDocumentFile?.name || 'custom_workbook.pdf',
+        documentFileName: formDocumentFile?.name || 'custom_document.pdf',
         documentFileType: formDocumentFile?.type || 'pdf',
         audioVideoUrl: formAudioVideoFile?.url || '',
-        mediaType: formAudioVideoFile?.type || (cat === 'audio-stories' ? 'audio' : 'none'),
+        mediaType: formAudioVideoFile?.type || (isAudio ? 'audio' : 'none'),
+        gumroadUrl,
+        audioDuration: isAudio ? (audioDuration || '10 mins') : undefined,
       };
       const updated = [newProd, ...products];
       onUpdateProducts(updated);
       try {
         localStorage.setItem('fp_custom_products', JSON.stringify(updated));
       } catch {}
+      syncSaveProduct(newProd);
       setIsAddingProduct(false);
       setFormCoverImage('');
       setFormDocumentFile(null);
       setFormAudioVideoFile(null);
-      showToast('New printable workbook published successfully!');
+      showToast('New listing saved & locked across all devices!');
     }
   };
 
@@ -951,31 +1004,56 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </div>
 
                     <div>
-                      <label className="font-bold text-slate-700 block mb-1">Target Age Group:</label>
+                      <label className="font-bold text-slate-700 block mb-1">Target Age Group (Optional):</label>
                       <input
                         type="text"
                         name="targetAge"
-                        defaultValue={editingProduct?.targetAge || 'Ages 3-8'}
+                        placeholder="e.g. All Ages, Ages 3-8, or leave blank"
+                        defaultValue={editingProduct?.targetAge ?? ''}
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white text-slate-900"
                       />
                     </div>
 
                     <div>
-                      <label className="font-bold text-slate-700 block mb-1">Page Count:</label>
+                      <label className="font-bold text-slate-700 block mb-1">Page Count (0 for Audio/Video):</label>
                       <input
                         type="number"
                         name="pages"
-                        defaultValue={editingProduct?.pages || 32}
+                        placeholder="0 for audio/digital, or page count"
+                        defaultValue={editingProduct ? (editingProduct.pages ?? 0) : ''}
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white text-slate-900"
                       />
                     </div>
 
                     <div>
-                      <label className="font-bold text-slate-700 block mb-1">Educational Benefit:</label>
+                      <label className="font-bold text-slate-700 block mb-1">Educational Benefit / Focus (Optional):</label>
                       <input
                         type="text"
                         name="educationalBenefit"
-                        defaultValue={editingProduct?.educationalBenefit || 'Screen-Free Motor Skills & Memory'}
+                        placeholder="e.g. Calming bedtime routine, or leave blank"
+                        defaultValue={editingProduct?.educationalBenefit ?? ''}
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white text-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Direct Gumroad Product URL (In-App Overlay):</label>
+                      <input
+                        type="url"
+                        name="gumroadUrl"
+                        placeholder="https://gumroad.com/l/your-product-slug"
+                        defaultValue={editingProduct?.gumroadUrl || ''}
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white text-slate-900 font-mono text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Audio / Media Duration (Audio Stories):</label>
+                      <input
+                        type="text"
+                        name="audioDuration"
+                        placeholder="e.g. 10 mins (Audio files only)"
+                        defaultValue={editingProduct?.audioDuration || ''}
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white text-slate-900"
                       />
                     </div>

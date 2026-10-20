@@ -78,7 +78,7 @@ export const StoreHero: React.FC<StoreHeroProps> = ({ onQuickNav, currency = 'US
           className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-semibold border border-white/20 backdrop-blur-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
         >
           <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-300" />
-          <span>Browse Kids' Workbooks &amp; Packs</span>
+          <span>Exclusive Kids Collections</span>
         </button>
       </div>
     </header>

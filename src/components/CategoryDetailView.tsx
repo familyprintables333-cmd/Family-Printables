@@ -199,7 +199,7 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
           <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
             <BookOpen className="w-12 h-12 text-slate-400 mx-auto" />
             <h3 className="text-base font-black text-slate-900">No items match this filter</h3>
-            <p className="text-xs text-slate-500">Try switching back to "All Items" to browse the full catalog.</p>
+            <p className="text-xs text-slate-500">Try switching back to "All Items" to view the full curated library.</p>
             <button
               onClick={() => setFilterType('all')}
               className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700"
@@ -217,6 +217,13 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
                   onInstantBuy={onInstantBuy}
                   onOpenReviews={onOpenReviews}
                   onFreeDownload={onFreeDownload}
+                  onPlayMedia={() => {
+                    setActiveMediaPreview({
+                      title: product.title,
+                      url: product.audioVideoUrl || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+                      type: product.mediaType === 'video' ? 'video' : 'audio',
+                    });
+                  }}
                   isPurchased={purchasedProductIds.includes(product.id)}
                   isUnlocked={purchasedProductIds.includes(product.id) || product.isFree}
                   currency={currency}

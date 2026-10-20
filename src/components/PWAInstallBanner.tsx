@@ -11,7 +11,10 @@ export const PWAInstallBanner: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState<boolean>(false);
   const [isDismissed, setIsDismissed] = useState<boolean>(() => {
-    return sessionStorage.getItem('fp_pwa_banner_dismissed') === 'true';
+    try {
+      return localStorage.getItem('fp_pwa_banner_dismissed') === 'true';
+    } catch {}
+    return false;
   });
   const [showIOSGuide, setShowIOSGuide] = useState<boolean>(false);
   const [isIOS, setIsIOS] = useState<boolean>(false);
@@ -64,14 +67,15 @@ export const PWAInstallBanner: React.FC = () => {
     } else if (isIOS) {
       setShowIOSGuide(true);
     } else {
-      // Generic fallback instructions
-      alert('To install: tap your browser menu (⋮ or ...) and select "Add to Home screen" or "Install App"');
+      setShowIOSGuide(true);
     }
   };
 
   const handleDismiss = () => {
     setIsDismissed(true);
-    sessionStorage.setItem('fp_pwa_banner_dismissed', 'true');
+    try {
+      localStorage.setItem('fp_pwa_banner_dismissed', 'true');
+    } catch {}
   };
 
   if (isInstalled || isDismissed) {

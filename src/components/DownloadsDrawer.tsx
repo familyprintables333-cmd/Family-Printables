@@ -1,8 +1,27 @@
-import React, { useState } from 'react';
-import { X, Download, ShieldCheck, CheckCircle2, User, Lock, RotateCcw, Clock, AlertTriangle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { 
+  X, 
+  Download, 
+  ShieldCheck, 
+  CheckCircle2, 
+  User, 
+  Lock, 
+  RotateCcw, 
+  Clock, 
+  AlertTriangle,
+  Search,
+  Printer,
+  Sparkles,
+  WifiOff,
+  FolderOpen,
+  Calendar,
+  Layers,
+  Volume2
+} from 'lucide-react';
 import { Product, UserAccount } from '../types';
 import { getProductAccessStatus } from '../utils/access';
 import { resolveImageUrl } from '../assets/images';
+import { downloadProductFileOffline } from '../utils/offlineDownload';
 
 interface DownloadsDrawerProps {
   isOpen: boolean;
@@ -15,6 +34,7 @@ interface DownloadsDrawerProps {
   onToggleSimulateExpiry?: (productId: string) => void;
   onRequireSignUp?: (actionType: 'download' | 'print', onComplete: () => void) => void;
   logoUrl?: string;
+  onOpenTimetableStudio?: () => void;
 }
 
 export const DownloadsDrawer: React.FC<DownloadsDrawerProps> = ({
@@ -26,16 +46,39 @@ export const DownloadsDrawer: React.FC<DownloadsDrawerProps> = ({
   onRenewAccess,
   onToggleSimulateExpiry,
   onRequireSignUp,
-  logoUrl = '/logo.png'
+  logoUrl = '/logo.png',
+  onOpenTimetableStudio
 }) => {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [activeVaultTab, setActiveVaultTab] = useState<'all' | 'workbooks' | 'planners' | 'audio'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (!isOpen) return null;
 
   // Filter products that the user has purchased
   const purchasedProducts = products.filter((p) =>
-    account.purchasedProductIds.includes(p.id)
+    (account.purchasedProductIds || []).includes(p.id)
   );
+
+  // Tab filtering
+  const filteredProducts = purchasedProducts.filter((p) => {
+    const matchesSearch = searchQuery.trim() === '' || 
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.categoryLabel.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (!matchesSearch) return false;
+
+    if (activeVaultTab === 'audio') {
+      return p.category === 'audio-stories';
+    }
+    if (activeVaultTab === 'planners') {
+      return p.category === 'routines' || p.category === 'planning';
+    }
+    if (activeVaultTab === 'workbooks') {
+      return p.category !== 'audio-stories' && p.category !== 'routines';
+    }
+    return true;
+  });
 
   const handleDownloadFile = (product: Product, formatName: string) => {
     if (onRequireSignUp && (!account.isLoggedIn || !account.email || !account.name)) {
@@ -55,261 +98,402 @@ export const DownloadsDrawer: React.FC<DownloadsDrawerProps> = ({
 
     setDownloadingId(`${product.id}-${formatName}`);
     setTimeout(() => {
-      const content = `==========================================================\nFAMILY PRINTABLES - OFFICIAL DIGITAL VAULT\n==========================================================\nProduct: ${product.title}\nCategory: ${product.categoryLabel}\nTarget Age: ${product.targetAge}\nFormat: ${formatName} (High Resolution 300 DPI Print-Ready)\nLicensed To: ${account.email || 'Verified Purchaser'}\nAccess Duration: 3 Months (90 Days)\nStatus: UNLOCKED & ACTIVE ACCESS (${status.daysRemaining} days remaining)\n\nPRINTING GUIDE:\n1. Open in free Adobe Acrobat Reader or mobile tablet browser.\n2. In printer settings, set Scale to 100% (Actual Size).\n3. Recommended paper: 28lb to 32lb bright white paper, or 65lb cardstock.\n4. For reusable dry-erase activities, slip sheets into plastic protectors or laminate.\n\nThank you for choosing Family Printables!\n==========================================================`;
-
-      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${product.title.replace(/[^a-zA-Z0-9]/g, '_')}_${formatName}.txt`;
-      link.click();
-      URL.revokeObjectURL(url);
+      // 100% Offline-capable vector PDF or document file download
+      downloadProductFileOffline(product, formatName);
       setDownloadingId(null);
-    }, 500);
+    }, 300);
+  };
+
+  const handlePrintFile = (product: Product) => {
+    if (onRequireSignUp && (!account.isLoggedIn || !account.email || !account.name)) {
+      onRequireSignUp('print', () => handlePrintFile(product));
+      return;
+    }
+    window.print();
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/50 backdrop-blur-xs flex justify-end">
-      <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col justify-between border-l border-slate-200">
-        {/* Header */}
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl overflow-hidden shadow-xs border border-slate-200/90 bg-white flex items-center justify-center shrink-0">
-              <img
-                src={logoUrl || '/logo.png'}
-                alt="Store Logo"
-                onError={(e) => {
-                  e.currentTarget.src = '/icon.svg';
-                }}
-                className="w-full h-full object-contain p-0.5"
-              />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-slate-900">
-                My Downloads Vault
-              </h3>
-              <p className="text-xs text-slate-500">
-                {account.isLoggedIn
-                  ? `${account.email}`
-                  : '3-Month (90-Day) High-Speed Download Vault'}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-200/50 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Content Area */}
-        <div className="p-5 flex-1 overflow-y-auto space-y-6">
-          {/* Account Status Card */}
-          <div className="bg-indigo-50/60 rounded-2xl p-4 border border-indigo-100 flex items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0">
-                <User className="w-4 h-4" />
+    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-sm flex justify-end animate-in fade-in duration-200">
+      <div 
+        className="w-full max-w-xl bg-white h-full shadow-2xl flex flex-col justify-between border-l border-slate-200 overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vault-heading"
+      >
+        {/* ================================================================ */}
+        {/* TOP BRANDED HEADER                                              */}
+        {/* ================================================================ */}
+        <div className="p-5 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shrink-0">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md border border-white/20 bg-white flex items-center justify-center shrink-0">
+                <img
+                  src={logoUrl || '/logo.png'}
+                  alt="Store Logo"
+                  onError={(e) => {
+                    e.currentTarget.src = '/icon.svg';
+                  }}
+                  className="w-full h-full object-contain p-1"
+                />
               </div>
               <div>
-                <div className="font-bold text-slate-900">
-                  {account.isLoggedIn ? account.name : 'Guest Session'}
+                <div className="flex items-center gap-2">
+                  <h3 id="vault-heading" className="text-lg font-black tracking-tight text-white">
+                    My Downloads Vault
+                  </h3>
+                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                    <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                    Encrypted
+                  </span>
                 </div>
-                <div className="text-slate-500 text-[11px]">
+                <p className="text-xs text-indigo-200 mt-0.5 font-medium">
                   {account.isLoggedIn
-                    ? account.email
-                    : 'Sign in to sync your vault across all your devices'}
-                </div>
+                    ? `Registered to: ${account.email}`
+                    : 'Personal Digital Library · 90-Day Guaranteed Re-downloads'}
+                </p>
               </div>
             </div>
 
-            {!account.isLoggedIn ? (
+            <button
+              onClick={onClose}
+              className="p-2 text-indigo-200 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
+              aria-label="Close Downloads Vault"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Offline-Ready Feature Banner */}
+          <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-indigo-200 gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 text-emerald-300 font-semibold">
+              <WifiOff className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>100% Offline-Ready · Generates directly in browser memory</span>
+            </div>
+            <div className="text-indigo-300 font-medium">
+              Standard A4 &amp; Universal PDFs
+            </div>
+          </div>
+        </div>
+
+        {/* ================================================================ */}
+        {/* SEARCH & VAULT CATEGORY TABS                                     */}
+        {/* ================================================================ */}
+        <div className="p-4 bg-slate-50 border-b border-slate-200 space-y-3 shrink-0">
+          {/* Search Box */}
+          <div className="relative">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search your unlocked files..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-indigo-600 shadow-2xs"
+            />
+            {searchQuery && (
               <button
-                onClick={onLoginClick}
-                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shrink-0 transition"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1"
               >
-                Sign In / Register
+                ✕
               </button>
-            ) : (
-              <span className="text-emerald-700 font-bold bg-emerald-100/70 px-2 py-0.5 rounded text-[11px] flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                Active
-              </span>
             )}
           </div>
 
-          {/* Explicit 90-Day (3-Month) Temporary Access Policy Banner */}
-          <div className="bg-amber-50/80 rounded-2xl p-4 border border-amber-200 space-y-1.5 text-xs text-amber-950 shadow-2xs">
-            <div className="font-black flex items-center gap-2 text-amber-900">
-              <Clock className="w-4 h-4 text-amber-600 shrink-0" />
-              <span className="text-xs">90-Day (3-Month) Temporary Access Policy</span>
-            </div>
-            <p className="text-[11px] text-amber-900/85 leading-relaxed">
-              All unlocked printables and workbooks are granted temporary download vault access for strictly 90 days (3 months) from your verified transaction. During these 90 days, you enjoy unlimited high-resolution PDF re-downloads. Once 90 days elapse, download links automatically re-lock to protect store files, with instant renewal available anytime.
-            </p>
+          {/* Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
+            <button
+              onClick={() => setActiveVaultTab('all')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition shrink-0 cursor-pointer ${
+                activeVaultTab === 'all'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200'
+              }`}
+            >
+              All Items ({purchasedProducts.length})
+            </button>
+            <button
+              onClick={() => setActiveVaultTab('workbooks')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition shrink-0 cursor-pointer ${
+                activeVaultTab === 'workbooks'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200'
+              }`}
+            >
+              Workbooks &amp; Tracing
+            </button>
+            <button
+              onClick={() => setActiveVaultTab('planners')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition shrink-0 cursor-pointer ${
+                activeVaultTab === 'planners'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200'
+              }`}
+            >
+              Elite Planners &amp; Timetables
+            </button>
+            <button
+              onClick={() => setActiveVaultTab('audio')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition shrink-0 cursor-pointer ${
+                activeVaultTab === 'audio'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200'
+              }`}
+            >
+              Bedtime Audio Stories
+            </button>
           </div>
+        </div>
 
-          {/* Purchased Items List */}
-          <div>
-            <div className="flex items-center justify-between mb-3 text-xs">
-              <span className="font-bold text-slate-800 uppercase tracking-wider">
-                Your Vault Workbooks:
-              </span>
-              <span className="font-mono text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded">
-                {purchasedProducts.length} items
-              </span>
-            </div>
-
-            {purchasedProducts.length === 0 ? (
-              <div className="text-center py-10 px-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-3">
-                <div className="w-12 h-12 rounded-full bg-slate-200/60 text-slate-400 flex items-center justify-center mx-auto">
-                  <Download className="w-6 h-6" />
+        {/* ================================================================ */}
+        {/* VAULT CONTENT LIST                                               */}
+        {/* ================================================================ */}
+        <div className="p-4 sm:p-5 flex-1 overflow-y-auto space-y-4">
+          
+          {/* Account status card if not logged in */}
+          {!account.isLoggedIn && (
+            <div className="bg-indigo-50/70 rounded-2xl p-3.5 border border-indigo-200 flex items-center justify-between gap-3 text-xs shadow-2xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0">
+                  <User className="w-4 h-4" />
                 </div>
-                <h4 className="text-sm font-bold text-slate-700">
-                  No unlocked items in this session yet
+                <div>
+                  <div className="font-extrabold text-slate-900">Guest Browser Session</div>
+                  <div className="text-slate-600 text-[11px]">
+                    Create a free account to sync your vault across laptop &amp; phone.
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={onLoginClick}
+                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shrink-0 transition shadow-xs cursor-pointer"
+              >
+                Sign In
+              </button>
+            </div>
+          )}
+
+          {/* Free Printable Timetables Quick Access Card */}
+          <div className="bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-indigo-200/80 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900">
+                  Free Daily Timetable &amp; Schedule Studio
                 </h4>
-                <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
-                  When you purchase any workbook, it unlocks here for 3 months (90 days) with unlimited high-resolution PDF re-downloads.
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  100% free daily routines, weekly timetables &amp; study planners in 300 DPI.
                 </p>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {purchasedProducts.map((prod) => {
-                  const status = getProductAccessStatus(prod.id, account);
+            </div>
+            {onOpenTimetableStudio && (
+              <button
+                onClick={() => {
+                  onClose();
+                  onOpenTimetableStudio();
+                }}
+                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shrink-0 transition shadow-xs cursor-pointer flex items-center gap-1"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>Open Studio</span>
+              </button>
+            )}
+          </div>
 
-                  return (
-                    <div
-                      key={prod.id}
-                      className={`p-4 rounded-2xl border shadow-xs space-y-3 transition-colors ${
-                        status.isExpired
-                          ? 'border-rose-300 bg-rose-50/40'
-                          : 'border-emerald-200 bg-emerald-50/20'
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <img
-                          src={resolveImageUrl(prod.image)}
-                          alt={prod.title}
-                          className="w-16 h-16 rounded-xl object-cover border border-slate-200 shrink-0 bg-slate-100"
-                          referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            e.currentTarget.src = '/icon.svg';
-                          }}
-                        />
-                        <div className="flex-1 min-w-0">
+          {/* Items Section */}
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-12 px-4 bg-slate-50/80 rounded-3xl border-2 border-dashed border-slate-200 space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto shadow-xs">
+                <FolderOpen className="w-7 h-7" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-sm font-extrabold text-slate-800">
+                  {searchQuery ? 'No matching files in your vault' : 'No unlocked files in this session'}
+                </h4>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  {searchQuery 
+                    ? `No products found matching "${searchQuery}". Try a different keyword.`
+                    : 'Any workbook or timetable you unlock is stored here for 90 days with unlimited offline high-resolution PDF re-downloads.'}
+                </p>
+              </div>
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-xs transition shadow-sm cursor-pointer"
+              >
+                Curated Learning Library &amp; Timetables
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3.5">
+              {filteredProducts.map((prod) => {
+                const status = getProductAccessStatus(prod.id, account);
+                const isAudio = prod.category === 'audio-stories';
+
+                return (
+                  <div
+                    key={prod.id}
+                    className={`p-4 rounded-2xl border shadow-xs space-y-3 transition-all ${
+                      status.isExpired
+                        ? 'border-rose-300 bg-rose-50/30'
+                        : 'border-slate-200 bg-white hover:border-indigo-300'
+                    }`}
+                  >
+                    {/* Item Info Header */}
+                    <div className="flex items-start gap-3.5">
+                      <img
+                        src={resolveImageUrl(prod.image, prod.category)}
+                        alt={prod.title}
+                        className="w-16 h-16 rounded-xl object-cover border border-slate-200 shrink-0 bg-slate-100 shadow-2xs"
+                        onError={(e) => {
+                          e.currentTarget.src = '/icon.svg';
+                        }}
+                      />
+
+                      <div className="flex-1 min-w-0">
+                        {/* Status Chip */}
+                        <div className="flex items-center justify-between gap-2">
                           {status.isExpired ? (
-                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-700 bg-rose-100/90 px-2 py-0.5 rounded-md w-fit">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-md">
                               <Lock className="w-3.5 h-3.5 text-rose-600" />
-                              <span>Access Expired · 3-Month Period Lapsed</span>
-                            </div>
+                              <span>Access Expired (90-day period lapsed)</span>
+                            </span>
                           ) : (
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                                <span>Unlocked · {status.daysRemaining} Days Access Left</span>
-                              </div>
-                              {onToggleSimulateExpiry && (
-                                <button
-                                  onClick={() => onToggleSimulateExpiry(prod.id)}
-                                  className="text-[10px] font-medium text-slate-400 hover:text-rose-600 underline transition"
-                                  title="Test automatic re-locking when 90-day period expires"
-                                >
-                                  Test Expire
-                                </button>
-                              )}
-                            </div>
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                              <span>Active Access · {status.daysRemaining} Days Left</span>
+                            </span>
                           )}
 
-                          <h4 className="text-xs font-bold text-slate-900 mt-1 truncate">
-                            {prod.title}
-                          </h4>
-                          <div className="text-[11px] text-slate-500 mt-0.5">
-                            {prod.pages} Pages · {prod.targetAge} · {prod.fileSize}
-                          </div>
+                          {onToggleSimulateExpiry && (
+                            <button
+                              onClick={() => onToggleSimulateExpiry(prod.id)}
+                              className="text-[10px] text-slate-400 hover:text-rose-600 underline"
+                              title="Test temporary 90-day expiry lock"
+                            >
+                              Test Lock
+                            </button>
+                          )}
+                        </div>
+
+                        <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 mt-1 truncate">
+                          {prod.title}
+                        </h4>
+
+                        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded">
+                            {prod.categoryLabel}
+                          </span>
+                          {prod.pages && prod.pages > 0 && !isAudio && (
+                            <span>{prod.pages} Pages</span>
+                          )}
+                          {isAudio && prod.audioDuration && (
+                            <span className="text-purple-700 font-semibold">{prod.audioDuration}</span>
+                          )}
+                          <span>·</span>
+                          <span>{prod.fileSize || '300 DPI Vector PDF'}</span>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Download Controls or Expired Re-Locking Banner */}
-                      {status.isExpired ? (
-                        <div className="pt-2 border-t border-rose-200/80 flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-rose-800">
-                            <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-                            <span>Download links locked (90 days lapsed)</span>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            {onToggleSimulateExpiry && (
-                              <button
-                                onClick={() => onToggleSimulateExpiry(prod.id)}
-                                className="text-[10px] text-slate-500 hover:text-slate-900 underline px-1 py-0.5"
-                                title="Reset timer to active status for testing"
-                              >
-                                Reset Timer
-                              </button>
-                            )}
-
-                            {onRenewAccess && (
-                              <button
-                                onClick={() => onRenewAccess(prod)}
-                                className="px-3.5 py-1.5 text-xs font-black text-white bg-gradient-to-r from-amber-600 via-rose-600 to-pink-600 hover:from-amber-500 hover:to-rose-500 rounded-xl transition shadow-xs flex items-center gap-1.5 active:scale-95"
-                              >
-                                <RotateCcw className="w-3.5 h-3.5" />
-                                <span>Renew 3-Month Access (${prod.priceUSD.toFixed(2)})</span>
-                              </button>
-                            )}
-                          </div>
+                    {/* Action Controls */}
+                    {status.isExpired ? (
+                      <div className="pt-2.5 border-t border-rose-200 flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5 text-xs text-rose-800 font-bold">
+                          <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                          <span>90-Day Access Period Lapsed</span>
                         </div>
-                      ) : (
-                        <div className="pt-2 border-t border-slate-100 flex flex-wrap gap-2">
+
+                        {onRenewAccess && (
+                          <button
+                            onClick={() => onRenewAccess(prod)}
+                            className="px-3.5 py-1.5 text-xs font-black text-white bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>Renew 3-Month Access (${prod.priceUSD.toFixed(2)})</span>
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {/* Standard A4 PDF */}
                           <button
                             onClick={() => handleDownloadFile(prod, 'Standard_A4_PDF')}
                             disabled={downloadingId === `${prod.id}-Standard_A4_PDF`}
-                            className="px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
+                            className="px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
                           >
                             <Download className="w-3.5 h-3.5" />
-                            <span>Download Standard A4 PDF</span>
+                            <span>
+                              {downloadingId === `${prod.id}-Standard_A4_PDF` ? 'Generating...' : 'Standard A4 PDF'}
+                            </span>
                           </button>
 
+                          {/* Universal Format */}
                           <button
                             onClick={() => handleDownloadFile(prod, 'Universal_Standard_PDF')}
                             disabled={downloadingId === `${prod.id}-Universal_Standard_PDF`}
-                            className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
                           >
                             <Download className="w-3.5 h-3.5 text-slate-500" />
-                            <span>Universal Size PDF</span>
+                            <span>Universal Size</span>
                           </button>
 
-                          {prod.category === 'audio-stories' && (
+                          {/* Audio MP3 Download if audio story */}
+                          {isAudio && (
                             <button
                               onClick={() => handleDownloadFile(prod, 'MP3_Story_Audio')}
                               disabled={downloadingId === `${prod.id}-MP3_Story_Audio`}
-                              className="px-3 py-1.5 text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-colors flex items-center gap-1.5"
+                              className="px-3 py-1.5 text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl transition flex items-center gap-1.5 cursor-pointer active:scale-95"
                             >
-                              <Download className="w-3.5 h-3.5 text-purple-600" />
+                              <Volume2 className="w-3.5 h-3.5 text-purple-600" />
                               <span>MP3 Audio Story</span>
                             </button>
                           )}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+
+                        {/* Instant Print Button */}
+                        <button
+                          onClick={() => handlePrintFile(prod)}
+                          className="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition"
+                          title="Print Document"
+                        >
+                          <Printer className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* 90-Day Access Guarantee Policy Box */}
+          <div className="bg-slate-100/80 rounded-2xl p-4 border border-slate-200 space-y-1.5 text-xs text-slate-700">
+            <div className="font-black text-slate-900 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-indigo-600 shrink-0" />
+              <span>90-Day Guaranteed Download &amp; Reprint Access</span>
+            </div>
+            <p className="text-[11px] text-slate-600 leading-relaxed">
+              Every unlocked digital file comes with 3 full months (90 days) of unlimited high-definition downloads. You can reprint fresh sheets whenever needed across all your computers, tablets, and phones.
+            </p>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-200/80 bg-slate-50 text-xs text-slate-500 flex items-center justify-between">
+        {/* ================================================================ */}
+        {/* FOOTER ACTIONS                                                   */}
+        {/* ================================================================ */}
+        <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs text-slate-500 shrink-0">
           <div className="flex items-center gap-1.5 text-[11px]">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Encrypted · 3-Month (90-Day) Guaranteed Download Access</span>
+            <span>Encrypted · Unlimited Re-prints During 90 Days</span>
           </div>
+
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-white border border-slate-200 text-slate-800 font-bold rounded-lg hover:bg-slate-100 transition"
+            className="px-4 py-1.5 bg-white border border-slate-300 text-slate-800 font-extrabold rounded-xl hover:bg-slate-100 transition cursor-pointer shadow-2xs"
           >
-            Close
+            Close Vault
           </button>
         </div>
       </div>

@@ -21,7 +21,7 @@ export const ReviewsModal: React.FC<ReviewsModalProps> = ({
 
   if (!product) return null;
 
-  const reviews = product.reviews || [];
+  const reviews = product.userReviews || product.reviews || [];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ export const ReviewsModal: React.FC<ReviewsModalProps> = ({
           <div className="border-b border-slate-100 pb-4">
             <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>Verified Parent Reviews</span>
+              <span>Verified Parent &amp; Educator Reviews</span>
             </div>
             <h3 className="text-lg font-bold text-slate-900 leading-snug">
               {product.title}
@@ -68,13 +68,21 @@ export const ReviewsModal: React.FC<ReviewsModalProps> = ({
             {/* Score summary */}
             <div className="mt-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="flex items-center text-amber-500">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-4 h-4 fill-amber-500" />
-                  ))}
-                </div>
-                <span className="text-base font-extrabold text-slate-900 tabular-nums">{product.rating}</span>
-                <span className="text-xs text-slate-500">({reviews.length} reviews)</span>
+                {reviews.length > 0 ? (
+                  <>
+                    <div className="flex items-center text-amber-500">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} className="w-4 h-4 fill-amber-500" />
+                      ))}
+                    </div>
+                    <span className="text-base font-extrabold text-slate-900 tabular-nums">{product.rating}</span>
+                    <span className="text-xs text-slate-500">({reviews.length} reviews)</span>
+                  </>
+                ) : (
+                  <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">
+                    ★ No reviews yet · Be the first!
+                  </span>
+                )}
               </div>
 
               <button
@@ -151,32 +159,42 @@ export const ReviewsModal: React.FC<ReviewsModalProps> = ({
           )}
 
           {/* Reviews list */}
-          <div className="space-y-3 max-h-72 overflow-y-auto">
-            {reviews.map((rev) => (
-              <div key={rev.id} className="p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 space-y-1.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <div className="font-bold text-slate-900">{rev.author}</div>
-                  <span className="text-[11px] text-slate-400 font-medium">{formatReviewTimestamp(rev.timestamp || rev.createdAt || rev.date, rev.date)}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex text-amber-500">
-                    {Array.from({ length: rev.rating }).map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-500" />
-                    ))}
+          {reviews.length === 0 ? (
+            <div className="py-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-2">
+              <Star className="w-8 h-8 text-amber-400 mx-auto fill-amber-400/30" />
+              <div className="text-xs font-bold text-slate-700">No reviews yet for this listing</div>
+              <p className="text-[11px] text-slate-500 max-w-xs mx-auto">
+                Be the first parent, teacher, or customer to share feedback!
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-72 overflow-y-auto">
+              {reviews.map((rev) => (
+                <div key={rev.id} className="p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <div className="font-bold text-slate-900">{rev.author}</div>
+                    <span className="text-[11px] text-slate-400 font-medium">{formatReviewTimestamp(rev.timestamp || rev.createdAt || rev.date, rev.date)}</span>
                   </div>
-                  {rev.verifiedPurchase && (
-                    <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-0.5">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                      Verified Purchase
-                    </span>
-                  )}
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex text-amber-500">
+                      {Array.from({ length: rev.rating }).map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-amber-500" />
+                      ))}
+                    </div>
+                    {rev.verifiedPurchase && (
+                      <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-0.5">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        Verified Purchase
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-slate-600 leading-relaxed italic">
+                    "{rev.comment}"
+                  </p>
                 </div>
-                <p className="text-slate-600 leading-relaxed italic">
-                  "{rev.comment}"
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

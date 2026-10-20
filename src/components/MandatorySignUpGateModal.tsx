@@ -107,7 +107,7 @@ export const MandatorySignUpGateModal: React.FC<MandatorySignUpGateModalProps> =
           </h3>
 
           <p className="text-xs text-slate-300 mt-1.5 max-w-xs mx-auto leading-relaxed">
-            Please register your parent profile to access <span className="text-white font-semibold underline">{actionTitle}</span> and unlock your 90-day download vault.
+            Please register your account profile to access <span className="text-white font-semibold underline">{actionTitle}</span> and unlock your 90-day download vault.
           </p>
         </div>
 

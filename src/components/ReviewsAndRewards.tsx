@@ -19,97 +19,6 @@ interface ReviewsAndRewardsProps {
   onExploreTemplates?: () => void;
 }
 
-const DIVERSE_DEFAULT_REVIEWS: UserReviewItem[] = [
-  {
-    id: 'rev-study',
-    author: 'Prof. Sarah Jenkins',
-    role: 'High School Educator & Parent',
-    categoryTag: 'Study Plans',
-    rating: 5,
-    date: '2 days ago',
-    comment: 'The single-page Study Planner and Weekly Timetable helped my students organize exam revision blocks without feeling overwhelmed. Prints crisp on standard A4 with zero ink bleed.',
-    verified: true,
-    templateUsed: 'Single-Page Study Planner'
-  },
-  {
-    id: 'rev-ledger',
-    author: 'Tariq Al-Mansoor',
-    role: 'Retail Store Proprietor',
-    categoryTag: 'Business Ledgers',
-    rating: 5,
-    date: '3 days ago',
-    comment: 'Customizing my Business Name, Address, and Contact at the top of the Business Ledger while keeping the debit/credit grid fixed saved me hours of design work. Simple and highly functional.',
-    verified: true,
-    templateUsed: 'Shop Ledger (Business Ledger & Sales Record)'
-  },
-  {
-    id: 'rev-puzzles',
-    author: 'Elena Rostova',
-    role: 'Mother of Two (Ages 6 & 8)',
-    categoryTag: 'Brain Puzzles',
-    rating: 5,
-    date: '4 days ago',
-    comment: 'The STEM Mazes and logic puzzles are completely screen-free entertainment for road trips. The difficulty curve is well-paced and kept my kids happily engaged for hours.',
-    verified: true,
-    templateUsed: 'Brain Puzzles & STEM Mazes'
-  },
-  {
-    id: 'rev-invoice',
-    author: 'Rashid Patel',
-    role: 'Wholesale Supplier & Trader',
-    categoryTag: 'Business Ledgers',
-    rating: 5,
-    date: '5 days ago',
-    comment: 'The Invoicing & Billing Receipt and Stock Inventory sheets print cleanly on Letter and A4. Entering our store header and tax number gives our customer receipts a professional look.',
-    verified: true,
-    templateUsed: 'Invoicing & Billing Receipt'
-  },
-  {
-    id: 'rev-chores',
-    author: 'David & Emily Vance',
-    role: 'Family Household Manager',
-    categoryTag: 'Home & Chores',
-    rating: 5,
-    date: '1 week ago',
-    comment: 'The Family Chore Board and 4-section Grocery List stopped our weekend supermarket chaos. We laminated the chore board for dry-erase markers and our kids love ticking their daily stars.',
-    verified: true,
-    templateUsed: 'Family Routine & Chore Board'
-  },
-  {
-    id: 'rev-ramadan',
-    author: 'Amina Qureshi',
-    role: 'Homeschooling Mother of Three',
-    categoryTag: 'Seasonal & Ramadan',
-    rating: 5,
-    date: '1 week ago',
-    comment: 'The Ramadan countdown calendar, good deeds tracker, and DIY holiday greeting cards made our family celebration extra special. Beautiful high-resolution vector artwork.',
-    verified: true,
-    templateUsed: 'Ramadan & Eid Celebration Kit'
-  },
-  {
-    id: 'rev-budget',
-    author: 'Chloe Martin',
-    role: 'Budget Coach & Parent',
-    categoryTag: 'Home & Chores',
-    rating: 5,
-    date: '10 days ago',
-    comment: 'The Monthly Budget Planner and 7-Day Meal Schedule keep our family expenses on track. Having clean single-page printables without clutter makes weekly planning seamless.',
-    verified: true,
-    templateUsed: 'Monthly Budget Planner'
-  },
-  {
-    id: 'rev-preschool',
-    author: 'Marcus Thorne',
-    role: 'Pre-K Early Learning Specialist',
-    categoryTag: 'Preschool & ABC',
-    rating: 5,
-    date: '2 weeks ago',
-    comment: 'Extra-thick dotted guide lines and cute animal tracing paths are perfect for early pencil grip development. My toddler asks to do two practice sheets every morning.',
-    verified: true,
-    templateUsed: 'Pre-K Animal Tracing Lines'
-  }
-];
-
 const CATEGORY_FILTERS = [
   'All Categories',
   'Study Plans',
@@ -133,22 +42,38 @@ export const ReviewsAndRewards: React.FC<ReviewsAndRewardsProps> = ({
     return 150; // Welcome reward points
   });
 
+  // Verified real reviews state (Zero fake placeholder reviews)
   const [reviewsList, setReviewsList] = useState<UserReviewItem[]>(() => {
     try {
       const saved = localStorage.getItem('fp_user_reviews_catalog');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge user-submitted reviews with our complete diverse catalog
-          const userSubmitted = parsed.filter(
-            (p: UserReviewItem) => !DIVERSE_DEFAULT_REVIEWS.some((d) => d.id === p.id)
-          );
-          return [...userSubmitted, ...DIVERSE_DEFAULT_REVIEWS];
+        if (Array.isArray(parsed)) {
+          // Filter out any legacy fake review IDs
+          return parsed.filter((r: UserReviewItem) => !r.id.startsWith('rev-study') && !r.id.startsWith('rev-ledger') && !r.id.startsWith('rev-puzzles') && !r.id.startsWith('rev-invoice') && !r.id.startsWith('rev-chores') && !r.id.startsWith('rev-ramadan') && !r.id.startsWith('rev-budget') && !r.id.startsWith('rev-preschool'));
         }
       }
     } catch {}
-    return DIVERSE_DEFAULT_REVIEWS;
+    return [];
   });
+
+  // Sync real reviews with backend API
+  React.useEffect(() => {
+    fetch('/api/reviews')
+      .then(res => res.json())
+      .then(data => {
+        if (data && Array.isArray(data.reviews) && data.reviews.length > 0) {
+          setReviewsList(prev => {
+            const map = new Map(prev.map(r => [r.id, r]));
+            data.reviews.forEach((r: any) => map.set(r.id, r));
+            const merged = Array.from(map.values());
+            localStorage.setItem('fp_user_reviews_catalog', JSON.stringify(merged));
+            return merged;
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Display controls for compact testimonials
   const [showAllReviews, setShowAllReviews] = useState<boolean>(false);
@@ -218,6 +143,11 @@ export const ReviewsAndRewards: React.FC<ReviewsAndRewardsProps> = ({
     setReviewsList(updatedList);
     try {
       localStorage.setItem('fp_user_reviews_catalog', JSON.stringify(updatedList));
+      fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newRev)
+      }).catch(() => {});
     } catch {}
 
     // Reset Form, collapse accordion, & Award 50 points
@@ -408,10 +338,19 @@ export const ReviewsAndRewards: React.FC<ReviewsAndRewardsProps> = ({
                 <h2 className="text-lg font-black text-slate-900">
                   Community Testimonials
                 </h2>
-                <span className="text-xs font-bold text-amber-900 bg-amber-100/80 px-2 py-0.5 rounded-md border border-amber-200 flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                  <span>4.9 / 5.0 Rating</span>
-                </span>
+                {reviewsList.length > 0 ? (
+                  <span className="text-xs font-bold text-amber-900 bg-amber-100/80 px-2 py-0.5 rounded-md border border-amber-200 flex items-center gap-1">
+                    <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                    <span>
+                      {(reviewsList.reduce((acc, r) => acc + r.rating, 0) / reviewsList.length).toFixed(1)} / 5.0 Rating ({reviewsList.length} reviews)
+                    </span>
+                  </span>
+                ) : (
+                  <span className="text-xs font-bold text-indigo-900 bg-indigo-50 px-2.5 py-0.5 rounded-md border border-indigo-200 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-indigo-600" />
+                    <span>Verified Community Feedback</span>
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
                 Authentic feedback across all printables, study plans, business ledgers, puzzles &amp; greeting cards.
@@ -419,10 +358,34 @@ export const ReviewsAndRewards: React.FC<ReviewsAndRewardsProps> = ({
             </div>
           </div>
 
-          {/* Compact 2-Column Grid (Zero Horizontal Scrolling) */}
-
-          {/* Compact 2-Column Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          {/* Compact 2-Column Grid or Empty State */}
+          {displayedReviews.length === 0 ? (
+            <div className="bg-white rounded-3xl p-8 border border-dashed border-slate-200 text-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto shadow-xs">
+                <Star className="w-6 h-6 fill-amber-500" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-sm font-extrabold text-slate-800">
+                  No community reviews submitted yet
+                </h4>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  Be the first to share your feedback about our printables or digital planners and receive 50 Reward Points!
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsReviewFormOpen(true);
+                  const el = document.getElementById('submit-review-form');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-xs cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <span>✍️ Write the First Review (+50 Pts)</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {displayedReviews.map((rev) => (
               <div
                 key={rev.id}
@@ -471,6 +434,7 @@ export const ReviewsAndRewards: React.FC<ReviewsAndRewardsProps> = ({
               </div>
             ))}
           </div>
+        )}
 
           {/* Compact Show More / Show Less Toggle (Show only 2 short testimonials by default) */}
           {reviewsList.length > 2 && (
