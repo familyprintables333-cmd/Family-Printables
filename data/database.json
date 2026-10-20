@@ -1,0 +1,17 @@
+{
+  "products": [],
+  "categories": [],
+  "reviews": [],
+  "settings": {
+    "payoneerEmail": "merchant.payments@familyprintables.com",
+    "payoneerAccountId": "PAY-8829-4102",
+    "receivingAccountNumber": "984210384729",
+    "routingNumber": "021000021",
+    "bankName": "First Century Bank (US Receiving Account)",
+    "gatewayMode": "test",
+    "currency": "USD"
+  },
+  "deletedProductIds": [],
+  "deletedCategoryIds": [],
+  "lastUpdated": 1792497190838
+}

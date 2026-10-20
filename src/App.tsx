@@ -34,6 +34,16 @@ import { createAccessGrant, getProductAccessStatus, AccessGrant } from './utils/
 import { getActiveSession, saveActiveSession, clearActiveSession, recordCompletedPurchase } from './utils/authStorage';
 import { trackMonetizationEvent } from './utils/monetization';
 import { ensureGumroadScriptLoaded } from './utils/gumroad';
+import { downloadProductFileOffline } from './utils/offlineDownload';
+import { MediaPlayerModal } from './components/MediaPlayerModal';
+import { 
+  fetchServerProducts, 
+  performFullSync, 
+  subscribeToSyncEvents, 
+  getLocalDeletedProductIds, 
+  filterDeletedProducts,
+  syncSaveProduct
+} from './utils/syncService';
 import { 
   Sparkles, 
   ShieldCheck, 
@@ -85,23 +95,26 @@ export default function App() {
     return CATEGORIES;
   });
 
-  // Persistent Products with custom flexible price support
+  // Persistent Products with custom flexible price support & permanent deletion guarantee
   const [products, setProducts] = useState<Product[]>(() => {
+    const deletedSet = new Set(getLocalDeletedProductIds());
     try {
       const saved = localStorage.getItem('fp_custom_products');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((p: Product) => {
-            if (p.category === 'routines' && p.categoryLabel === 'Family Routines & Visual Timetables') {
-              return { ...p, categoryLabel: 'Elite Planners & Digital Guides' };
-            }
-            return p;
-          });
+          return parsed
+            .filter((p: Product) => !deletedSet.has(p.id))
+            .map((p: Product) => {
+              if (p.category === 'routines' && p.categoryLabel === 'Family Routines & Visual Timetables') {
+                return { ...p, categoryLabel: 'Elite Planners & Digital Guides' };
+              }
+              return p;
+            });
         }
       }
     } catch {}
-    return PRODUCTS;
+    return PRODUCTS.filter(p => !deletedSet.has(p.id));
   });
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<CategoryId | null>(null);
@@ -168,6 +181,60 @@ export default function App() {
     ensureGumroadScriptLoaded();
   }, []);
 
+  // Active cross-device synchronization (laptop <-> mobile) and permanent deletion tracking
+  useEffect(() => {
+    // 1. Initial server fetch to sync updates across devices
+    fetchServerProducts(PRODUCTS).then((serverProds) => {
+      if (serverProds && serverProds.length > 0) {
+        setProducts(serverProds);
+      }
+    });
+
+    // 2. Real-time multi-tab & cross-window sync listener
+    const unsubscribe = subscribeToSyncEvents((event) => {
+      if (event.type === 'PRODUCT_SAVED') {
+        setProducts((prev) => {
+          const idx = prev.findIndex((p) => p.id === event.product.id);
+          if (idx !== -1) {
+            const next = [...prev];
+            next[idx] = event.product;
+            return next;
+          }
+          return [event.product, ...prev];
+        });
+      } else if (event.type === 'PRODUCT_DELETED') {
+        setProducts((prev) => prev.filter((p) => p.id !== event.productId));
+      } else if (event.type === 'STORAGE_UPDATED') {
+        const deletedSet = new Set(getLocalDeletedProductIds());
+        try {
+          const saved = localStorage.getItem('fp_custom_products');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) {
+              setProducts(parsed.filter((p: Product) => !deletedSet.has(p.id)));
+            }
+          }
+        } catch {}
+      }
+    });
+
+    // 3. Sync when window regains focus or comes back online
+    const handleSync = () => {
+      performFullSync(products, (data) => {
+        if (data.products) setProducts(data.products);
+      });
+    };
+
+    window.addEventListener('focus', handleSync);
+    window.addEventListener('online', handleSync);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('focus', handleSync);
+      window.removeEventListener('online', handleSync);
+    };
+  }, []);
+
   // Synchronize High-Impact SEO Page Titles & Meta Descriptions across Views
   useEffect(() => {
     let title = 'Smart Digital Printables for Families & Business | Family Printables';
@@ -231,6 +298,7 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isContactSupportOpen, setIsContactSupportOpen] = useState(false);
   const [reviewProduct, setReviewProduct] = useState<Product | null>(null);
+  const [activeMediaProduct, setActiveMediaProduct] = useState<Product | null>(null);
 
   // Mandatory Sign-Up Gate State (Requires Full Name & Gmail before any download or print)
   const [isSignUpGateOpen, setIsSignUpGateOpen] = useState(false);
@@ -394,25 +462,18 @@ export default function App() {
       return;
     }
 
-    const content = `==========================================================\nFAMILY PRINTABLES - VAULT SECURE DOWNLOAD\n==========================================================\nProduct: ${product.title}\nCategory: ${product.categoryLabel}\nTarget Age: ${product.targetAge}\nFormat: Standard A4 & Universal PDF (300 DPI)\nStatus: UNLOCKED FOR ${currentAccount.name || 'CUSTOMER'} (${currentAccount.email})\nAccess Duration: 3 Months (90 Days) - ${accessStatus.daysRemaining} days remaining\nPrice Paid: $${product.priceUSD.toFixed(2)} USD\nVerification: 100% CONFIRMED REGISTERED ACCOUNT\n\nPRINTING GUIDE:\n1. Open in free Adobe Acrobat Reader or mobile browser.\n2. In printer settings, set Scale to 100% (Actual Size).\n3. Recommended paper: 28lb to 32lb bright white paper, or 65lb cardstock.\n4. For reusable dry-erase activities, slip sheets into plastic protectors or laminate.\n\nThank you for choosing Family Printables!\n==========================================================`;
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${product.title.replace(/[^a-zA-Z0-9]/g, '_')}_A4_Download.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
+    // 100% Offline in-memory Standard A4 300 DPI PDF generation with zero network requests
+    downloadProductFileOffline(product, 'Standard_A4_PDF');
   };
 
   const handleFreeDownload = (product: Product) => {
-    requireAuthGate('download', product.title, (authAccount) => {
-      executeDownload(product, authAccount);
-    });
+    // Direct, smooth automatic download without Gumroad 404 checkout errors
+    downloadProductFileOffline(product, 'Standard_A4_PDF');
   };
 
-  // Reviews submission
+  // Product-specific review submission with cross-device sync
   const handleAddReview = (productId: string, review: UserReview) => {
+    let updatedProduct: Product | undefined;
     const updated = products.map((p) => {
       if (p.id !== productId) return p;
       const currentReviews = p.userReviews || [];
@@ -420,21 +481,33 @@ export default function App() {
       const avgRating = parseFloat(
         (updatedReviews.reduce((sum, r) => sum + r.rating, 0) / updatedReviews.length).toFixed(1)
       );
-      return {
+      updatedProduct = {
         ...p,
         rating: avgRating,
-        reviewsCount: p.reviewsCount + 1,
+        reviewsCount: updatedReviews.length,
         userReviews: updatedReviews
       };
+      return updatedProduct;
     });
     setProducts(updated);
     try {
       localStorage.setItem('fp_custom_products', JSON.stringify(updated));
     } catch {}
 
+    if (updatedProduct) {
+      syncSaveProduct(updatedProduct);
+    }
+
+    // Persist review to server
+    fetch('/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...review, productId })
+    }).catch(() => {});
+
     trackMonetizationEvent(
       'review_submitted',
-      `Verified Parent Review: ${review.author || 'User'}`,
+      `Verified Customer Review: ${review.author || 'User'}`,
       0.10,
       `Rated ${review.rating} Stars`
     );
@@ -652,14 +725,6 @@ export default function App() {
                     </div>
                   </div>
                 </section>
-
-                {/* Ratings, Reviews & Rewards Showcase Section */}
-                <section className="border-t border-slate-200">
-                  <ReviewsAndRewards
-                    onPointsUpdated={(newPts) => setUserPoints(newPts)}
-                    onExploreTemplates={() => handleTabChange('studio')}
-                  />
-                </section>
               </div>
             )}
           </div>
@@ -719,11 +784,19 @@ export default function App() {
         onInstantBuy={handleInstantBuy}
         onOpenReviews={(p) => setReviewProduct(p)}
         onFreeDownload={handleFreeDownload}
+        onPlayMedia={(p) => setActiveMediaProduct(p)}
+        onAddReview={handleAddReview}
         isPurchased={selectedProduct ? account.purchasedProductIds.includes(selectedProduct.id) : false}
         isUnlocked={selectedProduct ? getProductAccessStatus(selectedProduct.id, account).isUnlocked : false}
         isExpired={selectedProduct ? getProductAccessStatus(selectedProduct.id, account).isExpired : false}
         daysRemaining={selectedProduct ? getProductAccessStatus(selectedProduct.id, account).daysRemaining : 0}
         currency={currency}
+      />
+
+      {/* Built-In In-App Audio & Video Player Modal */}
+      <MediaPlayerModal
+        product={activeMediaProduct}
+        onClose={() => setActiveMediaProduct(null)}
       />
 
       <CartDrawer
@@ -764,6 +837,7 @@ export default function App() {
           requireAuthGate(type, 'Vault Item Download', callback);
         }}
         logoUrl={logoUrl}
+        onOpenTimetableStudio={() => handleTabChange('studio')}
       />
 
       {/* Mandatory Sign-Up Gate Modal (Full Name + Gmail required before download/print) */}
@@ -847,10 +921,10 @@ export default function App() {
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
-            title="Browse Catalog"
+            title="Curated Collections"
           >
             <LayoutGrid className="w-4 h-4 shrink-0" />
-            <span className="text-[10px] sm:text-xs font-bold leading-none tracking-tight whitespace-nowrap">Catalog</span>
+            <span className="text-[10px] sm:text-xs font-bold leading-none tracking-tight whitespace-nowrap">Collections</span>
           </button>
 
           {/* 2. Downloads Vault */}
