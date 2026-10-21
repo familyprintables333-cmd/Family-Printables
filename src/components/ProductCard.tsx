@@ -210,51 +210,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <span>Download Free PDF</span>
               </button>
             ) : isExpired ? (
-              /* If Paid Expired item: Gumroad checkout to renew */
-              <a
-                href={resolveProductGumroadUrl(product)}
-                data-gumroad-single-product="true"
-                className="gumroad-button px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-amber-600 via-rose-600 to-pink-600 hover:from-amber-500 hover:to-rose-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap cursor-pointer no-underline"
-                title="Renew access for another 90 days via Gumroad"
-                onClick={(e) => {
-                  if (!(window as any).GumroadOverlay && !resolveProductGumroadUrl(product).includes('gumroad.com')) {
-                    e.preventDefault();
-                    onInstantBuy(product);
-                  }
-                }}
+              /* If Paid Expired item: In-app checkout modal to renew */
+              <button
+                type="button"
+                onClick={() => onInstantBuy(product)}
+                className="px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-amber-600 via-rose-600 to-pink-600 hover:from-amber-500 hover:to-rose-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+                title="Renew access for another 90 days via in-app checkout"
               >
                 <Clock className="w-3.5 h-3.5 text-amber-100" />
                 <span>Renew Access ✨</span>
-              </a>
+              </button>
             ) : canDownload ? (
               /* If Paid Unlocked item */
               <button
                 type="button"
                 onClick={() => onFreeDownload && onFreeDownload(product)}
-                className="px-4 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap"
+                className="px-4 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
                 title={`Download File · ${daysRemaining} days access remaining`}
               >
                 <Download className="w-4 h-4" />
                 <span>Download File</span>
               </button>
             ) : (
-              /* If Paid / Locked: Show proper locked badge & securely bind active Gumroad checkout URL */
-              <a
-                href={resolveProductGumroadUrl(product)}
-                data-gumroad-single-product="true"
-                className="gumroad-button px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 active:scale-95 rounded-xl transition-all shadow-md hover:shadow-emerald-600/30 flex items-center gap-1.5 whitespace-nowrap cursor-pointer no-underline"
-                title={`Unlock and purchase for ${formatCurrency(product.priceUSD, currency)} via secure Gumroad overlay`}
-                onClick={(e) => {
-                  if (!(window as any).GumroadOverlay && !resolveProductGumroadUrl(product).includes('gumroad.com')) {
-                    e.preventDefault();
-                    onInstantBuy(product);
-                  }
-                }}
+              /* If Paid / Locked: Open seamless in-app modal checkout (Gumroad / Stripe / Card) */
+              <button
+                type="button"
+                onClick={() => onInstantBuy(product)}
+                className="px-4 py-2.5 text-xs font-black text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 active:scale-95 rounded-xl transition-all shadow-md hover:shadow-emerald-600/30 flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+                title={`Unlock and purchase for ${formatCurrency(product.priceUSD, currency)} via in-app checkout`}
               >
                 <Lock className="w-3.5 h-3.5 text-emerald-100" />
-                <span>Buy Now ✨</span>
-              </a>
+                <span>Buy Now · {formatCurrency(product.priceUSD, currency)}</span>
+              </button>
             )}
+
           </div>
         </div>
       </div>

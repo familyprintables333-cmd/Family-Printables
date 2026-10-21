@@ -39,9 +39,10 @@ import {
   Play,
   Video,
   X,
-  Search
+  Search,
+  Share2
 } from 'lucide-react';
-import { Product, MerchantSettings, Order, CategoryId, CategoryInfo } from '../types';
+import { Product, MerchantSettings, Order, CategoryId, CategoryInfo, SocialLinks, CustomCodeSettings } from '../types';
 import { CATEGORIES } from '../data/categories';
 import { IMAGES, resolveImageUrl } from '../assets/images';
 import { generateCompleteLayoutHtml } from '../utils/generateLayoutHtml';
@@ -65,7 +66,8 @@ import {
   saveStoredHtmlSnippets, 
   HtmlSnippetRecord 
 } from '../utils/gumroad';
-import { syncSaveProduct, syncDeleteProduct } from '../utils/syncService';
+import { syncSaveProduct, syncDeleteProduct, syncSaveSettings } from '../utils/syncService';
+import { DEFAULT_SOCIAL } from './Footer';
 
 interface AdminPortalProps {
   products: Product[];
@@ -137,7 +139,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     return existing;
   });
   const [htmlSnippets, setHtmlSnippets] = useState<HtmlSnippetRecord[]>(() => getStoredHtmlSnippets());
-  const [editorSubTab, setEditorSubTab] = useState<'gumroad' | 'snippets' | 'html-export'>('gumroad');
+  const [editorSubTab, setEditorSubTab] = useState<'gumroad' | 'custom-code' | 'snippets' | 'html-export'>('gumroad');
   const [gumroadFilterSearch, setGumroadFilterSearch] = useState('');
   const [isAddingSnippet, setIsAddingSnippet] = useState(false);
   const [newSnippetTitle, setNewSnippetTitle] = useState('');
@@ -178,6 +180,30 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const [tempLogo, setTempLogo] = useState(logoUrl);
   const [newPasscode, setNewPasscode] = useState('');
   const [hasCopiedCode, setHasCopiedCode] = useState(false);
+
+  // Social Media Links (Pinterest, Instagram, Facebook, Amazon, Etsy)
+  const [socialLinksForm, setSocialLinksForm] = useState<SocialLinks>(() => {
+    if (merchantSettings.socialLinks) {
+      return { ...DEFAULT_SOCIAL, ...merchantSettings.socialLinks };
+    }
+    try {
+      const saved = localStorage.getItem('fp_social_links');
+      if (saved) return { ...DEFAULT_SOCIAL, ...JSON.parse(saved) };
+    } catch {}
+    return DEFAULT_SOCIAL;
+  });
+
+  // Custom CSS, JS, and HTML Header Injection
+  const [customCodeForm, setCustomCodeForm] = useState<CustomCodeSettings>(() => {
+    if (merchantSettings.customCode) {
+      return { customCss: '', customJs: '', customHeadHtml: '', ...merchantSettings.customCode };
+    }
+    try {
+      const saved = localStorage.getItem('fp_custom_code');
+      if (saved) return { customCss: '', customJs: '', customHeadHtml: '', ...JSON.parse(saved) };
+    } catch {}
+    return { customCss: '', customJs: '', customHeadHtml: '' };
+  });
 
   const showToast = (msg: string) => {
     setSuccessToast(msg);
@@ -876,8 +902,52 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                         </div>
                       </div>
 
+                      {/* Direct Gumroad Checkout URL Input Field for Store Owner */}
+                      <div className="flex flex-col flex-1 min-w-[220px] max-w-sm">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center justify-between">
+                          <span>Gumroad Checkout URL:</span>
+                          {(productGumroadMap[p.id] || p.gumroadUrl) ? (
+                            <span className="text-[9px] text-pink-600 font-bold bg-pink-50 px-1 rounded border border-pink-200">Linked</span>
+                          ) : (
+                            <span className="text-[9px] text-slate-400 font-normal">Unlinked</span>
+                          )}
+                        </label>
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="url"
+                            value={productGumroadMap[p.id] !== undefined ? productGumroadMap[p.id] : (p.gumroadUrl || '')}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setProductGumroadMap(prev => ({ ...prev, [p.id]: val }));
+                            }}
+                            placeholder="https://gumroad.com/l/your-product"
+                            className="w-full px-2.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono text-slate-900 focus:bg-white focus:ring-2 focus:ring-pink-500"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const targetUrl = (productGumroadMap[p.id] !== undefined ? productGumroadMap[p.id] : (p.gumroadUrl || '')).trim();
+                              const updated = products.map(prod => prod.id === p.id ? { ...prod, gumroadUrl: targetUrl } : prod);
+                              onUpdateProducts(updated);
+                              try {
+                                localStorage.setItem('fp_custom_products', JSON.stringify(updated));
+                              } catch {}
+                              const updatedProd = updated.find(prod => prod.id === p.id);
+                              if (updatedProd) syncSaveProduct(updatedProd);
+                              saveAllGumroadUrls({ ...productGumroadMap, [p.id]: targetUrl });
+                              showToast(`Saved Gumroad checkout URL for "${p.title}"!`);
+                            }}
+                            className="px-2.5 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-xs font-bold transition shrink-0 cursor-pointer shadow-xs"
+                            title="Save Gumroad checkout URL for this workbook"
+                          >
+                            Save Link
+                          </button>
+                        </div>
+                      </div>
+
                       {/* 1-Click Toggles */}
                       <div className="flex items-center gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 shrink-0">
+
                         {/* Free vs Paid Toggle */}
                         <button
                           type="button"
@@ -2283,9 +2353,123 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 </button>
               </div>
 
+              {/* Social Media & Marketplace URLs (Pinterest, Instagram, Facebook, Amazon, Etsy) */}
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                  <div>
+                    <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                      <Share2 className="w-5 h-5 text-indigo-600" />
+                      <span>Social Media &amp; Marketplace Profiles</span>
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Configure live URLs for Pinterest, Instagram, Facebook, Amazon KDP, and Etsy. These sync globally across devices to all footer and store links.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updatedSettings = {
+                        ...merchantSettings,
+                        socialLinks: socialLinksForm
+                      };
+                      onUpdateMerchantSettings(updatedSettings);
+                      try {
+                        localStorage.setItem('fp_social_links', JSON.stringify(socialLinksForm));
+                        localStorage.setItem('fp_merchant_settings', JSON.stringify(updatedSettings));
+                        window.dispatchEvent(new Event('storage'));
+                      } catch {}
+                      syncSaveSettings(updatedSettings);
+                      showToast('Social media & marketplace profiles saved and synced across all devices!');
+                    }}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Save &amp; Sync Social Links</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                  {/* Pinterest */}
+                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                    <label className="font-bold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#E60023]" />
+                      <span>Pinterest Profile URL:</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={socialLinksForm.pinterest}
+                      onChange={(e) => setSocialLinksForm({ ...socialLinksForm, pinterest: e.target.value })}
+                      placeholder="https://www.pinterest.com/your-brand"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
+                    />
+                  </div>
+
+                  {/* Instagram */}
+                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                    <label className="font-bold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#E1306C]" />
+                      <span>Instagram Profile URL:</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={socialLinksForm.instagram}
+                      onChange={(e) => setSocialLinksForm({ ...socialLinksForm, instagram: e.target.value })}
+                      placeholder="https://www.instagram.com/your-brand"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
+                    />
+                  </div>
+
+                  {/* Facebook */}
+                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                    <label className="font-bold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#1877F2]" />
+                      <span>Facebook Page URL:</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={socialLinksForm.facebook}
+                      onChange={(e) => setSocialLinksForm({ ...socialLinksForm, facebook: e.target.value })}
+                      placeholder="https://www.facebook.com/your-brand"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
+                    />
+                  </div>
+
+                  {/* Amazon KDP */}
+                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                    <label className="font-bold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF9900]" />
+                      <span>Amazon KDP Store URL:</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={socialLinksForm.amazon}
+                      onChange={(e) => setSocialLinksForm({ ...socialLinksForm, amazon: e.target.value })}
+                      placeholder="https://www.amazon.com/author/your-brand"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
+                    />
+                  </div>
+
+                  {/* Etsy */}
+                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 md:col-span-2 lg:col-span-2">
+                    <label className="font-bold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#F1641E]" />
+                      <span>Etsy Merchant Shop URL:</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={socialLinksForm.etsy}
+                      onChange={(e) => setSocialLinksForm({ ...socialLinksForm, etsy: e.target.value })}
+                      placeholder="https://www.etsy.com/shop/your-shop"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         )}
+
 
         {/* ================================================================ */}
         {/* TAB 8: ADMIN HTML & LINK EDITOR (GUMROAD + SNIPPETS + EXPORT)    */}
@@ -2320,6 +2504,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                   <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-pink-100 text-pink-700 font-bold">
                     {products.length}
                   </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setEditorSubTab('custom-code')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+                    editorSubTab === 'custom-code'
+                      ? 'bg-white text-indigo-600 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <Code className="w-4 h-4 text-purple-500" />
+                  <span>Custom CSS &amp; JS</span>
                 </button>
 
                 <button
@@ -2443,10 +2640,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                           try {
                             localStorage.setItem('fp_custom_products', JSON.stringify(updated));
                           } catch {}
-                          showToast('All Gumroad product URLs saved & synced successfully!');
+                          fetch('/api/products', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ products: updated })
+                          }).catch(() => {});
+                          showToast('All Gumroad product URLs saved & synced to backend successfully!');
                         }}
                         className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 shrink-0 cursor-pointer"
                       >
+
                         <Save className="w-4 h-4" />
                         <span>Save All Links</span>
                       </button>
@@ -2556,9 +2759,129 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             )}
 
             {/* ------------------------------------------------------------ */}
-            {/* SUB-TAB 2: CUSTOM HTML & CODE SNIPPETS EDITOR                */}
+            {/* SUB-TAB 2: DEDICATED CUSTOM CSS & JS BACKEND CODE EDITOR     */}
+            {/* ------------------------------------------------------------ */}
+            {editorSubTab === 'custom-code' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                      <Code className="w-5 h-5 text-purple-600" />
+                      <span>Custom CSS &amp; JavaScript Backend Code Editor</span>
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Inject custom CSS stylesheets and JavaScript directly from the backend. Saved changes persist globally across devices and apply live.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updatedSettings = {
+                        ...merchantSettings,
+                        customCode: customCodeForm
+                      };
+                      onUpdateMerchantSettings(updatedSettings);
+                      try {
+                        localStorage.setItem('fp_custom_code', JSON.stringify(customCodeForm));
+                        localStorage.setItem('fp_merchant_settings', JSON.stringify(updatedSettings));
+                      } catch {}
+                      syncSaveSettings(updatedSettings);
+
+                      // Dynamically update DOM stylesheet
+                      let styleEl = document.getElementById('fp-custom-css');
+                      if (customCodeForm.customCss) {
+                        if (!styleEl) {
+                          styleEl = document.createElement('style');
+                          styleEl.id = 'fp-custom-css';
+                          document.head.appendChild(styleEl);
+                        }
+                        styleEl.textContent = customCodeForm.customCss;
+                      } else if (styleEl) {
+                        styleEl.remove();
+                      }
+
+                      showToast('Custom CSS, JavaScript, and Header HTML saved and synced live!');
+                    }}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 shrink-0 cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Save &amp; Apply Code</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* 1. Custom CSS Stylesheet Editor */}
+                  <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-black text-slate-900 text-sm flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full bg-blue-500" />
+                        <span>Custom CSS Stylesheet (.css)</span>
+                      </h4>
+                      <span className="text-[10px] text-slate-400 font-mono">Live Injected</span>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Override typography, banner colors, animations, or layout styling without redeploying.
+                    </p>
+                    <textarea
+                      rows={12}
+                      value={customCodeForm.customCss || ''}
+                      onChange={(e) => setCustomCodeForm({ ...customCodeForm, customCss: e.target.value })}
+                      placeholder="/* Custom CSS Rules */&#10;:root {&#10;  --brand-primary: #4f46e5;&#10;}&#10;footer {&#10;  /* Custom footer overrides */&#10;}"
+                      className="w-full px-4 py-3 bg-slate-900 text-cyan-300 font-mono text-xs rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 leading-relaxed"
+                    />
+                  </div>
+
+                  {/* 2. Custom JavaScript Code Editor */}
+                  <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-black text-slate-900 text-sm flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full bg-amber-500" />
+                        <span>Custom JavaScript Snippet (.js)</span>
+                      </h4>
+                      <span className="text-[10px] text-slate-400 font-mono">Client Runtime</span>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Add marketing analytics, event trackers, conversion hooks, or custom button behavior.
+                    </p>
+                    <textarea
+                      rows={12}
+                      value={customCodeForm.customJs || ''}
+                      onChange={(e) => setCustomCodeForm({ ...customCodeForm, customJs: e.target.value })}
+                      placeholder="// Custom JavaScript&#10;window.addEventListener('DOMContentLoaded', () => {&#10;  console.log('Family Printables Custom JS Loaded');&#10;});"
+                      className="w-full px-4 py-3 bg-slate-900 text-amber-300 font-mono text-xs rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 leading-relaxed"
+                    />
+                  </div>
+
+                  {/* 3. Custom Head HTML Meta Tags */}
+                  <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3 lg:col-span-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-black text-slate-900 text-sm flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full bg-emerald-500" />
+                        <span>Custom Head HTML &amp; External Verification Meta Tags</span>
+                      </h4>
+                      <span className="text-[10px] text-slate-400 font-mono">&lt;head&gt; Injection</span>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Pinterest verification tags (<code className="text-pink-600 bg-slate-100 px-1 rounded">&lt;meta name="p:domain_verify" ... /&gt;</code>), Google Search Console verification, or custom font links.
+                    </p>
+                    <textarea
+                      rows={6}
+                      value={customCodeForm.customHeadHtml || ''}
+                      onChange={(e) => setCustomCodeForm({ ...customCodeForm, customHeadHtml: e.target.value })}
+                      placeholder="<!-- Pinterest Domain Verification / Analytics -->&#10;<meta name=&quot;p:domain_verify&quot; content=&quot;your_pinterest_verification_code&quot; />"
+                      className="w-full px-4 py-3 bg-slate-900 text-emerald-300 font-mono text-xs rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 leading-relaxed"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ------------------------------------------------------------ */}
+            {/* SUB-TAB 3: CUSTOM HTML & CODE SNIPPETS EDITOR                */}
             {/* ------------------------------------------------------------ */}
             {editorSubTab === 'snippets' && (
+
               <div className="space-y-6">
                 {/* Header & Add Snippet Trigger */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -2848,6 +3171,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       <span>{hasCopiedCode ? 'Copied to Clipboard!' : 'Copy Complete HTML'}</span>
                     </button>
 
+                    <a
+                      href="/family-printables-production.zip"
+                      download="family-printables-production.zip"
+                      className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer no-underline"
+                      title="Download complete ready-to-deploy zip bundle"
+                    >
+                      <Download className="w-4 h-4 text-emerald-200" />
+                      <span>📦 Download Deployable ZIP</span>
+                    </a>
+
                     <button
                       type="button"
                       onClick={() => {
@@ -2868,6 +3201,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </button>
                   </div>
                 </div>
+
 
                 <div className="pt-2">
                   <textarea

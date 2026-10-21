@@ -126,6 +126,20 @@ export interface UserAccount {
   isAuthenticated?: boolean;
 }
 
+export interface SocialLinks {
+  pinterest: string;
+  instagram: string;
+  facebook: string;
+  amazon: string;
+  etsy: string;
+}
+
+export interface CustomCodeSettings {
+  customCss?: string;
+  customJs?: string;
+  customHeadHtml?: string;
+}
+
 export interface MerchantSettings {
   payoneerEmail: string;
   payoneerAccountId: string;
@@ -136,4 +150,7 @@ export interface MerchantSettings {
   currency: string;
   stripePublishableKey?: string;
   stripeConnected?: boolean;
+  socialLinks?: SocialLinks;
+  customCode?: CustomCodeSettings;
 }
+

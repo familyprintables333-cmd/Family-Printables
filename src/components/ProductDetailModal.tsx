@@ -295,22 +295,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   ) : (
                     /* Paid / Locked item: Securely bind Gumroad checkout URL */
                     <>
-                      <a
-                        href={resolveProductGumroadUrl(product)}
-                        data-gumroad-single-product="true"
-                        className="gumroad-button w-full py-3.5 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer no-underline text-center"
-                        title="Instant Buy & Download with Secure Gumroad Overlay"
-                        onClick={(e) => {
-                          if (!(window as any).GumroadOverlay && !resolveProductGumroadUrl(product).includes('gumroad.com')) {
-                            e.preventDefault();
-                            onInstantBuy(product);
-                            onClose();
-                          }
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onInstantBuy(product);
+                          onClose();
                         }}
+                        className="w-full py-3.5 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer text-center"
+                        title="Instant Buy & Download via Secure In-App Checkout"
                       >
                         <Lock className="w-5 h-5 text-emerald-200" />
                         <span>Instant Buy &amp; Download · {displayPrice}</span>
-                      </a>
+                      </button>
 
                       <button
                         type="button"

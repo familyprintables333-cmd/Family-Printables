@@ -349,6 +349,22 @@ export default function App() {
   // Multi-Currency (USD, INR, PKR, EUR, GBP, AED, CAD)
   const [currency, setCurrency] = useState(() => merchantSettings.currency || 'USD');
 
+  // Dynamically apply Custom CSS injected via Admin Portal
+  useEffect(() => {
+    const css = merchantSettings.customCode?.customCss;
+    let styleEl = document.getElementById('fp-custom-css');
+    if (css && css.trim()) {
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'fp-custom-css';
+        document.head.appendChild(styleEl);
+      }
+      styleEl.textContent = css;
+    } else if (styleEl) {
+      styleEl.remove();
+    }
+  }, [merchantSettings.customCode?.customCss]);
+
   // Global Brand Logo state (persists in localStorage)
   const [logoUrl, setLogoUrl] = useState<string>(() => {
     try {
@@ -601,6 +617,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-[#f9fafb] text-slate-800 font-sans pb-16 md:pb-0">
       {/* PWA Home-Screen Install Banner for Android and iOS */}
       <PWAInstallBanner />
+
 
       {/* Top Banner Notice: Free Delivery & Standard Info */}
       <div className="bg-slate-900 text-slate-300 px-4 py-2 text-xs flex items-center justify-between border-b border-slate-800">
