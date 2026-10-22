@@ -80,17 +80,15 @@ export const fetchServerProducts = async (fallbackProducts: Product[]): Promise<
         }
 
         const serverProducts = data.products;
-        if (serverProducts.length > 0) {
-          const cleaned = filterDeletedProducts(serverProducts);
-          try {
-            localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(cleaned));
-          } catch {}
-          return cleaned;
-        }
+        const cleaned = filterDeletedProducts(serverProducts);
+        try {
+          localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(cleaned));
+        } catch {}
+        return cleaned;
       }
     }
   } catch (err) {
-    // Silent fallback
+    // Offline safe
   }
 
   return centralStore.getProducts();
@@ -274,7 +272,14 @@ export const fetchServerCategories = async (fallbackCategories: CategoryInfo[]):
     const isJson = res.headers.get('content-type')?.includes('application/json');
     if (res.ok && isJson) {
       const data = await res.json();
-      if (data && Array.isArray(data.categories) && data.categories.length > 0) {
+      if (data && Array.isArray(data.categories)) {
+        if (Array.isArray(data.deletedCategoryIds)) {
+          const currentDeleted = centralStore.getDeletedCategoryIds();
+          const mergedDeleted = Array.from(new Set([...currentDeleted, ...data.deletedCategoryIds]));
+          try {
+            localStorage.setItem('fp_deleted_category_ids', JSON.stringify(mergedDeleted));
+          } catch {}
+        }
         try {
           localStorage.setItem(STORAGE_CATEGORIES_KEY, JSON.stringify(data.categories));
         } catch {}

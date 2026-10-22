@@ -54,7 +54,7 @@ import {
   subscribeToCloudSettings,
   seedCloudDatabaseIfEmpty 
 } from './lib/firebase';
-import { DEFAULT_STORE_SETTINGS } from './data/centralStore';
+import { centralStore, DEFAULT_STORE_SETTINGS } from './data/centralStore';
 import { 
   Sparkles, 
   ShieldCheck, 
@@ -200,20 +200,23 @@ export default function App() {
 
     // 2. Real-time Cloud Firestore subscriptions (instantly syncs across all devices globally)
     const unsubProducts = subscribeToCloudProducts((cloudProducts) => {
-      if (cloudProducts && cloudProducts.length > 0) {
+      if (Array.isArray(cloudProducts)) {
         setProducts(cloudProducts);
+        centralStore.setProductsFromCloud(cloudProducts);
       }
     });
 
     const unsubCategories = subscribeToCloudCategories((cloudCategories) => {
-      if (cloudCategories && cloudCategories.length > 0) {
+      if (Array.isArray(cloudCategories)) {
         setCategories(cloudCategories);
+        centralStore.setCategoriesFromCloud(cloudCategories);
       }
     });
 
     const unsubSettings = subscribeToCloudSettings((cloudSettings) => {
       if (cloudSettings) {
         setMerchantSettings((prev) => ({ ...prev, ...cloudSettings }));
+        centralStore.setSettingsFromCloud(cloudSettings);
         if (cloudSettings.logoUrl) {
           setLogoUrl(cloudSettings.logoUrl);
         }

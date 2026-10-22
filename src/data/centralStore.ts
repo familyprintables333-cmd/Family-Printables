@@ -4,12 +4,10 @@
  * ============================================================================
  * 
  * Provides:
- * 1. Self-contained, production-ready master catalog of products & categories
- *    bundled directly within the core Vite build (0ms load, zero external fetch required).
- * 2. Complete store settings (branding, social links, payment gateways, payout details).
- * 3. Reactive client-side persistent storage with automatic localStorage sync.
- * 4. Transparent API synchronization when running with Express, with graceful
- *    zero-error fallback on static deployment platforms like Vercel.
+ * 1. Persistent state management for Products, Categories, and Settings.
+ * 2. Strict non-resurrection: Admin deletions are PERMANENT and never overridden
+ *    by hardcoded base items upon reload.
+ * 3. Transparent synchronization with Cloud Firestore and Server DB.
  * ============================================================================
  */
 
@@ -23,9 +21,10 @@ export const CATEGORIES: CategoryInfo[] = catalogData.categories as CategoryInfo
 
 export const STORAGE_PRODUCTS_KEY = 'fp_custom_products';
 export const STORAGE_DELETED_PRODUCTS_KEY = 'fp_deleted_product_ids';
+export const STORAGE_DELETED_CATEGORIES_KEY = 'fp_deleted_category_ids';
 export const STORAGE_CATEGORIES_KEY = 'fp_custom_categories';
 export const STORAGE_SETTINGS_KEY = 'fp_merchant_settings';
-export const STORAGE_REVIEWS_KEY = 'fp_user_reviews_catalog';
+export const STORAGE_INIT_KEY = 'fp_store_initialized_v3';
 
 const rawSettings = (catalogData.settings || {}) as Record<string, any>;
 
@@ -59,7 +58,7 @@ const safeRead = <T>(key: string, fallback: T): T => {
   if (typeof window === 'undefined') return fallback;
   try {
     const raw = localStorage.getItem(key);
-    if (raw) {
+    if (raw !== null && raw !== undefined) {
       const parsed = JSON.parse(raw);
       if (parsed !== null && parsed !== undefined) return parsed;
     }
@@ -70,7 +69,7 @@ const safeRead = <T>(key: string, fallback: T): T => {
 };
 
 /**
- * Safe local storage writer with quota protection
+ * Safe local storage writer
  */
 const safeWrite = (key: string, value: any): boolean => {
   if (typeof window === 'undefined') return false;
@@ -78,7 +77,7 @@ const safeWrite = (key: string, value: any): boolean => {
     localStorage.setItem(key, JSON.stringify(value));
     return true;
   } catch (e) {
-    console.warn(`[CentralStore] Storage quota exceeded for ${key}:`, e);
+    console.warn(`[CentralStore] Storage write error for ${key}:`, e);
     return false;
   }
 };
@@ -91,6 +90,7 @@ export class CentralDataStore {
   private categories: CategoryInfo[] = [];
   private settings: MerchantSettings = { ...DEFAULT_STORE_SETTINGS };
   private deletedProductIds: Set<string> = new Set();
+  private deletedCategoryIds: Set<string> = new Set();
   private isInitialized = false;
 
   constructor() {
@@ -98,7 +98,8 @@ export class CentralDataStore {
   }
 
   /**
-   * Initialize catalog from bundled source & restore local modifications
+   * Initialize catalog:
+   * If already initialized by admin, NEVER resurrect deleted products or categories!
    */
   public init(): void {
     if (typeof window === 'undefined') {
@@ -112,35 +113,30 @@ export class CentralDataStore {
     const deletedList = safeRead<string[]>(STORAGE_DELETED_PRODUCTS_KEY, []);
     this.deletedProductIds = new Set(deletedList);
 
-    // 2. Load products (bundle + local overrides)
-    const savedProducts = safeRead<Product[]>(STORAGE_PRODUCTS_KEY, []);
-    if (savedProducts.length > 0) {
-      const savedMap = new Map(savedProducts.map(p => [p.id, p]));
-      const merged: Product[] = [];
+    const deletedCatList = safeRead<string[]>(STORAGE_DELETED_CATEGORIES_KEY, []);
+    this.deletedCategoryIds = new Set(deletedCatList);
 
-      for (const baseProd of INITIAL_PRODUCTS) {
-        if (this.deletedProductIds.has(baseProd.id)) continue;
-        merged.push(savedMap.get(baseProd.id) || baseProd);
-      }
+    const isInitializedInBrowser = localStorage.getItem(STORAGE_INIT_KEY) === 'true';
 
-      // Add any custom products added by admin that are not in base
-      for (const savedProd of savedProducts) {
-        if (this.deletedProductIds.has(savedProd.id)) continue;
-        if (!merged.some(p => p.id === savedProd.id)) {
-          merged.unshift(savedProd);
-        }
-      }
-      this.products = merged;
+    // 2. Load products
+    const savedProducts = safeRead<Product[] | null>(STORAGE_PRODUCTS_KEY, null);
+    if (isInitializedInBrowser && savedProducts !== null && Array.isArray(savedProducts)) {
+      // Respect live admin catalog strictly. NEVER re-inject INITIAL_PRODUCTS!
+      this.products = savedProducts.filter(p => !this.deletedProductIds.has(p.id));
     } else {
+      // First boot ever on pristine client
       this.products = INITIAL_PRODUCTS.filter(p => !this.deletedProductIds.has(p.id));
+      safeWrite(STORAGE_PRODUCTS_KEY, this.products);
+      localStorage.setItem(STORAGE_INIT_KEY, 'true');
     }
 
-    // 3. Load categories (bundle + local overrides)
-    const savedCategories = safeRead<CategoryInfo[]>(STORAGE_CATEGORIES_KEY, []);
-    if (savedCategories.length > 0) {
-      this.categories = savedCategories;
+    // 3. Load categories
+    const savedCategories = safeRead<CategoryInfo[] | null>(STORAGE_CATEGORIES_KEY, null);
+    if (isInitializedInBrowser && savedCategories !== null && Array.isArray(savedCategories)) {
+      this.categories = savedCategories.filter(c => !this.deletedCategoryIds.has(c.id));
     } else {
-      this.categories = [...CATEGORIES];
+      this.categories = CATEGORIES.filter(c => !this.deletedCategoryIds.has(c.id));
+      safeWrite(STORAGE_CATEGORIES_KEY, this.categories);
     }
 
     // 4. Load merchant settings
@@ -166,7 +162,7 @@ export class CentralDataStore {
 
   public getCategories(): CategoryInfo[] {
     if (!this.isInitialized) this.init();
-    return this.categories;
+    return this.categories.filter(c => !this.deletedCategoryIds.has(c.id));
   }
 
   public getSettings(): MerchantSettings {
@@ -198,11 +194,43 @@ export class CentralDataStore {
     return Array.from(this.deletedProductIds);
   }
 
+  public getDeletedCategoryIds(): string[] {
+    return Array.from(this.deletedCategoryIds);
+  }
+
+  // --- CLOUD / SERVER INCOMING STATE SETTERS ---
+
+  public setProductsFromCloud(cloudProducts: Product[]): void {
+    if (!Array.isArray(cloudProducts)) return;
+    this.products = cloudProducts.filter(p => !this.deletedProductIds.has(p.id));
+    safeWrite(STORAGE_PRODUCTS_KEY, this.products);
+    localStorage.setItem(STORAGE_INIT_KEY, 'true');
+  }
+
+  public setCategoriesFromCloud(cloudCategories: CategoryInfo[]): void {
+    if (!Array.isArray(cloudCategories)) return;
+    this.categories = cloudCategories.filter(c => !this.deletedCategoryIds.has(c.id));
+    safeWrite(STORAGE_CATEGORIES_KEY, this.categories);
+  }
+
+  public setSettingsFromCloud(cloudSettings: Partial<MerchantSettings>): void {
+    this.settings = {
+      ...this.settings,
+      ...cloudSettings,
+      socialLinks: {
+        ...this.settings.socialLinks,
+        ...(cloudSettings.socialLinks || {})
+      }
+    };
+    safeWrite(STORAGE_SETTINGS_KEY, this.settings);
+  }
+
   // --- MUTATIONS ---
 
   public saveProduct(product: Product): void {
     if (!this.isInitialized) this.init();
 
+    // If previously deleted, un-tombstone it
     if (this.deletedProductIds.has(product.id)) {
       this.deletedProductIds.delete(product.id);
       safeWrite(STORAGE_DELETED_PRODUCTS_KEY, Array.from(this.deletedProductIds));
@@ -215,6 +243,7 @@ export class CentralDataStore {
       this.products.unshift(product);
     }
     safeWrite(STORAGE_PRODUCTS_KEY, this.products);
+    localStorage.setItem(STORAGE_INIT_KEY, 'true');
   }
 
   public deleteProduct(productId: string): void {
@@ -225,10 +254,16 @@ export class CentralDataStore {
 
     this.products = this.products.filter(p => p.id !== productId);
     safeWrite(STORAGE_PRODUCTS_KEY, this.products);
+    localStorage.setItem(STORAGE_INIT_KEY, 'true');
   }
 
   public saveCategory(category: CategoryInfo): void {
     if (!this.isInitialized) this.init();
+
+    if (this.deletedCategoryIds.has(category.id)) {
+      this.deletedCategoryIds.delete(category.id);
+      safeWrite(STORAGE_DELETED_CATEGORIES_KEY, Array.from(this.deletedCategoryIds));
+    }
 
     const idx = this.categories.findIndex(c => c.id === category.id);
     if (idx !== -1) {
@@ -241,6 +276,9 @@ export class CentralDataStore {
 
   public deleteCategory(categoryId: string): void {
     if (!this.isInitialized) this.init();
+
+    this.deletedCategoryIds.add(categoryId);
+    safeWrite(STORAGE_DELETED_CATEGORIES_KEY, Array.from(this.deletedCategoryIds));
 
     this.categories = this.categories.filter(c => c.id !== categoryId);
     safeWrite(STORAGE_CATEGORIES_KEY, this.categories);
@@ -263,6 +301,7 @@ export class CentralDataStore {
 
   public resetToFactoryDefaults(): void {
     this.deletedProductIds.clear();
+    this.deletedCategoryIds.clear();
     this.products = [...INITIAL_PRODUCTS];
     this.categories = [...CATEGORIES];
     this.settings = { ...DEFAULT_STORE_SETTINGS };
@@ -270,8 +309,10 @@ export class CentralDataStore {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(STORAGE_PRODUCTS_KEY);
       localStorage.removeItem(STORAGE_DELETED_PRODUCTS_KEY);
+      localStorage.removeItem(STORAGE_DELETED_CATEGORIES_KEY);
       localStorage.removeItem(STORAGE_CATEGORIES_KEY);
       localStorage.removeItem(STORAGE_SETTINGS_KEY);
+      localStorage.removeItem(STORAGE_INIT_KEY);
     }
   }
 }

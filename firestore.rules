@@ -11,7 +11,7 @@ service cloud.firestore {
       return val is string && val.size() > 0 && val.size() <= maxLen;
     }
 
-    // Products collection: public read, authenticated or admin write
+    // Products collection: public read, write
     match /products/{productId} {
       allow read: if true;
       allow write: if isValidId(productId);
@@ -23,10 +23,18 @@ service cloud.firestore {
       allow write: if isValidId(categoryId);
     }
 
-    // Settings collection: public read for store branding, write
+    // Settings collection: public read, write
     match /settings/{settingId} {
       allow read: if true;
       allow write: if isValidId(settingId);
+    }
+
+    // Permanent Deletion Tombstones: public read, write
+    match /tombstones_products/{id} {
+      allow read, write: if isValidId(id);
+    }
+    match /tombstones_categories/{id} {
+      allow read, write: if isValidId(id);
     }
 
     // Reviews collection: public read, create with valid schema

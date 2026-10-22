@@ -170,12 +170,20 @@ export async function saveProductToCloud(product: Product): Promise<void> {
     updatedAt: Date.now()
   };
   await setDoc(docRef, payload, { merge: true });
+
+  // Remove from tombstones if re-added
+  const tombstoneRef = doc(db, 'tombstones_products', cleanId);
+  await deleteDoc(tombstoneRef).catch(() => {});
 }
 
 export async function deleteProductFromCloud(productId: string): Promise<void> {
   const cleanId = productId.replace(/[^a-zA-Z0-9_-]/g, '_');
   const docRef = doc(db, 'products', cleanId);
   await deleteDoc(docRef);
+
+  // Record permanent tombstone in Firestore
+  const tombstoneRef = doc(db, 'tombstones_products', cleanId);
+  await setDoc(tombstoneRef, { deletedId: cleanId, deletedAt: Date.now() }, { merge: true }).catch(() => {});
 }
 
 export async function saveCategoryToCloud(category: CategoryInfo): Promise<void> {
@@ -187,12 +195,18 @@ export async function saveCategoryToCloud(category: CategoryInfo): Promise<void>
     updatedAt: Date.now()
   };
   await setDoc(docRef, payload, { merge: true });
+
+  const tombstoneRef = doc(db, 'tombstones_categories', cleanId);
+  await deleteDoc(tombstoneRef).catch(() => {});
 }
 
 export async function deleteCategoryFromCloud(categoryId: string): Promise<void> {
   const cleanId = categoryId.replace(/[^a-zA-Z0-9_-]/g, '_');
   const docRef = doc(db, 'categories', cleanId);
   await deleteDoc(docRef);
+
+  const tombstoneRef = doc(db, 'tombstones_categories', cleanId);
+  await setDoc(tombstoneRef, { deletedId: cleanId, deletedAt: Date.now() }, { merge: true }).catch(() => {});
 }
 
 export async function saveSettingsToCloud(settings: Partial<MerchantSettings>): Promise<void> {
@@ -207,7 +221,7 @@ export async function saveReviewToCloud(review: UserReview): Promise<void> {
 }
 
 // ----------------------------------------------------------------------------
-// CLOUD AUTO-SEEDING (Bootstraps live database if empty)
+// CLOUD AUTO-SEEDING (Bootstraps live database strictly once, never overrides admin deletions)
 // ----------------------------------------------------------------------------
 
 export async function seedCloudDatabaseIfEmpty(
@@ -216,43 +230,52 @@ export async function seedCloudDatabaseIfEmpty(
   defaultSettings: MerchantSettings
 ): Promise<void> {
   try {
+    // 1. Check if database was already initialized by an admin. If so, NEVER re-seed!
+    const initDoc = await getDocFromServer(doc(db, 'settings', 'system_init')).catch(() => null);
+    if (initDoc && initDoc.exists() && initDoc.data()?.isInitialized) {
+      return;
+    }
+
+    // 2. Check if products collection already has documents
     const productsCheck = await getDocs(query(collection(db, 'products'), limit(1)));
-    if (productsCheck.empty && initialProducts.length > 0) {
-      console.log(`🌱 Seeding Cloud Firestore with ${initialProducts.length} baseline products...`);
-      // Firestore batches have a 500-op limit, chunk into batches
-      const chunks: Product[][] = [];
-      for (let i = 0; i < initialProducts.length; i += 400) {
-        chunks.push(initialProducts.slice(i, i + 400));
+    if (!productsCheck.empty) {
+      await setDoc(doc(db, 'settings', 'system_init'), { isInitialized: true, initializedAt: Date.now() }, { merge: true });
+      return;
+    }
+
+    console.log(`🌱 First-time setup: Seeding Cloud Firestore with ${initialProducts.length} baseline products...`);
+    const chunks: Product[][] = [];
+    for (let i = 0; i < initialProducts.length; i += 400) {
+      chunks.push(initialProducts.slice(i, i + 400));
+    }
+    for (const chunk of chunks) {
+      const batch = writeBatch(db);
+      for (const prod of chunk) {
+        const docRef = doc(db, 'products', prod.id.replace(/[^a-zA-Z0-9_-]/g, '_'));
+        batch.set(docRef, { ...prod, updatedAt: Date.now() });
       }
-      for (const chunk of chunks) {
-        const batch = writeBatch(db);
-        for (const prod of chunk) {
-          const docRef = doc(db, 'products', prod.id.replace(/[^a-zA-Z0-9_-]/g, '_'));
-          batch.set(docRef, { ...prod, updatedAt: Date.now() });
-        }
-        await batch.commit();
-      }
-      console.log('✅ Products seeded successfully in Cloud Firestore.');
+      await batch.commit();
     }
 
     const categoriesCheck = await getDocs(query(collection(db, 'categories'), limit(1)));
     if (categoriesCheck.empty && initialCategories.length > 0) {
-      console.log(`🌱 Seeding Cloud Firestore with ${initialCategories.length} categories...`);
       const batch = writeBatch(db);
       for (const cat of initialCategories) {
         const docRef = doc(db, 'categories', cat.id.replace(/[^a-zA-Z0-9_-]/g, '_'));
         batch.set(docRef, { ...cat, updatedAt: Date.now() });
       }
       await batch.commit();
-      console.log('✅ Categories seeded successfully in Cloud Firestore.');
     }
 
     const settingsCheck = await getDocFromServer(doc(db, 'settings', 'global')).catch(() => null);
     if (!settingsCheck || !settingsCheck.exists()) {
       await setDoc(doc(db, 'settings', 'global'), { ...defaultSettings, updatedAt: Date.now() });
-      console.log('✅ Store Settings seeded successfully in Cloud Firestore.');
     }
+
+    // Mark system as permanently initialized
+    await setDoc(doc(db, 'settings', 'system_init'), { isInitialized: true, initializedAt: Date.now() });
+    console.log('✅ Cloud Firestore permanently initialized.');
   } catch (err) {
-    console.warn('Cloud auto-seed error (may already be initialized):', err);
+    console.warn('Cloud auto-seed error:', err);
   }
 }

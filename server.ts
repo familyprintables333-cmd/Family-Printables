@@ -29,6 +29,7 @@ interface DatabaseSchema {
   deletedProductIds: string[];
   deletedCategoryIds: string[];
   lastUpdated: number;
+  isInitialized?: boolean;
 }
 
 const loadDatabase = (): DatabaseSchema => {
@@ -58,7 +59,8 @@ const loadDatabase = (): DatabaseSchema => {
     assets: [],
     deletedProductIds: [],
     deletedCategoryIds: [],
-    lastUpdated: Date.now()
+    lastUpdated: Date.now(),
+    isInitialized: false
   };
 
   try {
@@ -74,26 +76,32 @@ const loadDatabase = (): DatabaseSchema => {
           assets: Array.isArray(parsed.assets) ? parsed.assets : [],
           deletedProductIds: Array.isArray(parsed.deletedProductIds) ? parsed.deletedProductIds : [],
           deletedCategoryIds: Array.isArray(parsed.deletedCategoryIds) ? parsed.deletedCategoryIds : [],
-          lastUpdated: parsed.lastUpdated || Date.now()
+          lastUpdated: parsed.lastUpdated || Date.now(),
+          isInitialized: true
         };
+        return db;
       }
     }
   } catch (err) {
     console.error('Error reading database.json:', err);
   }
 
-  // Auto-seed baseline products & categories from centralized catalog.json if database is empty
+  // Database does not exist yet: initialize once from catalog.json and persist
   if (fs.existsSync(CATALOG_FILE)) {
     try {
       const catalog = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
-      if (db.products.length === 0 && Array.isArray(catalog.products)) {
+      if (Array.isArray(catalog.products)) {
         db.products = catalog.products;
-        console.log(`🌱 Seeded database with ${catalog.products.length} products from centralized catalog`);
       }
-      if (db.categories.length === 0 && Array.isArray(catalog.categories)) {
+      if (Array.isArray(catalog.categories)) {
         db.categories = catalog.categories;
-        console.log(`🌱 Seeded database with ${catalog.categories.length} categories from centralized catalog`);
       }
+      if (catalog.settings) {
+        db.settings = { ...db.settings, ...catalog.settings };
+      }
+      db.isInitialized = true;
+      saveDatabase(db);
+      console.log(`🌱 Initialized server database with ${db.products.length} products and ${db.categories.length} categories`);
     } catch (e) {
       console.warn('Could not read centralized catalog.json:', e);
     }
@@ -304,7 +312,13 @@ app.delete('/api/products/:id', (req, res) => {
 // 4. Categories Endpoints
 app.get('/api/categories', (req, res) => {
   const db = loadDatabase();
-  res.json({ categories: db.categories, lastUpdated: db.lastUpdated });
+  const deletedCatSet = new Set(db.deletedCategoryIds || []);
+  const activeCategories = db.categories.filter(c => !deletedCatSet.has(c.id));
+  res.json({
+    categories: activeCategories,
+    deletedCategoryIds: db.deletedCategoryIds || [],
+    lastUpdated: db.lastUpdated
+  });
 });
 
 app.post('/api/categories', (req, res) => {
@@ -313,6 +327,12 @@ app.post('/api/categories', (req, res) => {
   if (!cat || !cat.id) {
     return res.status(400).json({ error: 'Category requires an id' });
   }
+
+  // Remove from deleted list if re-added
+  if (db.deletedCategoryIds) {
+    db.deletedCategoryIds = db.deletedCategoryIds.filter(id => id !== cat.id);
+  }
+
   const idx = db.categories.findIndex(c => c.id === cat.id);
   if (idx !== -1) {
     db.categories[idx] = { ...db.categories[idx], ...cat, updatedAt: Date.now() };
@@ -327,7 +347,8 @@ app.put('/api/categories', (req, res) => {
   const db = loadDatabase();
   const { categories } = req.body;
   if (Array.isArray(categories)) {
-    db.categories = categories;
+    const deletedCatSet = new Set(db.deletedCategoryIds || []);
+    db.categories = categories.filter(c => !deletedCatSet.has(c.id));
     saveDatabase(db);
   }
   res.json({ success: true, categories: db.categories, lastUpdated: db.lastUpdated });
@@ -336,9 +357,15 @@ app.put('/api/categories', (req, res) => {
 app.delete('/api/categories/:id', (req, res) => {
   const db = loadDatabase();
   const catId = req.params.id;
+
+  if (!db.deletedCategoryIds) db.deletedCategoryIds = [];
+  if (!db.deletedCategoryIds.includes(catId)) {
+    db.deletedCategoryIds.push(catId);
+  }
+
   db.categories = db.categories.filter(c => c.id !== catId);
   saveDatabase(db);
-  res.json({ success: true, deletedId: catId, lastUpdated: db.lastUpdated });
+  res.json({ success: true, deletedId: catId, deletedCategoryIds: db.deletedCategoryIds, lastUpdated: db.lastUpdated });
 });
 
 // 5. Reviews Endpoints (Verified Real Reviews Only)
