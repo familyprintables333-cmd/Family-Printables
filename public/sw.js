@@ -1,5 +1,5 @@
-// Service Worker for Family Printables PWA
-const CACHE_NAME = 'family-printables-v2';
+// Service Worker for Family Printables PWA with Real-Time Cloud Sync
+const CACHE_NAME = 'family-printables-v3-cloud';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -20,14 +20,14 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('PWA Pre-cache skipped some dynamic resources:', err);
+        console.warn('PWA Pre-cache skipped dynamic assets:', err);
       });
     })
   );
   self.skipWaiting();
 });
 
-// Activate: Clean up old cache versions
+// Activate: Immediately clean up old cache versions
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -43,68 +43,73 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: Network-first for dynamic navigation, Cache-first for images/fonts with fallback
+// Fetch: Live cloud-first strategy ensuring zero stale data for global users
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Skip non-GET requests and external third-party requests
+  // 1. Skip non-GET requests
   if (event.request.method !== 'GET') return;
 
-  // Static Assets / Images / Styles / Scripts: Cache-first with network fallback
+  // 2. Never cache or intercept live cloud database, Firebase, or dynamic API endpoints
+  if (
+    url.origin !== self.location.origin ||
+    url.pathname.startsWith('/api/') ||
+    url.hostname.includes('firebase') ||
+    url.hostname.includes('googleapis') ||
+    url.hostname.includes('google') ||
+    url.hostname.includes('gumroad')
+  ) {
+    return;
+  }
+
+  // 3. HTML Navigation: Network-first to always fetch fresh versions, fallback to cached shell offline
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => {
+          return caches.match('/') || caches.match('/index.html');
+        })
+    );
+    return;
+  }
+
+  // 4. Static bundled chunks and media: Stale-While-Revalidate with background fresh fetch
   if (
     url.pathname.startsWith('/assets/') ||
     url.pathname.endsWith('.png') ||
     url.pathname.endsWith('.jpg') ||
+    url.pathname.endsWith('.webp') ||
     url.pathname.endsWith('.svg') ||
     url.pathname.endsWith('.css') ||
-    url.pathname.endsWith('.js') ||
-    url.pathname.endsWith('.json') ||
-    url.pathname.endsWith('.xml')
+    url.pathname.endsWith('.js')
   ) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        if (cachedResponse) {
-          // Revalidate in background
-          fetch(event.request).then((networkResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+              const clone = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
             }
-          }).catch(() => {});
-          return cachedResponse;
-        }
-        return fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-          }
-          return networkResponse;
-        });
+            return networkResponse;
+          })
+          .catch(() => null);
+
+        return cachedResponse || fetchPromise;
       })
     );
     return;
   }
 
-  // HTML Navigation: Network-first with offline fallback
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/') || caches.match('/index.html');
-      })
-    );
-    return;
-  }
-
-  // Default: Stale-while-revalidate
+  // 5. Default fallback
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetched = fetch(event.request).then((res) => {
-        if (res && res.status === 200) {
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(event.request, resClone));
-        }
-        return res;
-      }).catch(() => cached);
-      return cached || fetched;
-    })
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });
