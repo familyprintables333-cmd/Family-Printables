@@ -1,17 +1,3554 @@
 {
-  "products": [],
-  "categories": [],
+  "products": [
+    {
+      "id": "prod-toddlers-1-free",
+      "title": "Free Starter Pack: Pre-K Animal Tracing Lines & Big Shapes",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 0,
+      "isFree": true,
+      "isLocked": false,
+      "accessType": "free",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 16,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Gentle curved line tracing, cute animal paths, and basic circles and squares.",
+      "description": "Gentle curved line tracing, cute animal paths, and basic circles and squares. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "16 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.1 MB",
+      "documentFileName": "prod-toddlers-1-free_workbook.pdf",
+      "documentFileType": "pdf",
+      "isBestseller": true
+    },
+    {
+      "id": "prod-toddlers-2",
+      "title": "My First Preschool Activity Workbook: ABC, Tracing & Shapes (52-Page Pack)",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 52,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Extra-thick guidelines, friendly animal companions, and intuitive arrow directions.",
+      "description": "Extra-thick guidelines, friendly animal companions, and intuitive arrow directions. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "52 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "20.7 MB",
+      "documentFileName": "prod-toddlers-2_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-3",
+      "title": "Toddler Scissor Skills & Safe Cutting Practice Workbook",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 34,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Safe straight, zig-zag, and curved cutting lines designed for safety scissors.",
+      "description": "Safe straight, zig-zag, and curved cutting lines designed for safety scissors. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "34 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "14.4 MB",
+      "documentFileName": "prod-toddlers-3_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-4",
+      "title": "Big Bold Alphabet Dot-Marker Dauber Book (Letters A-Z)",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 28,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Large circular dauber spots for bingo daubers and finger painting joy.",
+      "description": "Large circular dauber spots for bingo daubers and finger painting joy. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "28 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "12.3 MB",
+      "documentFileName": "prod-toddlers-4_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-5",
+      "title": "Gentle Pencil Control: Loop-de-Loops & Mountain Curves",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 24,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Step-by-step hand-eye coordination sheets preventing toddler fatigue.",
+      "description": "Step-by-step hand-eye coordination sheets preventing toddler fatigue. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-toddlers-5_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-6",
+      "title": "Animal Habitat & Shape Sorting Activity Sheets",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 30,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Match baby animals to their homes: forest, ocean, farm, and safari.",
+      "description": "Match baby animals to their homes: forest, ocean, farm, and safari. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "30 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.0 MB",
+      "documentFileName": "prod-toddlers-6_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-7",
+      "title": "Colors & Sensory Matching Cards (Cut & Play)",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 20,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Vibrant high-contrast flashcards for red, blue, yellow, and green identification.",
+      "description": "Vibrant high-contrast flashcards for red, blue, yellow, and green identification. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "20 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "9.5 MB",
+      "documentFileName": "prod-toddlers-7_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-8",
+      "title": "Number Counting & Fingerprint Art (Numbers 1-10)",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 26,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Count cute ducklings, apples, and puppies with colorful finger stamps.",
+      "description": "Count cute ducklings, apples, and puppies with colorful finger stamps. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "26 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "11.6 MB",
+      "documentFileName": "prod-toddlers-8_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-9",
+      "title": "Dinosaur Toddler Tracing & Big Footprint Mazes",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 36,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Friendly T-Rex, Stegosaurus, and Triceratops paths with huge guide lines.",
+      "description": "Friendly T-Rex, Stegosaurus, and Triceratops paths with huge guide lines. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "36 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "15.1 MB",
+      "documentFileName": "prod-toddlers-9_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-10",
+      "title": "Ocean Friends Fine Motor Path Finder",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 22,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Help the dolphin reach the coral reef through gentle wavy trails.",
+      "description": "Help the dolphin reach the coral reef through gentle wavy trails. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "22 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.2 MB",
+      "documentFileName": "prod-toddlers-10_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-11",
+      "title": "Farmyard Noises & Baby Animal Matching Worksheets",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 32,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Moo, baa, and oink matching puzzles that encourage toddler speech development.",
+      "description": "Moo, baa, and oink matching puzzles that encourage toddler speech development. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "32 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.7 MB",
+      "documentFileName": "prod-toddlers-11_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-12",
+      "title": "Vehicles on the Go: Cars, Trains & Plane Tracing Book",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 40,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Roadway tracks, train rails, and runway dashes for energetic toddlers.",
+      "description": "Roadway tracks, train rails, and runway dashes for energetic toddlers. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "40 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "16.5 MB",
+      "documentFileName": "prod-toddlers-12_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-13",
+      "title": "Big Fruit & Veggie Healthy Habits Coloring Sheets",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 24,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Smile-inducing bananas, broccoli, and strawberries with bold outlines.",
+      "description": "Smile-inducing bananas, broccoli, and strawberries with bold outlines. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-toddlers-13_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-14",
+      "title": "Weather & Seasons Clothes Dress-Up Activity Pack",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 28,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Dress the teddy bear for sunny, rainy, snowy, and windy outdoor days.",
+      "description": "Dress the teddy bear for sunny, rainy, snowy, and windy outdoor days. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "28 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "12.3 MB",
+      "documentFileName": "prod-toddlers-14_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-15",
+      "title": "Emotions & Happy Faces Mirror Drawing Workbook",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 30,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "Social-emotional learning helping toddlers identify happy, calm, and silly moods.",
+      "description": "Social-emotional learning helping toddlers identify happy, calm, and silly moods. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "30 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.0 MB",
+      "documentFileName": "prod-toddlers-15_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-toddlers-16",
+      "title": "Toddler Master Starter Bundle: 120 Pages of Playful Learning",
+      "category": "toddlers",
+      "categoryLabel": "Toddlers & Preschool",
+      "priceUSD": 3.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 120,
+      "targetAge": "Ages 2-4 (Pre-K)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "shortDesc": "The ultimate collection of tracing, coloring, shapes, numbers, and cutting.",
+      "description": "The ultimate collection of tracing, coloring, shapes, numbers, and cutting. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "120 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "44.5 MB",
+      "documentFileName": "prod-toddlers-16_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-1-free",
+      "title": "Free Starter: Sight Words & Phonics Mini Flashcard Pack",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 0,
+      "isFree": true,
+      "isLocked": false,
+      "accessType": "free",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 18,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Dolch pre-primer sight word cards with visual phonetic mnemonic cues.",
+      "description": "Dolch pre-primer sight word cards with visual phonetic mnemonic cues. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "18 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.8 MB",
+      "documentFileName": "prod-early-learning-1-free_workbook.pdf",
+      "documentFileType": "pdf",
+      "isBestseller": true
+    },
+    {
+      "id": "prod-early-learning-2",
+      "title": "Kindergarten Phonics Blends, Digraphs & CVC Word Master",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 64,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Covers short vowels, consonant blends (bl, cl, st), and rhyming word families.",
+      "description": "Covers short vowels, consonant blends (bl, cl, st), and rhyming word families. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "64 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "24.9 MB",
+      "documentFileName": "prod-early-learning-2_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-3",
+      "title": "Sight Words Daily Handwriting & Sentence Building Workbook",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 56,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Trace, read, write, and build complete 4-word sentences independently.",
+      "description": "Trace, read, write, and build complete 4-word sentences independently. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "56 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "22.1 MB",
+      "documentFileName": "prod-early-learning-3_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-4",
+      "title": "Early Math: Visual Addition & Subtraction with Ten-Frames",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 48,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Hands-on math using counters, dice faces, and number bonds within 20.",
+      "description": "Hands-on math using counters, dice faces, and number bonds within 20. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "48 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "19.3 MB",
+      "documentFileName": "prod-early-learning-4_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-5",
+      "title": "Telling Time & Daily Clock Reading Activity Pack",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 30,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Hour and half-hour clock faces with analog and digital time matching.",
+      "description": "Hour and half-hour clock faces with analog and digital time matching. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "30 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.0 MB",
+      "documentFileName": "prod-early-learning-5_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-6",
+      "title": "Money Math: Coins, Currency & Simple Change Practice",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 36,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Practical toy-store shopping scenarios teaching realistic currency value.",
+      "description": "Practical toy-store shopping scenarios teaching realistic currency value. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "36 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "15.1 MB",
+      "documentFileName": "prod-early-learning-6_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-7",
+      "title": "First Science: Animal Life Cycles (Butterfly, Frog, Plant)",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 42,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Cut-and-paste biological transformation sequences with clear diagrams.",
+      "description": "Cut-and-paste biological transformation sequences with clear diagrams. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "42 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "17.2 MB",
+      "documentFileName": "prod-early-learning-7_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-8",
+      "title": "Handwriting Mastery: Cursive & Print Letter Formation",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 50,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Smooth letter connections and neat spacing drills for early grades.",
+      "description": "Smooth letter connections and neat spacing drills for early grades. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "50 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "20.0 MB",
+      "documentFileName": "prod-early-learning-8_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-9",
+      "title": "Beginning Reading Comprehension: 30 Short Stories & Questions",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 2.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 60,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Kid-friendly passages with 3 multiple-choice checks to build reading confidence.",
+      "description": "Kid-friendly passages with 3 multiple-choice checks to build reading confidence. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "60 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "23.5 MB",
+      "documentFileName": "prod-early-learning-9_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-10",
+      "title": "Compound Words & Prefix/Suffix Word Builders",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 28,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Visual jigsaw matching: rain + bow = rainbow, sun + flower = sunflower.",
+      "description": "Visual jigsaw matching: rain + bow = rainbow, sun + flower = sunflower. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "28 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "12.3 MB",
+      "documentFileName": "prod-early-learning-10_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-11",
+      "title": "Skip Counting & Multiplication Foundations (2s, 5s, 10s)",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 44,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Rhythmic number charts, hopscotch grids, and dot-to-dots to 100.",
+      "description": "Rhythmic number charts, hopscotch grids, and dot-to-dots to 100. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "44 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "17.9 MB",
+      "documentFileName": "prod-early-learning-11_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-12",
+      "title": "Creative Story Starters & Picture Writing Prompts",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 38,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Fun illustrations inspiring children to write 3-5 sentence narratives.",
+      "description": "Fun illustrations inspiring children to write 3-5 sentence narratives. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "38 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "15.8 MB",
+      "documentFileName": "prod-early-learning-12_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-13",
+      "title": "Fractions for Beginners: Halves, Quarters & Pizza Slices",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 32,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Visual culinary fraction wheels making abstract fractions easy to grasp.",
+      "description": "Visual culinary fraction wheels making abstract fractions easy to grasp. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "32 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.7 MB",
+      "documentFileName": "prod-early-learning-13_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-14",
+      "title": "Word Ladders & Mystery Letter Puzzles",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 26,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Change one letter at a time to solve vocabulary word ladders.",
+      "description": "Change one letter at a time to solve vocabulary word ladders. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "26 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "11.6 MB",
+      "documentFileName": "prod-early-learning-14_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-15",
+      "title": "World Geography: 7 Continents & Oceans Discovery Kit",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 48,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Printable continent maps, famous animals, and world flags coloring.",
+      "description": "Printable continent maps, famous animals, and world flags coloring. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "48 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "19.3 MB",
+      "documentFileName": "prod-early-learning-15_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-early-learning-16",
+      "title": "Kindergarten Graduation Complete Prep Workbook (150 Pages)",
+      "category": "early-learning",
+      "categoryLabel": "Early Learning & Phonics",
+      "priceUSD": 4,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 150,
+      "targetAge": "Ages 4-7 (Kindergarten)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "shortDesc": "Comprehensive reading, writing, and arithmetic mastery for school success.",
+      "description": "Comprehensive reading, writing, and arithmetic mastery for school success. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "150 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "55.0 MB",
+      "documentFileName": "prod-early-learning-16_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-1-free",
+      "title": "Free Starter Pack: Screen-Free Kids Crosswords & Logic Mazes",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 0,
+      "isFree": true,
+      "isLocked": false,
+      "accessType": "free",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 14,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Brain-boosting mini pack with gentle picture crosswords and spiral mazes.",
+      "description": "Brain-boosting mini pack with gentle picture crosswords and spiral mazes. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "14 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "7.4 MB",
+      "documentFileName": "prod-puzzles-1-free_workbook.pdf",
+      "documentFileType": "pdf",
+      "isBestseller": true
+    },
+    {
+      "id": "prod-puzzles-2",
+      "title": "Mega Brain Puzzles & STEM Mazes (100 Challenging Sheets)",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 100,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Graduated difficulty logic grids, optical challenges, and word searches.",
+      "description": "Graduated difficulty logic grids, optical challenges, and word searches. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "100 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "37.5 MB",
+      "documentFileName": "prod-puzzles-2_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-3",
+      "title": "Sudoku for Kids: 4x4 and 6x6 Starter Logic Puzzles",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 45,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Step-by-step deductive logic puzzles with friendly animal icons and numbers.",
+      "description": "Step-by-step deductive logic puzzles with friendly animal icons and numbers. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "45 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "18.3 MB",
+      "documentFileName": "prod-puzzles-3_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-4",
+      "title": "Spot the 10 Differences: High-Detail Picture Puzzles",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 50,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Rich whimsical scenes: toy shops, space stations, and castle banquets.",
+      "description": "Rich whimsical scenes: toy shops, space stations, and castle banquets. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "50 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "20.0 MB",
+      "documentFileName": "prod-puzzles-4_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-5",
+      "title": "Cryptogram Secret Agent Decoder Word Puzzles",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 38,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Crack cipher codes, caesar shifts, and symbol alphabets to reveal fun facts.",
+      "description": "Crack cipher codes, caesar shifts, and symbol alphabets to reveal fun facts. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "38 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "15.8 MB",
+      "documentFileName": "prod-puzzles-5_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-6",
+      "title": "Dot-to-Dot Ultimate Challenge (Numbers 1 to 200)",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 40,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Uncover magnificent mythical beasts, sailing ships, and futuristic rockets.",
+      "description": "Uncover magnificent mythical beasts, sailing ships, and futuristic rockets. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "40 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "16.5 MB",
+      "documentFileName": "prod-puzzles-6_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-7",
+      "title": "Tangram Shapes & Spatial Geometry Cut-Out Cards",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 32,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Arrange 7 geometric tiles into 60 silhouettes of animals, boats, and figures.",
+      "description": "Arrange 7 geometric tiles into 60 silhouettes of animals, boats, and figures. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "32 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.7 MB",
+      "documentFileName": "prod-puzzles-7_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-8",
+      "title": "Word Search Extravaganza: 50 Themed Word Sleuths",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 55,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Space, prehistoric beasts, sports, ocean depths, and world countries.",
+      "description": "Space, prehistoric beasts, sports, ocean depths, and world countries. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "55 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "21.8 MB",
+      "documentFileName": "prod-puzzles-8_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-9",
+      "title": "3D Isometric Cube Optical Illusion Mazes",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 36,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Multi-level stairways and floating isometric pathways that test spatial logic.",
+      "description": "Multi-level stairways and floating isometric pathways that test spatial logic. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "36 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "15.1 MB",
+      "documentFileName": "prod-puzzles-9_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-10",
+      "title": "Logic Matchsticks & Toothpick Geometry Riddles",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 28,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Move 1 or 2 sticks to fix equations or transform geometric squares.",
+      "description": "Move 1 or 2 sticks to fix equations or transform geometric squares. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "28 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "12.3 MB",
+      "documentFileName": "prod-puzzles-10_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-11",
+      "title": "Escape Room in a Box: Printable Haunted Mansion Mystery",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 2.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 42,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Interactive team puzzle quest with clues, keycards, and riddle solutions.",
+      "description": "Interactive team puzzle quest with clues, keycards, and riddle solutions. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "42 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "17.2 MB",
+      "documentFileName": "prod-puzzles-11_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-12",
+      "title": "Math Riddles & Brain Teasers for Inquisitive Minds",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 34,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Lateral thinking questions, balance scale puzzles, and sequence teasers.",
+      "description": "Lateral thinking questions, balance scale puzzles, and sequence teasers. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "34 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "14.4 MB",
+      "documentFileName": "prod-puzzles-12_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-13",
+      "title": "Pixel Art Color-by-Number Hidden Mystery Pictures",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 48,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Follow grid coordinates to uncover retro pixel gaming characters and animals.",
+      "description": "Follow grid coordinates to uncover retro pixel gaming characters and animals. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "48 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "19.3 MB",
+      "documentFileName": "prod-puzzles-13_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-14",
+      "title": "Word Scramble & Anagram Master Challenge",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 30,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Unscramble jumbled letters with hint boxes to sharpen spelling and vocabulary.",
+      "description": "Unscramble jumbled letters with hint boxes to sharpen spelling and vocabulary. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "30 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.0 MB",
+      "documentFileName": "prod-puzzles-14_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-15",
+      "title": "Circuit & Pipeline Logic Flow Puzzles",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 36,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Connect pipes from valves to tanks without intersecting crossing lines.",
+      "description": "Connect pipes from valves to tanks without intersecting crossing lines. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "36 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "15.1 MB",
+      "documentFileName": "prod-puzzles-15_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-puzzles-16",
+      "title": "The Ultimate Junior Mensa Brain Workout (120 Puzzles)",
+      "category": "puzzles",
+      "categoryLabel": "Brain Puzzles & STEM Mazes",
+      "priceUSD": 3.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 120,
+      "targetAge": "Ages 5-10",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "shortDesc": "Comprehensive collection of spatial, verbal, and numerical brain teasers.",
+      "description": "Comprehensive collection of spatial, verbal, and numerical brain teasers. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "120 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "44.5 MB",
+      "documentFileName": "prod-puzzles-16_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-1-free",
+      "title": "Free Starter Pack: Daily Morning & Bedtime Routine Board",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 0,
+      "isFree": true,
+      "isLocked": false,
+      "accessType": "free",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 8,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Printable morning wake-up checklist and peaceful bedtime wind-down cards.",
+      "description": "Printable morning wake-up checklist and peaceful bedtime wind-down cards. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "8 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "5.3 MB",
+      "documentFileName": "prod-routines-1-free_workbook.pdf",
+      "documentFileType": "pdf",
+      "isBestseller": true
+    },
+    {
+      "id": "prod-routines-2",
+      "title": "Family Chore Chart & Visual Reward Tokens System",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 26,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Customizable daily chore tracker with cut-out gold stars and ticket rewards.",
+      "description": "Customizable daily chore tracker with cut-out gold stars and ticket rewards. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "26 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "11.6 MB",
+      "documentFileName": "prod-routines-2_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-3",
+      "title": "Weekly Homework & School Project Planner (A4 & Universal)",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 18,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Track assignments, test dates, reading logs, and teacher signature slips.",
+      "description": "Track assignments, test dates, reading logs, and teacher signature slips. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "18 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.8 MB",
+      "documentFileName": "prod-routines-3_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-4",
+      "title": "Screen Time Token Tracker & Outdoor Play Challenge",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 20,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Encourage active outdoor play with balanced visual token rewards.",
+      "description": "Encourage active outdoor play with balanced visual token rewards. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "20 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "9.5 MB",
+      "documentFileName": "prod-routines-4_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-5",
+      "title": "Kids Healthy Eating & Rainbow Plate Tracker",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 16,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Fun visual stickers for eating colorful daily fruits and vegetables.",
+      "description": "Fun visual stickers for eating colorful daily fruits and vegetables. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "16 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.1 MB",
+      "documentFileName": "prod-routines-5_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-6",
+      "title": "Bedtime Reading Challenge & 100-Book Logbook",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 32,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Color a book spine for every bedtime story read together as a family.",
+      "description": "Color a book spine for every bedtime story read together as a family. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "32 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.7 MB",
+      "documentFileName": "prod-routines-6_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-7",
+      "title": "Weekly Family Meeting & Goal Setting Agenda Board",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 14,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Dedicated layout for celebrations, chore assignments, and weekend adventures.",
+      "description": "Dedicated layout for celebrations, chore assignments, and weekend adventures. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "14 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "7.4 MB",
+      "documentFileName": "prod-routines-7_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-8",
+      "title": "Pocket Money & First Savings Piggy Bank Goal Tracker",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 22,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Give/Save/Spend 3-jar breakdown teaching wise financial mindfulness.",
+      "description": "Give/Save/Spend 3-jar breakdown teaching wise financial mindfulness. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "22 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.2 MB",
+      "documentFileName": "prod-routines-8_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-9",
+      "title": "Daily Emotional Check-in & Feelings Mood Meter",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 24,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Calm down corner breathing exercises and 5-zone emotional identification.",
+      "description": "Calm down corner breathing exercises and 5-zone emotional identification. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-routines-9_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-10",
+      "title": "Morning Routine Checklist for Neurodivergent Kids & ADHD",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 30,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Clear step-by-step icon sequences minimizing morning overwhelm and rushing.",
+      "description": "Clear step-by-step icon sequences minimizing morning overwhelm and rushing. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "30 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.0 MB",
+      "documentFileName": "prod-routines-10_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-11",
+      "title": "Summer Holiday Boredom Buster & 50 Fun Activity Bingo",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 18,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Screen-free backyard science, crafts, fort building, and cooking quests.",
+      "description": "Screen-free backyard science, crafts, fort building, and cooking quests. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "18 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.8 MB",
+      "documentFileName": "prod-routines-11_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-12",
+      "title": "Sibling Kindness & Peace Board: Star Token Counter",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 20,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Reward sharing, helping each other, and thoughtful family gestures.",
+      "description": "Reward sharing, helping each other, and thoughtful family gestures. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "20 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "9.5 MB",
+      "documentFileName": "prod-routines-12_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-13",
+      "title": "Back-to-School Master Organization & Backpack Checklist",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 25,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Label tags, school schedule, locker layout, and reminder sheets.",
+      "description": "Label tags, school schedule, locker layout, and reminder sheets. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "25 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "11.3 MB",
+      "documentFileName": "prod-routines-13_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-14",
+      "title": "Pet Care Daily Routine Tracker (Dog, Cat, Fish & Birds)",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 16,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "Feeding, walking, grooming, and water bowl responsibilities for kids.",
+      "description": "Feeding, walking, grooming, and water bowl responsibilities for kids. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "16 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.1 MB",
+      "documentFileName": "prod-routines-14_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-routines-15",
+      "title": "Complete Family Harmony Routine Vault (80 Pages)",
+      "category": "routines",
+      "categoryLabel": "Elite Planners & Digital Guides",
+      "priceUSD": 3.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 80,
+      "targetAge": "All Ages (2-12)",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "shortDesc": "All 14 routine templates in one unified, master high-res printable bundle.",
+      "description": "All 14 routine templates in one unified, master high-res printable bundle. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "80 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "30.5 MB",
+      "documentFileName": "prod-routines-15_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-1-free",
+      "title": "Free Celebration Pack: Birthday Banner & Foldable Greeting Cards",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 0,
+      "isFree": true,
+      "isLocked": false,
+      "accessType": "free",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 12,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Printable DIY birthday pennants, gift tags, and customizable envelope cards.",
+      "description": "Printable DIY birthday pennants, gift tags, and customizable envelope cards. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "12 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "6.7 MB",
+      "documentFileName": "prod-festivals-1-free_workbook.pdf",
+      "documentFileType": "pdf",
+      "isBestseller": true
+    },
+    {
+      "id": "prod-festivals-2",
+      "title": "Ramadan & Eid Celebration Mega Kit: Lanterns, Bunting & Good Deed Cards",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 45,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Foldable 3D paper fanoos lanterns, moon phase tracker, and 30 daily deed cards.",
+      "description": "Foldable 3D paper fanoos lanterns, moon phase tracker, and 30 daily deed cards. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "45 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "18.3 MB",
+      "documentFileName": "prod-festivals-2_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-3",
+      "title": "Christmas & Holiday Joy Pack: Gift Tags, Letters & Advent Board",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 40,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Warm cozy holiday stationery, celebration notes, and paper crafts.",
+      "description": "Warm cozy holiday stationery, celebration notes, and paper crafts. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "40 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "16.5 MB",
+      "documentFileName": "prod-festivals-3_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-4",
+      "title": "Mother's Day & Father's Day Keepsake Coupon Booklets",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 24,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Cut-out personalized coupons: Free Hug, Car Wash, Breakfast in Bed.",
+      "description": "Cut-out personalized coupons: Free Hug, Car Wash, Breakfast in Bed. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-festivals-4_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-5",
+      "title": "Halloween Monster Masks, Treat Bags & Window Stencils",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 32,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Safe cut-out dress-up masks, pumpkin carving templates, and treat tags.",
+      "description": "Safe cut-out dress-up masks, pumpkin carving templates, and treat tags. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "32 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.7 MB",
+      "documentFileName": "prod-festivals-5_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-6",
+      "title": "Easter Bunny Trail Clues, Egg Baskets & Coloring Posters",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 28,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Scavenger hunt rhyme cards and pastel bunny basket folding templates.",
+      "description": "Scavenger hunt rhyme cards and pastel bunny basket folding templates. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "28 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "12.3 MB",
+      "documentFileName": "prod-festivals-6_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-7",
+      "title": "Thanksgiving Gratitude Tree & Family Dinner Place Cards",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 20,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Write what you are grateful for on autumn leaves to hang on the paper tree.",
+      "description": "Write what you are grateful for on autumn leaves to hang on the paper tree. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "20 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "9.5 MB",
+      "documentFileName": "prod-festivals-7_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-8",
+      "title": "Valentine's Day Classmates Friendly Exchange Cards (30 Designs)",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 30,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Puns and animal illustrations perfect for school candy bags and pencils.",
+      "description": "Puns and animal illustrations perfect for school candy bags and pencils. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "30 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.0 MB",
+      "documentFileName": "prod-festivals-8_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-9",
+      "title": "New Year's Eve Memory Capsule & Family Reflection Cards",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 18,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Favorite books, proudest moments, and family hopes for the upcoming year.",
+      "description": "Favorite books, proudest moments, and family hopes for the upcoming year. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "18 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.8 MB",
+      "documentFileName": "prod-festivals-9_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-10",
+      "title": "Teacher Appreciation Week Thank-You Notes & Desk Signs",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 22,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Heartfelt letters and apple-themed certificates for classroom heroes.",
+      "description": "Heartfelt letters and apple-themed certificates for classroom heroes. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "22 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.2 MB",
+      "documentFileName": "prod-festivals-10_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-11",
+      "title": "Diwali Festival of Lights: Rangoli Stencils & Diya Crafts",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 26,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Symmetrical rangoli coloring sheets and paper lantern hanging garlands.",
+      "description": "Symmetrical rangoli coloring sheets and paper lantern hanging garlands. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "26 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "11.6 MB",
+      "documentFileName": "prod-festivals-11_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-12",
+      "title": "Hanukkah Menorah Candle Tracker & Dreidel Game Board",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 24,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "8-night candle lighting sequence, counting games, and blue-silver crafts.",
+      "description": "8-night candle lighting sequence, counting games, and blue-silver crafts. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-festivals-12_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-13",
+      "title": "Earth Day Clean-up Scavenger Hunt & Plant Marker Tags",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 16,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Backyard eco-missions, seed planting charts, and recycle sorting games.",
+      "description": "Backyard eco-missions, seed planting charts, and recycle sorting games. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "16 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.1 MB",
+      "documentFileName": "prod-festivals-13_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-14",
+      "title": "End-of-School Year Memory Book & Classmates Autograph Album",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 28,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Cherish school memories, teacher quotes, and friend signatures forever.",
+      "description": "Cherish school memories, teacher quotes, and friend signatures forever. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "28 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "12.3 MB",
+      "documentFileName": "prod-festivals-14_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-festivals-15",
+      "title": "Global Holiday & Festival Master Bundle (110 Printable Pages)",
+      "category": "festivals",
+      "categoryLabel": "Celebration Cards & Festive Kits",
+      "priceUSD": 3.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 110,
+      "targetAge": "All Family Ages",
+      "educationalBenefit": "Screen-Free Early Developmental Skills & Hand-Eye Focus",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "Standard A4 PDF",
+        "Universal PDF",
+        "High-Res 300 DPI"
+      ],
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "shortDesc": "Year-round holiday celebrations, greeting cards, and gift tags in one pack.",
+      "description": "Year-round holiday celebrations, greeting cards, and gift tags in one pack. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "110 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "41.0 MB",
+      "documentFileName": "prod-festivals-15_workbook.pdf",
+      "documentFileType": "pdf"
+    },
+    {
+      "id": "prod-audio-stories-1-free",
+      "title": "Free Calming Audio Story: Luna the Little Owl and Silent Stars",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 0,
+      "isFree": true,
+      "isLocked": false,
+      "accessType": "free",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Soothing 8-minute narrated bedtime story with gentle ambient white noise.",
+      "description": "Soothing 8-minute narrated bedtime story with gentle ambient white noise. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "10 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "6.0 MB",
+      "documentFileName": "prod-audio-stories-1-free_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "audioDuration": "8 mins",
+      "mediaType": "audio",
+      "isBestseller": true
+    },
+    {
+      "id": "prod-audio-stories-2",
+      "title": "The Sleepy Train Through Whispering Forest (Bedtime Audio & Illustrated Ebook)",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Hypnotic rhythmic wheels on the track guiding children gently toward deep sleep.",
+      "description": "Hypnotic rhythmic wheels on the track guiding children gently toward deep sleep. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-audio-stories-2_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      "audioDuration": "14 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-3",
+      "title": "Ocean Lullaby: The Friendly Whale and Floating Clouds",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Gentle rolling wave sounds paired with reassuring narration for toddlers.",
+      "description": "Gentle rolling wave sounds paired with reassuring narration for toddlers. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "20 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "9.5 MB",
+      "documentFileName": "prod-audio-stories-3_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      "audioDuration": "12 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-4",
+      "title": "The Dragon Who Lost His Roar (Confidence & Speech Tale)",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "A heartwarming narrative teaching children that gentle kindness is louder than a roar.",
+      "description": "A heartwarming narrative teaching children that gentle kindness is louder than a roar. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "28 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "12.3 MB",
+      "documentFileName": "prod-audio-stories-4_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+      "audioDuration": "16 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-5",
+      "title": "Guided Bedtime Meditation for Kids: Cloud of Calm Breathing",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Gentle 4-count breathing exercise releasing school day tension and worries.",
+      "description": "Gentle 4-count breathing exercise releasing school day tension and worries. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "12 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "6.7 MB",
+      "documentFileName": "prod-audio-stories-5_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+      "audioDuration": "10 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-6",
+      "title": "Barnaby the Bear Builds a Treehouse (Problem Solving Story)",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "An inspiring teamwork story with cute forest animals cooperating together.",
+      "description": "An inspiring teamwork story with cute forest animals cooperating together. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "26 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "11.6 MB",
+      "documentFileName": "prod-audio-stories-6_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+      "audioDuration": "15 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-7",
+      "title": "Rainy Day Window: Cozy Lo-Fi Music & Rain Sounds for Homework",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Peaceful 25-minute study background music enhancing concentration and focus.",
+      "description": "Peaceful 25-minute study background music enhancing concentration and focus. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "8 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "5.3 MB",
+      "documentFileName": "prod-audio-stories-7_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+      "audioDuration": "25 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-8",
+      "title": "Adventures of Pip the Brave Little Hamster",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Hilarious and suspenseful audio journey across the living room carpet jungle.",
+      "description": "Hilarious and suspenseful audio journey across the living room carpet jungle. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "30 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.0 MB",
+      "documentFileName": "prod-audio-stories-8_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+      "audioDuration": "18 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-9",
+      "title": "Starry Night Constellation Myths for Young Stargazers",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Fascinating ancient folklore explaining the Big Dipper, Orion, and Pegasus.",
+      "description": "Fascinating ancient folklore explaining the Big Dipper, Orion, and Pegasus. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-audio-stories-9_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+      "audioDuration": "14 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-10",
+      "title": "The Squirrels Winter Feast: A Story of Sharing and Gratitude",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Touching seasonal narrative highlighting sharing acorns and winter shelter.",
+      "description": "Touching seasonal narrative highlighting sharing acorns and winter shelter. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "22 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.2 MB",
+      "documentFileName": "prod-audio-stories-10_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
+      "audioDuration": "13 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-11",
+      "title": "Gentle Piano Lullabies for Infants and Toddler Naps",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Delicate acoustic piano tracks designed by early childhood music therapists.",
+      "description": "Delicate acoustic piano tracks designed by early childhood music therapists. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "6 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "4.6 MB",
+      "documentFileName": "prod-audio-stories-11_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3",
+      "audioDuration": "30 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-12",
+      "title": "Oliver the Little Tugboat in the Harbor Fog",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Atmospheric foghorn and lighthouse sounds guiding big ships safely to port.",
+      "description": "Atmospheric foghorn and lighthouse sounds guiding big ships safely to port. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "24 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "10.9 MB",
+      "documentFileName": "prod-audio-stories-12_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
+      "audioDuration": "16 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-13",
+      "title": "Magical Treehouse Secret Library Audio Mystery",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 2,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Enchanting tale where open books release sparkling glowing characters.",
+      "description": "Enchanting tale where open books release sparkling glowing characters. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "32 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "13.7 MB",
+      "documentFileName": "prod-audio-stories-13_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3",
+      "audioDuration": "20 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-14",
+      "title": "Calm Down Volcano: Anger Management Breathing Audio for Kids",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 1.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Interactive sensory exercise turning explosive anger into cool mountain breezes.",
+      "description": "Interactive sensory exercise turning explosive anger into cool mountain breezes. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "16 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "8.1 MB",
+      "documentFileName": "prod-audio-stories-14_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+      "audioDuration": "11 mins",
+      "mediaType": "audio"
+    },
+    {
+      "id": "prod-audio-stories-15",
+      "title": "Master Bedtime Collection: 10 Full Audio Stories & Illustrated Ebooks",
+      "category": "audio-stories",
+      "categoryLabel": "Bedtime Audio Stories & Calming Tunes",
+      "priceUSD": 4.5,
+      "isFree": false,
+      "isLocked": true,
+      "accessType": "paid",
+      "rating": 0,
+      "reviewsCount": 0,
+      "pages": 0,
+      "targetAge": "Ages 3-9",
+      "educationalBenefit": "Gentle Bedtime Sleep Routine & Soothing Listening Comprehension",
+      "includedItems": [
+        "High-Resolution Vector Worksheets",
+        "Print-ready Standard A4 & Universal Page Formats",
+        "Reusable Dry-Erase Lamination Guide"
+      ],
+      "format": [
+        "High-Fidelity MP3 Audio",
+        "Printable Storybook PDF",
+        "Narration Script"
+      ],
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "shortDesc": "Over 3 hours of soothing audio stories, calming bedtime books, and lullabies.",
+      "description": "Over 3 hours of soothing audio stories, calming bedtime books, and lullabies. Designed for easy home printing and multi-session developmental fun.",
+      "features": [
+        "180 Clean, Print-Friendly Worksheets",
+        "Formatted for Standard A4 & Universal page sizes",
+        "Laminate-friendly for whiteboard markers"
+      ],
+      "fileSize": "65.5 MB",
+      "documentFileName": "prod-audio-stories-15_workbook.pdf",
+      "documentFileType": "pdf",
+      "audioVideoUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3",
+      "audioDuration": "3+ Hours",
+      "mediaType": "audio"
+    }
+  ],
+  "categories": [
+    {
+      "id": "toddlers",
+      "title": "Toddlers & Preschool",
+      "shortTitle": "Toddlers & Preschool",
+      "tagline": "Gentle Tracing, Dotted Lines & Hand-Eye Coordination",
+      "description": "Specially created for tiny fingers learning pencil grip, line following, basic shapes, numbers 1-10, and friendly alphabet tracing.",
+      "shortDescription": "Gentle tracing, big bold alphabet & animal coloring for early learners.",
+      "ageRange": "Ages 2-4",
+      "accentColor": "indigo",
+      "badge": "Popular for Pre-K",
+      "itemCount": 16,
+      "image": "/app/applet/src/assets/images/cover_toddler_preschool_1791896015426.jpg",
+      "features": [
+        "Extra-thick tracing guidelines",
+        "Cute animal characters & shape matching",
+        "High contrast print-ready PDF formats",
+        "Laminate-friendly for dry-erase reuse"
+      ]
+    },
+    {
+      "id": "early-learning",
+      "title": "Early Learning & Phonics",
+      "shortTitle": "Early Learning & Phonics",
+      "tagline": "Sight Words, Phonics, Counting & Early Reading",
+      "description": "Foundational kindergarten curriculum materials covering phonics blends, basic math word problems, sentence building, and creative coloring.",
+      "shortDescription": "Sight words, foundational phonics, early math & sentence building.",
+      "ageRange": "Ages 4-7",
+      "accentColor": "violet",
+      "badge": "Kindergarten Ready",
+      "itemCount": 16,
+      "image": "/app/applet/src/assets/images/product_kids_workbook_1791829243098.jpg",
+      "features": [
+        "CVC words & early phonics decoding",
+        "Addition and subtraction visual counters",
+        "Daily handwriting practice sheets",
+        "Print-ready Standard A4 & Universal size"
+      ]
+    },
+    {
+      "id": "puzzles",
+      "title": "Brain Puzzles & STEM Mazes",
+      "shortTitle": "Brain Puzzles & STEM",
+      "tagline": "Logic Grids, Crosswords, Mazes & Critical Thinking",
+      "description": "Keep young brains sharp and screen-free with engaging logic puzzles, spot-the-difference, spatial reasoning, and word searches.",
+      "shortDescription": "Screen-free logic puzzles, spot the difference, and brain teasers.",
+      "ageRange": "Ages 5-10",
+      "accentColor": "amber",
+      "badge": "Screen-Free Fun",
+      "itemCount": 16,
+      "image": "/app/applet/src/assets/images/cover_puzzles_brain_1791896015957.jpg",
+      "features": [
+        "Graduated difficulty levels (Easy to Master)",
+        "Spatial reasoning and dot-to-dot maps",
+        "Answer key included on final pages",
+        "Great for road trips & restaurants"
+      ]
+    },
+    {
+      "id": "routines",
+      "title": "Elite Planners & Digital Guides",
+      "shortTitle": "Elite Planners & Digital Guides",
+      "tagline": "Premium Daily Routines, Productivity Planners & Digital Guides",
+      "description": "Curated premium planning systems, visual routine charts, productivity guides, and customizable digital organizers for high-achieving parents, homeschoolers, and families.",
+      "shortDescription": "Visual morning, bedtime & chore charts that build peaceful habits.",
+      "ageRange": "All Ages & Families",
+      "accentColor": "emerald",
+      "badge": "Elite Collection",
+      "itemCount": 15,
+      "image": "/app/applet/src/assets/images/elite_planners_guide.svg",
+      "features": [
+        "Visual icon-based checklist routine cards",
+        "Interactive customizable schedules",
+        "Reduces morning & bedtime power struggles",
+        "Print & stick with Velcro or magnets"
+      ]
+    },
+    {
+      "id": "festivals",
+      "title": "Printable Greeting Cards & Seasonal Celebrations",
+      "shortTitle": "Greeting Cards & Holidays",
+      "tagline": "All-Occasion Greeting Cards (Birthday, Mother’s Day, Father’s Day, Christmas, Eid), Calendars & Holiday Crafts",
+      "description": "Elegant, luxury all-occasion printable greeting cards (Birthday, Mother’s Day, Father’s Day, Teacher’s Day, Christmas, Ramadan & Eid), plus holiday countdown charts and celebration crafts.",
+      "shortDescription": "All-occasion printable cards (Birthday, Mother’s Day, Father’s Day, Christmas & Eid).",
+      "ageRange": "All Ages & Families",
+      "accentColor": "rose",
+      "badge": "Cards & Celebrations",
+      "itemCount": 15,
+      "image": "/app/applet/src/assets/images/festivals_greeting_cards_1791903827189.jpg",
+      "features": [
+        "All-occasion greeting cards: Birthday, Mother’s & Father’s Day, Christmas, Eid",
+        "Foldable card layout with trim lines and matching envelope liners",
+        "Celebration countdowns, deeds charts & holiday stationery",
+        "Instant print-ready 300 DPI high-definition PDF files"
+      ]
+    },
+    {
+      "id": "audio-stories",
+      "title": "Bedtime Audio Stories & Calming Tunes",
+      "shortTitle": "Bedtime Audio Stories",
+      "tagline": "Soothing Narrated Audio Stories, Lullabies & Concentration Sounds",
+      "description": "Calming, narrated bedtime audio stories, gentle ambient nature sounds, and confidence-building tales with built-in in-app audio player.",
+      "shortDescription": "Peaceful bedtime audio stories, gentle lullabies & concentration audio.",
+      "ageRange": "Ages 3-9",
+      "accentColor": "purple",
+      "badge": "Audio & Video Player",
+      "itemCount": 15,
+      "image": "/app/applet/src/assets/images/product_bedtime_ebook_1791829261806.jpg",
+      "features": [
+        "Built-in in-app audio & video player (No external app needed)",
+        "Soothing professional English voice narration",
+        "Ambient white noise & bedtime lullaby tracks",
+        "Companion printable illustrated storybooks"
+      ]
+    }
+  ],
   "reviews": [],
   "settings": {
+    "storeName": "Family Printables",
+    "storeTagline": "Smart Digital Printables for Families & Business",
+    "logoUrl": "/logo.png",
     "payoneerEmail": "merchant.payments@familyprintables.com",
     "payoneerAccountId": "PAY-8829-4102",
     "receivingAccountNumber": "984210384729",
     "routingNumber": "021000021",
     "bankName": "First Century Bank (US Receiving Account)",
     "gatewayMode": "test",
-    "currency": "USD"
+    "currency": "USD",
+    "socialLinks": {
+      "pinterest": "https://www.pinterest.com/familyprintables",
+      "instagram": "https://www.instagram.com/familyprintables",
+      "facebook": "https://www.facebook.com/familyprintables",
+      "amazon": "https://www.amazon.com/author/familyprintables",
+      "etsy": "https://www.etsy.com/shop/familyprintables"
+    }
   },
+  "assets": [
+    {
+      "id": "asset-1792586449639",
+      "name": "test_pixel.png",
+      "filename": "logo_1792586449637_ump8d.png",
+      "url": "/uploads/logo_1792586449637_ump8d.png",
+      "size": 70,
+      "mimeType": "image/png",
+      "assetType": "logo",
+      "createdAt": 1792586449639
+    }
+  ],
   "deletedProductIds": [],
   "deletedCategoryIds": [],
-  "lastUpdated": 1792497190838
+  "lastUpdated": 1792586449639
 }

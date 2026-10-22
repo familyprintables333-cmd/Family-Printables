@@ -9,8 +9,7 @@ const __dirname = path.dirname(__filename);
 
 const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'database.json');
-const SEED_PRODUCTS_FILE = path.join(DATA_DIR, 'seed-products.json');
-const SEED_CATEGORIES_FILE = path.join(DATA_DIR, 'seed-categories.json');
+const CATALOG_FILE = path.join(__dirname, 'src', 'data', 'catalog.json');
 const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
 
 // Ensure data and uploads directories exist
@@ -83,29 +82,20 @@ const loadDatabase = (): DatabaseSchema => {
     console.error('Error reading database.json:', err);
   }
 
-  // Auto-seed baseline products if database products are empty
-  if (db.products.length === 0 && fs.existsSync(SEED_PRODUCTS_FILE)) {
+  // Auto-seed baseline products & categories from centralized catalog.json if database is empty
+  if (fs.existsSync(CATALOG_FILE)) {
     try {
-      const seedProducts = JSON.parse(fs.readFileSync(SEED_PRODUCTS_FILE, 'utf8'));
-      if (Array.isArray(seedProducts) && seedProducts.length > 0) {
-        db.products = seedProducts;
-        console.log(`🌱 Seeded database with ${seedProducts.length} initial products`);
+      const catalog = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
+      if (db.products.length === 0 && Array.isArray(catalog.products)) {
+        db.products = catalog.products;
+        console.log(`🌱 Seeded database with ${catalog.products.length} products from centralized catalog`);
+      }
+      if (db.categories.length === 0 && Array.isArray(catalog.categories)) {
+        db.categories = catalog.categories;
+        console.log(`🌱 Seeded database with ${catalog.categories.length} categories from centralized catalog`);
       }
     } catch (e) {
-      console.warn('Could not read seed-products.json:', e);
-    }
-  }
-
-  // Auto-seed baseline categories if database categories are empty
-  if (db.categories.length === 0 && fs.existsSync(SEED_CATEGORIES_FILE)) {
-    try {
-      const seedCats = JSON.parse(fs.readFileSync(SEED_CATEGORIES_FILE, 'utf8'));
-      if (Array.isArray(seedCats) && seedCats.length > 0) {
-        db.categories = seedCats;
-        console.log(`🌱 Seeded database with ${seedCats.length} initial categories`);
-      }
-    } catch (e) {
-      console.warn('Could not read seed-categories.json:', e);
+      console.warn('Could not read centralized catalog.json:', e);
     }
   }
 
@@ -509,6 +499,24 @@ ${allUrls
 
   res.setHeader('Content-Type', 'application/xml');
   res.send(xml);
+});
+
+// Dynamic On-Demand Export ZIP Generation
+app.get(['/family-printables-production.zip', '/api/export-zip'], (req, res) => {
+  const targetZip = path.join(__dirname, 'family-printables-production.zip');
+  if (fs.existsSync(targetZip)) {
+    return res.download(targetZip, 'family-printables-production.zip');
+  }
+  try {
+    const { execSync } = require('child_process');
+    execSync('python3 scripts/build-export-zip.py', { cwd: __dirname });
+    if (fs.existsSync(targetZip)) {
+      return res.download(targetZip, 'family-printables-production.zip');
+    }
+  } catch (err) {
+    console.error('Dynamic ZIP generation error:', err);
+  }
+  res.status(503).json({ error: 'Archive is generating, please retry shortly' });
 });
 
 // ----------------------------------------------------------------------------

@@ -2,7 +2,7 @@ import React from 'react';
 import { X, Trash2, ArrowRight, ShieldCheck, Download, ShoppingBag } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatCurrency } from '../utils/currency';
-import { resolveImageUrl } from '../assets/images';
+import { resolveImageUrl, IMAGES } from '../assets/images';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -73,7 +73,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   referrerPolicy="no-referrer"
                   onError={(e) => {
                     e.currentTarget.onerror = null;
-                    e.currentTarget.src = '/assets/images/cover_toddler.jpg';
+                    e.currentTarget.src = IMAGES.coverToddler;
                   }}
                 />
                 <div className="flex-1 min-w-0">

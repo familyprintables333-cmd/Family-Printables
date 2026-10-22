@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { CartItem, MerchantSettings } from '../types';
 import { formatCurrency } from '../utils/currency';
-import { resolveImageUrl } from '../assets/images';
+import { resolveImageUrl, IMAGES } from '../assets/images';
 import { resolveProductGumroadUrl } from '../utils/gumroad';
 
 interface CheckoutModalProps {
@@ -335,7 +335,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       className="w-7 h-7 rounded-lg object-cover border border-slate-200 shrink-0"
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/assets/images/cover_toddler.jpg';
+                        e.currentTarget.src = IMAGES.coverToddler;
                       }}
                     />
                     <span className="font-bold text-slate-900 truncate max-w-[240px] text-xs">
