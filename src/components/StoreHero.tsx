@@ -5,9 +5,16 @@ import { formatCurrency } from '../utils/currency';
 interface StoreHeroProps {
   onQuickNav?: (target: string) => void;
   currency?: string;
+  storeName?: string;
+  storeTagline?: string;
 }
 
-export const StoreHero: React.FC<StoreHeroProps> = ({ onQuickNav, currency = 'USD' }) => {
+export const StoreHero: React.FC<StoreHeroProps> = ({ 
+  onQuickNav, 
+  currency = 'USD',
+  storeName = 'Family Printables',
+  storeTagline = 'Smart Digital Printables for Families & Business'
+}) => {
   return (
     <header className="max-w-4xl mx-auto text-center space-y-2.5 sm:space-y-5 mb-5 sm:mb-10 px-1">
       {/* Global Freemium Status Banner */}
@@ -16,14 +23,14 @@ export const StoreHero: React.FC<StoreHeroProps> = ({ onQuickNav, currency = 'US
         <span>Global Digital Printables • 300 DPI Vector PDFs</span>
       </div>
 
-      {/* Main Heading (Strictly Applied) */}
+      {/* Main Heading */}
       <h1 className="text-xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white font-sans">
-        Smart Digital Printables for Families &amp; Business
+        {storeTagline || 'Smart Digital Printables for Families & Business'}
       </h1>
 
-      {/* Subtitle (Strictly Applied - Zero US mentions) */}
+      {/* Subtitle */}
       <p className="text-xs sm:text-base text-slate-200 leading-relaxed max-w-3xl mx-auto font-normal">
-        Instantly download 100% free single-page daily timetables, productivity planners, and business sales ledgers in Standard A4 &amp; Universal formats, alongside premium kids' learning workbooks and greeting cards.
+        Instantly download 100% free single-page daily timetables, productivity planners, and business sales ledgers in Standard A4 &amp; Universal formats, alongside premium kids' learning workbooks and greeting cards from {storeName || 'Family Printables'}.
       </p>
 
       {/* Freemium Model Clarity Badges */}

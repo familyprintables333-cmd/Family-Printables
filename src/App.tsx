@@ -38,6 +38,9 @@ import { downloadProductFileOffline } from './utils/offlineDownload';
 import { MediaPlayerModal } from './components/MediaPlayerModal';
 import { 
   fetchServerProducts, 
+  fetchServerCategories,
+  fetchServerSettings,
+  syncSaveSettings,
   performFullSync, 
   subscribeToSyncEvents, 
   getLocalDeletedProductIds, 
@@ -183,10 +186,33 @@ export default function App() {
 
   // Active cross-device synchronization (laptop <-> mobile) and permanent deletion tracking
   useEffect(() => {
-    // 1. Initial server fetch to sync updates across devices
+    // 1. Initial server fetch to sync products across devices
     fetchServerProducts(PRODUCTS).then((serverProds) => {
       if (serverProds && serverProds.length > 0) {
         setProducts(serverProds);
+      }
+    });
+
+    // 2. Initial server fetch to sync categories across devices
+    fetchServerCategories(CATEGORIES).then((serverCats) => {
+      if (serverCats && serverCats.length > 0) {
+        setCategories(serverCats);
+      }
+    });
+
+    // 3. Initial server fetch for store settings, logo, branding, and payout config
+    fetchServerSettings().then((serverSettings) => {
+      if (serverSettings) {
+        setMerchantSettings((prev) => ({ ...prev, ...serverSettings }));
+        if (serverSettings.logoUrl) {
+          setLogoUrl(serverSettings.logoUrl);
+          try {
+            localStorage.setItem('fp_custom_logo', serverSettings.logoUrl);
+          } catch {}
+        }
+        if (serverSettings.currency) {
+          setCurrency(serverSettings.currency);
+        }
       }
     });
 
@@ -380,6 +406,7 @@ export default function App() {
     try {
       localStorage.setItem('fp_custom_logo', finalLogo);
     } catch {}
+    syncSaveSettings({ logoUrl: finalLogo });
   };
 
   // Cart & Buy Handlers
@@ -590,9 +617,16 @@ export default function App() {
         onUpdateMerchantSettings={(newSettings) => {
           setMerchantSettings(newSettings);
           setCurrency(newSettings.currency);
+          if (newSettings.logoUrl && newSettings.logoUrl !== logoUrl) {
+            setLogoUrl(newSettings.logoUrl);
+            try {
+              localStorage.setItem('fp_custom_logo', newSettings.logoUrl);
+            } catch {}
+          }
           try {
             localStorage.setItem('fp_merchant_settings', JSON.stringify(newSettings));
           } catch {}
+          syncSaveSettings(newSettings);
         }}
         logoUrl={logoUrl}
         onUpdateLogoUrl={handleUpdateLogoUrl}
@@ -678,6 +712,8 @@ export default function App() {
                   <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-5 sm:pt-12 pb-8 sm:pb-16">
                     <StoreHero
                       currency={currency}
+                      storeName={merchantSettings.storeName}
+                      storeTagline={merchantSettings.storeTagline}
                       onQuickNav={(target) => {
                         if (target.startsWith('category-')) {
                           handleSelectCategory(target.replace('category-', '') as CategoryId);

@@ -289,3 +289,196 @@ export const fetchServerSettings = async (): Promise<MerchantSettings | null> =>
   } catch {}
   return null;
 };
+
+/**
+ * Fetch authoritative categories from server
+ */
+export const fetchServerCategories = async (fallbackCategories: CategoryInfo[]): Promise<CategoryInfo[]> => {
+  try {
+    const res = await fetch('/api/categories');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.categories) && data.categories.length > 0) {
+        localStorage.setItem(STORAGE_CATEGORIES_KEY, JSON.stringify(data.categories));
+        return data.categories;
+      } else if (fallbackCategories.length > 0) {
+        // Seed server categories
+        fetch('/api/categories', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ categories: fallbackCategories })
+        }).catch(() => {});
+        localStorage.setItem(STORAGE_CATEGORIES_KEY, JSON.stringify(fallbackCategories));
+        return fallbackCategories;
+      }
+    }
+  } catch (err) {
+    console.warn('Backend /api/categories offline, using local cache:', err);
+  }
+
+  try {
+    const saved = localStorage.getItem(STORAGE_CATEGORIES_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+
+  return fallbackCategories;
+};
+
+/**
+ * Bulk save categories to server and local cache
+ */
+export const syncSaveCategories = async (categories: CategoryInfo[]): Promise<void> => {
+  try {
+    localStorage.setItem(STORAGE_CATEGORIES_KEY, JSON.stringify(categories));
+  } catch {}
+
+  if (syncChannel) {
+    syncChannel.postMessage({ type: 'CATEGORIES_SAVED', categories });
+  }
+
+  try {
+    await fetch('/api/categories', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ categories })
+    });
+  } catch (err) {
+    console.warn('Could not save categories to server:', err);
+  }
+};
+
+/**
+ * Save single category to server and local cache
+ */
+export const syncSaveCategory = async (category: CategoryInfo): Promise<void> => {
+  try {
+    const saved = localStorage.getItem(STORAGE_CATEGORIES_KEY);
+    let list: CategoryInfo[] = saved ? JSON.parse(saved) : [];
+    const idx = list.findIndex(c => c.id === category.id);
+    if (idx !== -1) {
+      list[idx] = category;
+    } else {
+      list.push(category);
+    }
+    localStorage.setItem(STORAGE_CATEGORIES_KEY, JSON.stringify(list));
+  } catch {}
+
+  try {
+    await fetch('/api/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(category)
+    });
+  } catch (err) {
+    console.warn('Could not post category to server:', err);
+  }
+};
+
+/**
+ * Delete category from server and local cache
+ */
+export const syncDeleteCategory = async (categoryId: string): Promise<void> => {
+  try {
+    const saved = localStorage.getItem(STORAGE_CATEGORIES_KEY);
+    if (saved) {
+      const list: CategoryInfo[] = JSON.parse(saved);
+      const filtered = list.filter(c => c.id !== categoryId);
+      localStorage.setItem(STORAGE_CATEGORIES_KEY, JSON.stringify(filtered));
+    }
+  } catch {}
+
+  try {
+    await fetch(`/api/categories/${categoryId}`, {
+      method: 'DELETE'
+    });
+  } catch (err) {
+    console.warn('Could not delete category on server:', err);
+  }
+};
+
+/**
+ * Permanent Backend Asset Upload System
+ * Uploads logo, product cover, category banner, or document to server and returns public URL
+ */
+export const uploadAsset = async (
+  dataUrl: string, 
+  fileName?: string, 
+  assetType: 'logo' | 'banner' | 'product' | 'document' | 'media' | 'asset' = 'asset'
+): Promise<{ success: boolean; url: string; error?: string }> => {
+  // If already an HTTP URL or persistent uploaded path, return immediately
+  if (dataUrl.startsWith('http://') || dataUrl.startsWith('https://') || dataUrl.startsWith('/uploads/')) {
+    return { success: true, url: dataUrl };
+  }
+
+  try {
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        dataUrl,
+        fileName,
+        assetType
+      })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.url) {
+        return { success: true, url: data.url };
+      }
+    }
+    const errData = await res.json().catch(() => ({}));
+    return { success: false, url: dataUrl, error: errData.error || 'Server upload failed' };
+  } catch (err: any) {
+    console.warn('Asset upload to backend failed, falling back to local dataUrl:', err);
+    return { success: false, url: dataUrl, error: err.message };
+  }
+};
+
+export interface ServerAssetRecord {
+  id: string;
+  name: string;
+  filename: string;
+  url: string;
+  size: number;
+  mimeType: string;
+  assetType: string;
+  createdAt: number;
+}
+
+/**
+ * Fetch all permanently stored assets from server
+ */
+export const fetchServerAssets = async (): Promise<ServerAssetRecord[]> => {
+  try {
+    const res = await fetch('/api/assets');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.assets)) {
+        return data.assets;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch assets from server:', err);
+  }
+  return [];
+};
+
+/**
+ * Delete asset from server storage
+ */
+export const deleteServerAsset = async (filename: string): Promise<boolean> => {
+  try {
+    const res = await fetch(`/api/assets/${encodeURIComponent(filename)}`, {
+      method: 'DELETE'
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn('Could not delete asset on server:', err);
+    return false;
+  }
+};
+

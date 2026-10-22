@@ -144,8 +144,14 @@ export function resolveImageUrl(path: string | undefined, contextCategory?: stri
     return coverToddlerPreschool;
   }
 
-  // 1. If it's already an active data URL or absolute web URL, return as-is
-  if (path.startsWith('data:') || path.startsWith('http://') || path.startsWith('https://')) {
+  // 1. If it's already an active data URL, absolute web URL, or uploaded asset path, return as-is
+  if (
+    path.startsWith('data:') || 
+    path.startsWith('http://') || 
+    path.startsWith('https://') || 
+    path.startsWith('/uploads/') ||
+    path.startsWith('blob:')
+  ) {
     return path;
   }
 
@@ -163,9 +169,9 @@ export function resolveImageUrl(path: string | undefined, contextCategory?: stri
     return coverRamadanHoliday;
   }
 
-  // 3. Strip leading paths to extract the base name (e.g. "src/assets/images/cover_puzzles.jpg" -> "cover_puzzles.jpg")
+  // 3. Strip leading paths to extract the base name (e.g. "...assets/images/cover_puzzles.jpg" -> "cover_puzzles.jpg")
   const cleanKey = path
-    .replace(/^(\.\/|\/)?(src\/)?assets\/images\//, '')
+    .replace(/^.*assets\/images\//, '')
     .trim();
 
   // Check registry for direct match or without file extension

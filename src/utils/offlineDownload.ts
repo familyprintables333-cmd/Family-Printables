@@ -178,11 +178,12 @@ export const downloadProductFileOffline = (
   product: Product,
   formatName: string = 'Standard_A4_PDF'
 ): void => {
-  // If product already has an uploaded custom document data URL or blob, use that!
-  if (product.documentFileUrl && product.documentFileUrl.startsWith('data:')) {
+  // If product already has an uploaded custom document file, data URL, or stored asset, trigger direct download!
+  if (product.documentFileUrl && product.documentFileUrl.trim().length > 0) {
     const link = document.createElement('a');
     link.href = product.documentFileUrl;
     link.download = product.documentFileName || `${product.id}_document.pdf`;
+    link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

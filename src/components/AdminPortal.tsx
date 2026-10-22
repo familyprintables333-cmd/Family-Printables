@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Lock, 
   Unlock, 
@@ -40,7 +40,10 @@ import {
   Video,
   X,
   Search,
-  Share2
+  Share2,
+  FolderOpen,
+  HardDrive,
+  Link2
 } from 'lucide-react';
 import { Product, MerchantSettings, Order, CategoryId, CategoryInfo, SocialLinks, CustomCodeSettings } from '../types';
 import { CATEGORIES } from '../data/categories';
@@ -66,7 +69,17 @@ import {
   saveStoredHtmlSnippets, 
   HtmlSnippetRecord 
 } from '../utils/gumroad';
-import { syncSaveProduct, syncDeleteProduct, syncSaveSettings } from '../utils/syncService';
+import { 
+  syncSaveProduct, 
+  syncDeleteProduct, 
+  syncSaveSettings, 
+  syncSaveCategory, 
+  syncDeleteCategory,
+  uploadAsset,
+  fetchServerAssets,
+  deleteServerAsset,
+  ServerAssetRecord
+} from '../utils/syncService';
 import { DEFAULT_SOCIAL } from './Footer';
 
 interface AdminPortalProps {
@@ -106,7 +119,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const [authError, setAuthError] = useState('');
   
   // Navigation Tabs
-  const [activeTab, setActiveTab] = useState<'pricing' | 'products' | 'categories' | 'users' | 'monetization' | 'json' | 'branding' | 'code'>('pricing');
+  const [activeTab, setActiveTab] = useState<'pricing' | 'products' | 'categories' | 'assets' | 'users' | 'monetization' | 'json' | 'branding' | 'code'>('pricing');
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   // Registered Users State
@@ -175,11 +188,44 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const [jsonError, setJsonError] = useState('');
   const [jsonSuccess, setJsonSuccess] = useState('');
 
-  // Branding & Merchant Settings
-  const [paymentForm, setPaymentForm] = useState<MerchantSettings>(merchantSettings);
-  const [tempLogo, setTempLogo] = useState(logoUrl);
+  // Store Identity & Branding Form State
+  const [storeNameForm, setStoreNameForm] = useState(merchantSettings.storeName || 'Family Printables');
+  const [storeTaglineForm, setStoreTaglineForm] = useState(merchantSettings.storeTagline || 'Smart Digital Printables for Families & Business');
+  const [storeCurrencyForm, setStoreCurrencyForm] = useState(merchantSettings.currency || currency || 'USD');
+  const [tempLogo, setTempLogo] = useState(logoUrl || merchantSettings.logoUrl || '/logo.png');
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+
+  // Category Banner Upload State
+  const [categoryBannerImage, setCategoryBannerImage] = useState<string>('');
+  const [isUploadingCategoryBanner, setIsUploadingCategoryBanner] = useState(false);
+
+  // Checkout & Payment Form State (Direct Card, Stripe, Payoneer & Gumroad)
+  const [paymentForm, setPaymentForm] = useState<MerchantSettings>({
+    ...merchantSettings,
+    gatewayMode: merchantSettings.gatewayMode || 'test',
+    defaultGateway: merchantSettings.defaultGateway || 'card',
+    currency: merchantSettings.currency || currency || 'USD',
+    stripePublishableKey: merchantSettings.stripePublishableKey || 'pk_test_sample_familyprintables_2026',
+    gumroadBaseUrl: merchantSettings.gumroadBaseUrl || getStoredGumroadBaseUrl() || 'https://familyprintables.gumroad.com',
+    payoneerEmail: merchantSettings.payoneerEmail || 'merchant.payments@familyprintables.com',
+    payoneerAccountId: merchantSettings.payoneerAccountId || 'PAY-8829-4102',
+    bankName: merchantSettings.bankName || 'First Century Bank (US Receiving Account)',
+    routingNumber: merchantSettings.routingNumber || '021000021',
+    receivingAccountNumber: merchantSettings.receivingAccountNumber || '984210384729'
+  });
+
+  // Admin Passcode Security
   const [newPasscode, setNewPasscode] = useState('');
   const [hasCopiedCode, setHasCopiedCode] = useState(false);
+
+  // Media Library & Asset Manager State
+  const [serverAssets, setServerAssets] = useState<ServerAssetRecord[]>([]);
+  const [isLoadingAssets, setIsLoadingAssets] = useState(false);
+  const [assetSearchQuery, setAssetSearchQuery] = useState('');
+  const [assetTypeFilter, setAssetTypeFilter] = useState<'all' | 'logo' | 'banner' | 'product' | 'document' | 'media'>('all');
+  const [isDirectUploading, setIsDirectUploading] = useState(false);
+  const [directUploadType, setDirectUploadType] = useState<'logo' | 'banner' | 'product' | 'document' | 'media'>('product');
+  const [copiedAssetUrl, setCopiedAssetUrl] = useState<string | null>(null);
 
   // Social Media Links (Pinterest, Instagram, Facebook, Amazon, Etsy)
   const [socialLinksForm, setSocialLinksForm] = useState<SocialLinks>(() => {
@@ -204,6 +250,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     } catch {}
     return { customCss: '', customJs: '', customHeadHtml: '' };
   });
+
+  // Auto-fetch assets when assets tab is selected
+  useEffect(() => {
+    if (activeTab === 'assets') {
+      setIsLoadingAssets(true);
+      fetchServerAssets().then((assets) => {
+        setServerAssets(assets);
+        setIsLoadingAssets(false);
+      });
+    }
+  }, [activeTab]);
 
   const showToast = (msg: string) => {
     setSuccessToast(msg);
@@ -477,7 +534,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     try {
       localStorage.setItem('fp_custom_categories', JSON.stringify(updated));
     } catch {}
-    showToast('Category deleted.');
+    syncDeleteCategory(catId);
+    showToast('Category deleted and synced to database.');
   };
 
   const handleSaveCategory = (e: React.FormEvent<HTMLFormElement>) => {
@@ -489,30 +547,28 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     const description = (formData.get('description') as string) || '';
     const badge = (formData.get('badge') as string) || 'Printables';
     const ageRange = (formData.get('ageRange') as string) || 'All Ages';
-    const image = (formData.get('image') as string) || IMAGES.festivalsCards;
+    const image = categoryBannerImage || (formData.get('image') as string) || IMAGES.festivalsCards;
 
     if (editingCategory) {
-      const updated = categories.map((c) => {
-        if (c.id === editingCategory.id) {
-          return {
-            ...c,
-            title,
-            shortTitle,
-            tagline,
-            description,
-            badge,
-            ageRange,
-            image
-          };
-        }
-        return c;
-      });
+      const updatedCat: CategoryInfo = {
+        ...editingCategory,
+        title,
+        shortTitle,
+        tagline,
+        description,
+        badge,
+        ageRange,
+        image
+      };
+      const updated = categories.map((c) => (c.id === editingCategory.id ? updatedCat : c));
       onUpdateCategories(updated);
       try {
         localStorage.setItem('fp_custom_categories', JSON.stringify(updated));
       } catch {}
+      syncSaveCategory(updatedCat);
       setEditingCategory(null);
-      showToast('Category banner and details updated!');
+      setCategoryBannerImage('');
+      showToast('Category banner and details updated & synced to database!');
     } else {
       const newCat: CategoryInfo = {
         id: `cat-${Date.now()}` as CategoryId,
@@ -533,8 +589,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       try {
         localStorage.setItem('fp_custom_categories', JSON.stringify(updated));
       } catch {}
+      syncSaveCategory(newCat);
       setIsAddingCategory(false);
-      showToast('New category created successfully!');
+      setCategoryBannerImage('');
+      showToast('New category created & synced to database!');
     }
   };
 
@@ -747,11 +805,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             { id: 'pricing', label: 'Pricing & Lock Controls', icon: DollarSign },
             { id: 'products', label: 'Workbooks (CRUD)', icon: BookOpen },
             { id: 'categories', label: 'Categories & Banners', icon: Layers },
-            { id: 'users', label: 'Registered Users', icon: Users },
-            { id: 'monetization', label: 'Revenue & AdMob / AdSense', icon: TrendingUp },
-            { id: 'json', label: 'JSON Export & Import', icon: Upload },
+            { id: 'assets', label: 'Media & Assets', icon: FolderOpen },
             { id: 'branding', label: 'Branding & Payouts', icon: CreditCard },
             { id: 'code', label: 'HTML & Link Editor', icon: Code },
+            { id: 'users', label: 'Registered Users', icon: Users },
+            { id: 'monetization', label: 'Revenue & AdMob', icon: TrendingUp },
+            { id: 'json', label: 'JSON Backup', icon: Upload },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -1206,8 +1265,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                               const file = e.target.files?.[0];
                               if (file) {
                                 const reader = new FileReader();
-                                reader.onload = () => {
-                                  setFormCoverImage(reader.result as string);
+                                reader.onload = async () => {
+                                  const dataUrl = reader.result as string;
+                                  setFormCoverImage(dataUrl);
+                                  const uploaded = await uploadAsset(dataUrl, file.name, 'product');
+                                  if (uploaded.success && uploaded.url) {
+                                    setFormCoverImage(uploaded.url);
+                                    showToast(`Cover image "${file.name}" uploaded to server permanently!`);
+                                  }
                                 };
                                 reader.readAsDataURL(file);
                               }
@@ -1295,13 +1360,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                                 const isDoc = file.name.endsWith('.doc') || file.name.endsWith('.docx');
                                 const sizeMB = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
                                 const reader = new FileReader();
-                                reader.onload = () => {
+                                reader.onload = async () => {
+                                  const dataUrl = reader.result as string;
                                   setFormDocumentFile({
                                     name: file.name,
                                     size: sizeMB,
-                                    url: reader.result as string,
+                                    url: dataUrl,
                                     type: isDoc ? (file.name.endsWith('.docx') ? 'docx' : 'doc') : 'pdf',
                                   });
+                                  const uploaded = await uploadAsset(dataUrl, file.name, 'document');
+                                  if (uploaded.success && uploaded.url) {
+                                    setFormDocumentFile(prev => prev ? { ...prev, url: uploaded.url } : null);
+                                    showToast(`Document "${file.name}" uploaded to server permanently!`);
+                                  }
                                 };
                                 reader.readAsDataURL(file);
                               }
@@ -1631,19 +1702,59 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     />
                   </div>
 
-                  <div>
-                    <label className="font-bold text-slate-700 block mb-1">Banner Image Key / URL:</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        name="image"
-                        defaultValue={editingCategory?.image || IMAGES.festivalsCards}
-                        className="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono text-[11px] text-slate-900"
-                      />
+                  <div className="space-y-2">
+                    <label className="font-bold text-slate-700 block mb-1">Category Banner Image:</label>
+                    <div className="flex items-center gap-3">
+                      <div className="w-16 h-12 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 shrink-0">
+                        <img
+                          src={resolveImageUrl(categoryBannerImage || editingCategory?.image || IMAGES.festivalsCards)}
+                          alt="Banner Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = IMAGES.festivalsCards;
+                          }}
+                        />
+                      </div>
+                      <div className="flex-1 space-y-1.5">
+                        <input
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp,image/jpg"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setIsUploadingCategoryBanner(true);
+                              const reader = new FileReader();
+                              reader.onload = async () => {
+                                const dataUrl = reader.result as string;
+                                setCategoryBannerImage(dataUrl);
+                                const uploaded = await uploadAsset(dataUrl, file.name, 'banner');
+                                if (uploaded.success && uploaded.url) {
+                                  setCategoryBannerImage(uploaded.url);
+                                  showToast(`Category banner "${file.name}" uploaded to server permanently!`);
+                                }
+                                setIsUploadingCategoryBanner(false);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                          className="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          name="image"
+                          value={categoryBannerImage !== '' ? categoryBannerImage : (editingCategory?.image || IMAGES.festivalsCards)}
+                          onChange={(e) => setCategoryBannerImage(e.target.value)}
+                          placeholder="Or paste image URL / bundled key..."
+                          className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl font-mono text-[11px] text-slate-900"
+                        />
+                      </div>
                     </div>
-                    <span className="text-[10px] text-slate-500 mt-1 block">
-                      Use bundled key: festivals_greeting_cards, cover_toddler, cover_puzzles, product_kids_workbook, or any web image URL.
-                    </span>
+                    {isUploadingCategoryBanner && (
+                      <div className="text-[10px] text-indigo-600 font-bold flex items-center gap-1.5">
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        <span>Uploading banner asset to backend permanently...</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
@@ -1722,6 +1833,268 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ================================================================ */}
+        {/* TAB: MEDIA & BACKEND ASSET MANAGEMENT                             */}
+        {/* ================================================================ */}
+        {activeTab === 'assets' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Header & Controls */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full mb-2 border border-indigo-200">
+                  <HardDrive className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Permanent Backend Storage (/public/uploads)</span>
+                </div>
+                <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                  <FolderOpen className="w-6 h-6 text-indigo-600" />
+                  <span>Media &amp; Asset Management System ({serverAssets.length})</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Upload, inspect, copy links, or delete store logos, product covers, category banners, and workbook PDFs. Files are stored on the server permanently.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLoadingAssets(true);
+                    fetchServerAssets().then((assets) => {
+                      setServerAssets(assets);
+                      setIsLoadingAssets(false);
+                      showToast('Media assets list refreshed from server!');
+                    });
+                  }}
+                  className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${isLoadingAssets ? 'animate-spin' : ''}`} />
+                  <span>Refresh</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Direct Upload Card */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                <Upload className="w-4 h-4 text-indigo-600" />
+                <span>Upload New Asset to Server</span>
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Asset Category:</label>
+                  <select
+                    value={directUploadType}
+                    onChange={(e) => setDirectUploadType(e.target.value as any)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white text-slate-900"
+                  >
+                    <option value="product">Product Cover / Media</option>
+                    <option value="logo">Brand Logo</option>
+                    <option value="banner">Category Banner</option>
+                    <option value="document">PDF Document / Workbook</option>
+                    <option value="media">Audio / Video Media</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="font-bold text-slate-700 block mb-1">Select File (Image, PDF, MP3, etc.):</label>
+                  <input
+                    type="file"
+                    disabled={isDirectUploading}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setIsDirectUploading(true);
+                        const reader = new FileReader();
+                        reader.onload = async () => {
+                          const dataUrl = reader.result as string;
+                          const res = await uploadAsset(dataUrl, file.name, directUploadType);
+                          if (res.success && res.url) {
+                            showToast(`Uploaded "${file.name}" successfully! Permanent URL: ${res.url}`);
+                            const fresh = await fetchServerAssets();
+                            setServerAssets(fresh);
+                          } else {
+                            alert('Upload error: ' + (res.error || 'Failed to upload'));
+                          }
+                          setIsDirectUploading(false);
+                          e.target.value = '';
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer border border-slate-200 rounded-xl p-1 bg-slate-50"
+                  />
+                </div>
+              </div>
+
+              {isDirectUploading && (
+                <div className="p-3 bg-indigo-50 border border-indigo-200 text-indigo-900 rounded-xl text-xs font-bold flex items-center gap-2">
+                  <RefreshCw className="w-4 h-4 animate-spin text-indigo-600 shrink-0" />
+                  <span>Uploading asset to backend server &amp; saving permanently...</span>
+                </div>
+              )}
+            </div>
+
+            {/* Asset Library Filter & Search */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                {/* Type Filter Tabs */}
+                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                  {[
+                    { id: 'all', label: 'All Assets' },
+                    { id: 'logo', label: 'Logos' },
+                    { id: 'banner', label: 'Banners' },
+                    { id: 'product', label: 'Products' },
+                    { id: 'document', label: 'PDF Documents' },
+                    { id: 'media', label: 'Audio / Media' }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setAssetTypeFilter(tab.id as any)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                        assetTypeFilter === tab.id
+                          ? 'bg-indigo-600 text-white'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Search */}
+                <div className="relative min-w-[200px] max-w-xs">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
+                  <input
+                    type="text"
+                    value={assetSearchQuery}
+                    onChange={(e) => setAssetSearchQuery(e.target.value)}
+                    placeholder="Search asset files..."
+                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Assets Grid */}
+              {serverAssets.length === 0 ? (
+                <div className="p-10 text-center border-2 border-dashed border-slate-200 rounded-2xl space-y-2">
+                  <FolderOpen className="w-10 h-10 text-slate-300 mx-auto" />
+                  <div className="text-sm font-bold text-slate-700">No media assets found on server yet</div>
+                  <p className="text-xs text-slate-400 max-w-md mx-auto">
+                    Use the upload box above or upload images and workbooks directly from the product, category, or branding tabs.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {serverAssets
+                    .filter(a => {
+                      if (assetTypeFilter !== 'all' && a.assetType !== assetTypeFilter) return false;
+                      if (assetSearchQuery.trim()) {
+                        const q = assetSearchQuery.toLowerCase();
+                        return a.name.toLowerCase().includes(q) || a.filename.toLowerCase().includes(q);
+                      }
+                      return true;
+                    })
+                    .map((asset) => {
+                      const isImage = asset.mimeType.startsWith('image/');
+                      const isPdf = asset.mimeType.includes('pdf');
+                      const isCopied = copiedAssetUrl === asset.url;
+
+                      return (
+                        <div
+                          key={asset.id || asset.filename}
+                          className="p-3 bg-slate-50 rounded-2xl border border-slate-200 hover:border-slate-300 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            {/* Preview */}
+                            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white border border-slate-200 flex items-center justify-center">
+                              {isImage ? (
+                                <img
+                                  src={asset.url}
+                                  alt={asset.name}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = '/icon.svg';
+                                  }}
+                                />
+                              ) : isPdf ? (
+                                <div className="text-center p-4">
+                                  <FileText className="w-10 h-10 text-rose-500 mx-auto mb-1" />
+                                  <span className="text-[10px] font-bold text-slate-600 block uppercase">PDF File</span>
+                                </div>
+                              ) : (
+                                <div className="text-center p-4">
+                                  <FolderOpen className="w-10 h-10 text-indigo-500 mx-auto mb-1" />
+                                  <span className="text-[10px] font-bold text-slate-600 block uppercase">{asset.assetType}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Details */}
+                            <div>
+                              <div className="font-bold text-xs text-slate-900 truncate" title={asset.name}>
+                                {asset.name}
+                              </div>
+                              <div className="text-[10px] text-slate-500 flex items-center gap-1.5 mt-0.5">
+                                <span className="uppercase font-semibold text-indigo-600 bg-indigo-50 px-1 rounded">
+                                  {asset.assetType}
+                                </span>
+                                <span>·</span>
+                                <span>{(asset.size / 1024).toFixed(1)} KB</span>
+                              </div>
+                            </div>
+
+                            <code className="block text-[10px] font-mono bg-white px-2 py-1 rounded border border-slate-200 text-slate-600 truncate" title={asset.url}>
+                              {asset.url}
+                            </code>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-2 pt-2 border-t border-slate-200/60">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(asset.url);
+                                setCopiedAssetUrl(asset.url);
+                                setTimeout(() => setCopiedAssetUrl(null), 2000);
+                                showToast(`Copied URL: ${asset.url}`);
+                              }}
+                              className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                                isCopied ? 'bg-emerald-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                              }`}
+                            >
+                              {isCopied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                              <span>{isCopied ? 'Copied!' : 'Copy URL'}</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                if (!confirm(`Delete "${asset.name}" permanently from server?`)) return;
+                                const ok = await deleteServerAsset(asset.filename);
+                                if (ok) {
+                                  setServerAssets(prev => prev.filter(a => a.filename !== asset.filename));
+                                  showToast(`Asset "${asset.name}" deleted from server!`);
+                                } else {
+                                  alert('Could not delete asset');
+                                }
+                              }}
+                              className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition border border-rose-200 bg-white cursor-pointer"
+                              title="Delete file permanently"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -2261,99 +2634,369 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         )}
 
         {/* ================================================================ */}
-        {/* TAB 6: BRANDING, LOGO & PAYOUT SETTINGS */}
+        {/* TAB 6: BRANDING, STORE IDENTITY & CHECKOUT CONFIGURATIONS        */}
         {/* ================================================================ */}
         {activeTab === 'branding' && (
           <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Header */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full mb-2 border border-indigo-200">
+                  <CreditCard className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Store Branding &amp; Payment Gateway Engine</span>
+                </div>
+                <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                  <span>Store Branding, Identity &amp; Checkout Setup</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Configure store name, slogans, permanent logo upload, Stripe keys, Payoneer receiving account, and social media links. All changes persist in the backend database.
+                </p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
-              {/* Logo Management */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                  <ImageIcon className="w-5 h-5 text-indigo-600" />
-                  <span>Global Brand Logo</span>
-                </h3>
-                
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 p-1 flex items-center justify-center shrink-0">
-                    <img
-                      src={tempLogo || '/logo.png'}
-                      alt="Brand Logo"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = '/icon.svg';
-                      }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
-                      Logo Image URL or Local Asset Path:
+              {/* 1. STORE IDENTITY & LOGO MANAGEMENT */}
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5 text-indigo-600" />
+                    <span>Store Identity &amp; Global Brand Logo</span>
+                  </h3>
+                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    Live Storefront Sync
+                  </span>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  {/* Store Name */}
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Store Name:
                     </label>
                     <input
                       type="text"
-                      value={tempLogo}
-                      onChange={(e) => setTempLogo(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"
+                      value={storeNameForm}
+                      onChange={(e) => setStoreNameForm(e.target.value)}
+                      placeholder="Family Printables"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-900 focus:bg-white"
                     />
+                  </div>
+
+                  {/* Store Tagline */}
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Store Tagline / Subtitle:
+                    </label>
+                    <input
+                      type="text"
+                      value={storeTaglineForm}
+                      onChange={(e) => setStoreTaglineForm(e.target.value)}
+                      placeholder="Smart Digital Printables for Families & Business"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 focus:bg-white"
+                    />
+                  </div>
+
+                  {/* Default Currency */}
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Default Store Currency:
+                    </label>
+                    <select
+                      value={storeCurrencyForm}
+                      onChange={(e) => setStoreCurrencyForm(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:bg-white"
+                    >
+                      <option value="USD">USD ($) - US Dollar</option>
+                      <option value="EUR">EUR (€) - Euro</option>
+                      <option value="GBP">GBP (£) - British Pound</option>
+                      <option value="CAD">CAD ($) - Canadian Dollar</option>
+                      <option value="INR">INR (₹) - Indian Rupee</option>
+                      <option value="PKR">PKR (₨) - Pakistani Rupee</option>
+                      <option value="AED">AED (د.إ) - UAE Dirham</option>
+                    </select>
+                  </div>
+
+                  {/* Logo Upload & Preview */}
+                  <div className="pt-2 border-t border-slate-100 space-y-2">
+                    <label className="font-bold text-slate-700 block">
+                      Brand Logo (Upload Image or Paste URL):
+                    </label>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 p-1 flex items-center justify-center shrink-0 shadow-2xs">
+                        <img
+                          src={tempLogo || '/logo.png'}
+                          alt="Brand Logo"
+                          className="w-full h-full object-contain"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = '/icon.svg';
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="flex-1 space-y-1.5">
+                        <input
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp,image/svg+xml,image/jpg"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setIsUploadingLogo(true);
+                              const reader = new FileReader();
+                              reader.onload = async () => {
+                                const dataUrl = reader.result as string;
+                                setTempLogo(dataUrl);
+                                const uploaded = await uploadAsset(dataUrl, file.name, 'logo');
+                                if (uploaded.success && uploaded.url) {
+                                  setTempLogo(uploaded.url);
+                                  onUpdateLogoUrl(uploaded.url);
+                                  syncSaveSettings({ logoUrl: uploaded.url });
+                                  showToast(`Brand logo "${file.name}" uploaded to server permanently!`);
+                                }
+                                setIsUploadingLogo(false);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                          className="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={tempLogo}
+                          onChange={(e) => setTempLogo(e.target.value)}
+                          placeholder="e.g. /logo.png or /uploads/logo_...png"
+                          className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono text-slate-900 focus:bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    {isUploadingLogo && (
+                      <div className="text-[10px] text-indigo-600 font-bold flex items-center gap-1.5">
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        <span>Uploading logo to backend server permanently...</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => {
-                    onUpdateLogoUrl(tempLogo);
+                    const updatedSettings: MerchantSettings = {
+                      ...merchantSettings,
+                      storeName: storeNameForm.trim(),
+                      storeTagline: storeTaglineForm.trim(),
+                      currency: storeCurrencyForm,
+                      logoUrl: tempLogo.trim()
+                    };
+                    onUpdateLogoUrl(tempLogo.trim());
+                    onUpdateMerchantSettings(updatedSettings);
                     try {
-                      localStorage.setItem('fp_custom_logo', tempLogo);
+                      localStorage.setItem('fp_custom_logo', tempLogo.trim());
+                      localStorage.setItem('fp_merchant_settings', JSON.stringify(updatedSettings));
                     } catch {}
-                    showToast('Logo updated successfully!');
+                    syncSaveSettings(updatedSettings);
+                    showToast('Store branding, logo, and currency saved permanently to database!');
                   }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-xs transition"
+                  className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  Save Brand Logo
+                  <Save className="w-4 h-4" />
+                  <span>Save Store Branding</span>
                 </button>
               </div>
 
-              {/* Passcode Security */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                  <KeyRound className="w-5 h-5 text-indigo-600" />
-                  <span>Admin Passcode Security</span>
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Update the password required to access this Admin Portal.
-                </p>
+              {/* 2. CHECKOUT & PAYMENT CONFIGURATIONS */}
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                    <CreditCard className="w-5 h-5 text-indigo-600" />
+                    <span>Checkout &amp; Payment Gateway Setup</span>
+                  </h3>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                    paymentForm.gatewayMode === 'live'
+                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                      : 'text-amber-700 bg-amber-50 border-amber-200'
+                  }`}>
+                    {paymentForm.gatewayMode === 'live' ? 'Live Production Mode' : 'Test / Sandbox Mode'}
+                  </span>
+                </div>
 
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    New Passcode:
-                  </label>
-                  <input
-                    type="password"
-                    value={newPasscode}
-                    onChange={(e) => setNewPasscode(e.target.value)}
-                    placeholder="Enter new strong passcode"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-mono"
-                  />
+                <div className="space-y-3.5 text-xs">
+                  {/* Gateway Mode Switcher */}
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Gateway Operating Mode:
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setPaymentForm({ ...paymentForm, gatewayMode: 'test' })}
+                        className={`p-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                          paymentForm.gatewayMode === 'test'
+                            ? 'border-amber-500 bg-amber-50 text-amber-900 ring-2 ring-amber-400/20'
+                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Test / Simulation Mode</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setPaymentForm({ ...paymentForm, gatewayMode: 'live' })}
+                        className={`p-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                          paymentForm.gatewayMode === 'live'
+                            ? 'border-emerald-600 bg-emerald-50 text-emerald-950 ring-2 ring-emerald-500/20'
+                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        <Lock className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Live Real Transactions</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Primary Checkout Provider */}
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Default In-App Checkout Provider:
+                    </label>
+                    <select
+                      value={paymentForm.defaultGateway || 'card'}
+                      onChange={(e) => setPaymentForm({ ...paymentForm, defaultGateway: e.target.value as any })}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:bg-white"
+                    >
+                      <option value="card">Direct Credit/Debit Card (Visa, MC, Amex)</option>
+                      <option value="stripe">Stripe 1-Click Pay (Apple Pay, Google Pay, Cards)</option>
+                      <option value="gumroad">Gumroad In-App Checkout Protocol</option>
+                    </select>
+                  </div>
+
+                  {/* Stripe Publishable Key */}
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Stripe Publishable Key:
+                    </label>
+                    <input
+                      type="text"
+                      value={paymentForm.stripePublishableKey || ''}
+                      onChange={(e) => setPaymentForm({ ...paymentForm, stripePublishableKey: e.target.value })}
+                      placeholder="pk_live_... or pk_test_..."
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono text-xs text-slate-900 focus:bg-white"
+                    />
+                  </div>
+
+                  {/* Gumroad Global Base URL */}
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Gumroad Store Base URL:
+                    </label>
+                    <input
+                      type="url"
+                      value={paymentForm.gumroadBaseUrl || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setPaymentForm({ ...paymentForm, gumroadBaseUrl: val });
+                        setGumroadBaseUrl(val);
+                        setStoredGumroadBaseUrl(val);
+                      }}
+                      placeholder="https://familyprintables.gumroad.com"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono text-xs text-slate-900 focus:bg-white"
+                    />
+                  </div>
+
+                  {/* Payoneer Merchant Receiving Account */}
+                  <div className="pt-2 border-t border-slate-100 space-y-2">
+                    <span className="font-black text-slate-800 uppercase tracking-wider text-[11px] block">
+                      Payoneer &amp; Bank Receiving Account (Merchant Payouts):
+                    </span>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-0.5 text-[11px]">Payoneer Email:</label>
+                        <input
+                          type="email"
+                          value={paymentForm.payoneerEmail}
+                          onChange={(e) => setPaymentForm({ ...paymentForm, payoneerEmail: e.target.value })}
+                          placeholder="merchant@familyprintables.com"
+                          className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-0.5 text-[11px]">Payoneer Account ID:</label>
+                        <input
+                          type="text"
+                          value={paymentForm.payoneerAccountId}
+                          onChange={(e) => setPaymentForm({ ...paymentForm, payoneerAccountId: e.target.value })}
+                          placeholder="PAY-8829-4102"
+                          className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-0.5 text-[11px]">Receiving Bank Name:</label>
+                        <input
+                          type="text"
+                          value={paymentForm.bankName}
+                          onChange={(e) => setPaymentForm({ ...paymentForm, bankName: e.target.value })}
+                          placeholder="First Century Bank"
+                          className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-0.5 text-[11px]">Routing / ABA Number:</label>
+                        <input
+                          type="text"
+                          value={paymentForm.routingNumber}
+                          onChange={(e) => setPaymentForm({ ...paymentForm, routingNumber: e.target.value })}
+                          placeholder="021000021"
+                          className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="font-semibold text-slate-600 block mb-0.5 text-[11px]">Receiving Account Number:</label>
+                        <input
+                          type="text"
+                          value={paymentForm.receivingAccountNumber}
+                          onChange={(e) => setPaymentForm({ ...paymentForm, receivingAccountNumber: e.target.value })}
+                          placeholder="984210384729"
+                          className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => {
-                    if (!newPasscode.trim()) {
-                      alert('Please type a new passcode.');
-                      return;
-                    }
-                    localStorage.setItem('fp_admin_custom_passcode', newPasscode.trim());
-                    setNewPasscode('');
-                    showToast('Admin passcode updated successfully!');
+                    const merged: MerchantSettings = {
+                      ...merchantSettings,
+                      ...paymentForm,
+                      storeName: storeNameForm,
+                      storeTagline: storeTaglineForm,
+                      currency: storeCurrencyForm,
+                      logoUrl: tempLogo
+                    };
+                    onUpdateMerchantSettings(merged);
+                    try {
+                      localStorage.setItem('fp_merchant_settings', JSON.stringify(merged));
+                    } catch {}
+                    syncSaveSettings(merged);
+                    showToast('Checkout gateway & Payoneer settings saved permanently to database!');
                   }}
-                  className="px-4 py-2 bg-slate-900 hover:bg-indigo-600 text-white font-black text-xs rounded-xl shadow-xs transition"
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  Update Passcode
+                  <Save className="w-4 h-4" />
+                  <span>Save Checkout Configuration</span>
                 </button>
               </div>
 
-              {/* Social Media & Marketplace URLs (Pinterest, Instagram, Facebook, Amazon, Etsy) */}
+              {/* 3. SOCIAL MEDIA & MARKETPLACE PROFILES */}
               <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                   <div>
@@ -2399,7 +3042,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       type="url"
                       value={socialLinksForm.pinterest}
                       onChange={(e) => setSocialLinksForm({ ...socialLinksForm, pinterest: e.target.value })}
-                      placeholder="https://www.pinterest.com/your-brand"
+                      placeholder="https://www.pinterest.com/familyprintables"
                       className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
                     />
                   </div>
@@ -2414,7 +3057,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       type="url"
                       value={socialLinksForm.instagram}
                       onChange={(e) => setSocialLinksForm({ ...socialLinksForm, instagram: e.target.value })}
-                      placeholder="https://www.instagram.com/your-brand"
+                      placeholder="https://www.instagram.com/familyprintables"
                       className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
                     />
                   </div>
@@ -2429,7 +3072,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       type="url"
                       value={socialLinksForm.facebook}
                       onChange={(e) => setSocialLinksForm({ ...socialLinksForm, facebook: e.target.value })}
-                      placeholder="https://www.facebook.com/your-brand"
+                      placeholder="https://www.facebook.com/familyprintables"
                       className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
                     />
                   </div>
@@ -2444,7 +3087,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       type="url"
                       value={socialLinksForm.amazon}
                       onChange={(e) => setSocialLinksForm({ ...socialLinksForm, amazon: e.target.value })}
-                      placeholder="https://www.amazon.com/author/your-brand"
+                      placeholder="https://www.amazon.com/author/familyprintables"
                       className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
                     />
                   </div>
@@ -2459,10 +3102,46 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       type="url"
                       value={socialLinksForm.etsy}
                       onChange={(e) => setSocialLinksForm({ ...socialLinksForm, etsy: e.target.value })}
-                      placeholder="https://www.etsy.com/shop/your-shop"
+                      placeholder="https://www.etsy.com/shop/familyprintables"
                       className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* 4. ADMIN PASSCODE SECURITY */}
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <KeyRound className="w-5 h-5 text-indigo-600" />
+                  <span>Admin Passcode Security</span>
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Update the password required to access this Admin Portal across browsers and devices.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center max-w-lg">
+                  <input
+                    type="password"
+                    value={newPasscode}
+                    onChange={(e) => setNewPasscode(e.target.value)}
+                    placeholder="Enter new strong passcode"
+                    className="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!newPasscode.trim()) {
+                        alert('Please type a new passcode.');
+                        return;
+                      }
+                      localStorage.setItem('fp_admin_custom_passcode', newPasscode.trim());
+                      setNewPasscode('');
+                      showToast('Admin passcode updated successfully!');
+                    }}
+                    className="px-4 py-2 bg-slate-900 hover:bg-indigo-600 text-white font-black text-xs rounded-xl shadow-xs transition cursor-pointer shrink-0"
+                  >
+                    Update Passcode
+                  </button>
                 </div>
               </div>
 

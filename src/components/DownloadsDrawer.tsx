@@ -21,7 +21,7 @@ import {
 import { Product, UserAccount } from '../types';
 import { getProductAccessStatus } from '../utils/access';
 import { resolveImageUrl } from '../assets/images';
-import { downloadProductFileOffline } from '../utils/offlineDownload';
+import { downloadProductFileOffline, generateOfflineProductPDF } from '../utils/offlineDownload';
 
 interface DownloadsDrawerProps {
   isOpen: boolean;
@@ -109,7 +109,35 @@ export const DownloadsDrawer: React.FC<DownloadsDrawerProps> = ({
       onRequireSignUp('print', () => handlePrintFile(product));
       return;
     }
-    window.print();
+    try {
+      const blob = generateOfflineProductPDF(product, { format: 'a4' });
+      const blobUrl = URL.createObjectURL(blob);
+      const printIframe = document.createElement('iframe');
+      printIframe.style.position = 'fixed';
+      printIframe.style.right = '0';
+      printIframe.style.bottom = '0';
+      printIframe.style.width = '0';
+      printIframe.style.height = '0';
+      printIframe.style.border = '0';
+      printIframe.src = blobUrl;
+      document.body.appendChild(printIframe);
+      printIframe.onload = () => {
+        try {
+          printIframe.contentWindow?.focus();
+          printIframe.contentWindow?.print();
+        } catch {
+          window.print();
+        }
+        setTimeout(() => {
+          if (document.body.contains(printIframe)) {
+            document.body.removeChild(printIframe);
+          }
+          URL.revokeObjectURL(blobUrl);
+        }, 6000);
+      };
+    } catch {
+      window.print();
+    }
   };
 
   return (

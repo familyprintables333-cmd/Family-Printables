@@ -141,6 +141,9 @@ export interface CustomCodeSettings {
 }
 
 export interface MerchantSettings {
+  storeName?: string;
+  storeTagline?: string;
+  logoUrl?: string;
   payoneerEmail: string;
   payoneerAccountId: string;
   receivingAccountNumber: string;
@@ -150,7 +153,10 @@ export interface MerchantSettings {
   currency: string;
   stripePublishableKey?: string;
   stripeConnected?: boolean;
+  gumroadBaseUrl?: string;
+  defaultGateway?: 'card' | 'stripe' | 'gumroad';
   socialLinks?: SocialLinks;
   customCode?: CustomCodeSettings;
 }
+
 

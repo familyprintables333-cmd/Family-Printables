@@ -22,6 +22,7 @@ import { resolveImageUrl } from '../assets/images';
 import { formatCurrency } from '../utils/currency';
 import { resolveProductGumroadUrl } from '../utils/gumroad';
 import { formatReviewTimestamp } from '../utils/reviews';
+import { generateOfflineProductPDF } from '../utils/offlineDownload';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -274,24 +275,110 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     </button>
                   ) : isFreeProduct ? (
                     /* Free Printable Workbook: Direct smooth download without Gumroad 404 errors */
-                    <button
-                      type="button"
-                      onClick={() => onFreeDownload && onFreeDownload(product)}
-                      className="w-full py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer"
-                    >
-                      <Download className="w-5 h-5" />
-                      <span>Download Free PDF</span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => onFreeDownload && onFreeDownload(product)}
+                        className="flex-1 py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer"
+                      >
+                        <Download className="w-5 h-5" />
+                        <span>Download Free PDF</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (product) {
+                            try {
+                              const blob = generateOfflineProductPDF(product, { format: 'a4' });
+                              const blobUrl = URL.createObjectURL(blob);
+                              const printIframe = document.createElement('iframe');
+                              printIframe.style.position = 'fixed';
+                              printIframe.style.right = '0';
+                              printIframe.style.bottom = '0';
+                              printIframe.style.width = '0';
+                              printIframe.style.height = '0';
+                              printIframe.style.border = '0';
+                              printIframe.src = blobUrl;
+                              document.body.appendChild(printIframe);
+                              printIframe.onload = () => {
+                                try {
+                                  printIframe.contentWindow?.focus();
+                                  printIframe.contentWindow?.print();
+                                } catch {
+                                  window.print();
+                                }
+                                setTimeout(() => {
+                                  if (document.body.contains(printIframe)) {
+                                    document.body.removeChild(printIframe);
+                                  }
+                                  URL.revokeObjectURL(blobUrl);
+                                }, 6000);
+                              };
+                            } catch {
+                              window.print();
+                            }
+                          }
+                        }}
+                        className="py-3.5 px-5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold rounded-2xl border border-indigo-200 shadow-xs flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer shrink-0"
+                        title="Print this printable worksheet immediately"
+                      >
+                        <Printer className="w-5 h-5 text-indigo-600" />
+                        <span>Print Now</span>
+                      </button>
+                    </div>
                   ) : isUnlocked ? (
                     /* Paid item previously unlocked */
-                    <button
-                      type="button"
-                      onClick={() => onFreeDownload && onFreeDownload(product)}
-                      className="w-full py-3.5 px-6 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer"
-                    >
-                      <Download className="w-5 h-5" />
-                      <span>Download File · Unlocked</span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => onFreeDownload && onFreeDownload(product)}
+                        className="flex-1 py-3.5 px-6 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer"
+                      >
+                        <Download className="w-5 h-5" />
+                        <span>Download File · Unlocked</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (product) {
+                            try {
+                              const blob = generateOfflineProductPDF(product, { format: 'a4' });
+                              const blobUrl = URL.createObjectURL(blob);
+                              const printIframe = document.createElement('iframe');
+                              printIframe.style.position = 'fixed';
+                              printIframe.style.right = '0';
+                              printIframe.style.bottom = '0';
+                              printIframe.style.width = '0';
+                              printIframe.style.height = '0';
+                              printIframe.style.border = '0';
+                              printIframe.src = blobUrl;
+                              document.body.appendChild(printIframe);
+                              printIframe.onload = () => {
+                                try {
+                                  printIframe.contentWindow?.focus();
+                                  printIframe.contentWindow?.print();
+                                } catch {
+                                  window.print();
+                                }
+                                setTimeout(() => {
+                                  if (document.body.contains(printIframe)) {
+                                    document.body.removeChild(printIframe);
+                                  }
+                                  URL.revokeObjectURL(blobUrl);
+                                }, 6000);
+                              };
+                            } catch {
+                              window.print();
+                            }
+                          }
+                        }}
+                        className="py-3.5 px-5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold rounded-2xl border border-indigo-200 shadow-xs flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer shrink-0"
+                        title="Print this unlocked printable worksheet immediately"
+                      >
+                        <Printer className="w-5 h-5 text-indigo-600" />
+                        <span>Print Now</span>
+                      </button>
+                    </div>
                   ) : (
                     /* Paid / Locked item: Securely bind Gumroad checkout URL */
                     <>
