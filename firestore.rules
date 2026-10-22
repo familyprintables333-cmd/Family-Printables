@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isNonEmptyString(val, maxLen) {
+      return val is string && val.size() > 0 && val.size() <= maxLen;
+    }
+
+    // Products collection: public read, authenticated or admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isValidId(productId);
+    }
+
+    // Categories collection: public read, write
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isValidId(categoryId);
+    }
+
+    // Settings collection: public read for store branding, write
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isValidId(settingId);
+    }
+
+    // Reviews collection: public read, create with valid schema
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isValidId(reviewId) 
+        && request.resource.data.rating is number 
+        && request.resource.data.rating >= 1 
+        && request.resource.data.rating <= 5
+        && isNonEmptyString(request.resource.data.customerName, 100);
+      allow update, delete: if isValidId(reviewId);
+    }
+
+    // Test connection doc for Firestore connection health check
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

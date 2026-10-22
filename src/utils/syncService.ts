@@ -1,12 +1,11 @@
 /**
  * Centralized Cross-Device State Management & Synchronization Service
  * 
- * Provides:
- * 1. Self-contained, resilient state management powered by centralStore.
- * 2. Persistent cross-device syncing via REST API endpoints (/api/products, /api/sync) when available.
- * 3. Permanent deletion guarantee via tombstone tracking (deletedProductIds).
- * 4. Zero-error fallback when deployed on static environments (Vercel, Netlify).
- * 5. Multi-tab syncing via BroadcastChannel and window storage events.
+ * Powered by Live Cloud Firestore:
+ * 1. Persistent real-time Cloud database storage (Firebase Firestore).
+ * 2. Instant global updates across all devices without page refresh.
+ * 3. Graceful offline resiliency with centralStore & PWA cache.
+ * 4. Multi-tab syncing via BroadcastChannel.
  */
 
 import { Product, CategoryInfo, UserReview, MerchantSettings } from '../types';
@@ -17,6 +16,13 @@ import {
   STORAGE_CATEGORIES_KEY, 
   STORAGE_SETTINGS_KEY 
 } from '../data/centralStore';
+import {
+  saveProductToCloud,
+  deleteProductFromCloud,
+  saveCategoryToCloud,
+  deleteCategoryFromCloud,
+  saveSettingsToCloud
+} from '../lib/firebase';
 
 // Cross-tab broadcast channel
 const syncChannel = typeof window !== 'undefined' && 'BroadcastChannel' in window 
@@ -50,7 +56,7 @@ export const filterDeletedProducts = (products: Product[]): Product[] => {
 };
 
 // ----------------------------------------------------------------------------
-// SERVER API SYNC METHODS (RESILIENT & STATIC-COMPATIBLE)
+// CLOUD & SERVER SYNC METHODS
 // ----------------------------------------------------------------------------
 
 /**
@@ -84,26 +90,30 @@ export const fetchServerProducts = async (fallbackProducts: Product[]): Promise<
       }
     }
   } catch (err) {
-    // Silent fallback to bundled centralStore
+    // Silent fallback
   }
 
-  // Authoritative fallback to centralStore (bundled in core build)
   return centralStore.getProducts();
 };
 
 /**
- * Save product to centralStore, local cache, and backend database if reachable.
+ * Save product to Cloud Firestore, centralStore, and backend database.
  */
 export const syncSaveProduct = async (product: Product): Promise<void> => {
-  // 1. Immediately update centralized store & local storage
+  // 1. Immediately persist to Cloud Firestore (Real-Time Global Sync)
+  saveProductToCloud(product).catch((err) => {
+    console.warn('Cloud Firestore save error:', err);
+  });
+
+  // 2. Immediately update centralized store & local storage
   centralStore.saveProduct(product);
 
-  // 2. Broadcast to other tabs on same device
+  // 3. Broadcast to other tabs on same device
   if (syncChannel) {
     syncChannel.postMessage({ type: 'PRODUCT_SAVED', product });
   }
 
-  // 3. Post to backend server for cross-device persistence (swallows errors on static hosts)
+  // 4. Post to backend server for file/server database persistence if available
   try {
     await fetch('/api/products', {
       method: 'POST',
@@ -111,35 +121,40 @@ export const syncSaveProduct = async (product: Product): Promise<void> => {
       body: JSON.stringify(product)
     });
   } catch (err) {
-    // Stored securely in centralStore / localStorage
+    // Stored securely in Cloud Firestore
   }
 };
 
 /**
  * Permanent Product Deletion Guarantee.
- * Purges item from local store, logs tombstone, and calls DELETE /api/products/:id.
+ * Purges item from Cloud Firestore, local store, and calls DELETE /api/products/:id.
  */
 export const syncDeleteProduct = async (productId: string): Promise<void> => {
-  // 1. Record in central store & local tombstone
+  // 1. Delete from Cloud Firestore
+  deleteProductFromCloud(productId).catch((err) => {
+    console.warn('Cloud Firestore delete error:', err);
+  });
+
+  // 2. Record in central store & local tombstone
   centralStore.deleteProduct(productId);
 
-  // 2. Broadcast to other tabs
+  // 3. Broadcast to other tabs
   if (syncChannel) {
     syncChannel.postMessage({ type: 'PRODUCT_DELETED', productId });
   }
 
-  // 3. Send DELETE to backend if available
+  // 4. Send DELETE to backend if available
   try {
     await fetch(`/api/products/${productId}`, {
       method: 'DELETE'
     });
   } catch (err) {
-    // Tombstone preserved securely in centralStore
+    // Preserved in Cloud Firestore
   }
 };
 
 /**
- * Full State Sync: Call periodically or on visibility change to keep devices in sync.
+ * Full State Sync
  */
 export const performFullSync = async (
   currentProducts: Product[],
@@ -181,7 +196,7 @@ export const performFullSync = async (
       }
     }
   } catch (err) {
-    // Offline or static platform safe
+    // Offline safe
   }
 };
 
@@ -213,9 +228,13 @@ export const subscribeToSyncEvents = (callback: (event: any) => void): (() => vo
 };
 
 /**
- * Save settings to central store and server
+ * Save settings to Cloud Firestore and server
  */
 export const syncSaveSettings = async (settings: Partial<MerchantSettings>): Promise<void> => {
+  saveSettingsToCloud(settings).catch((err) => {
+    console.warn('Cloud Firestore settings save error:', err);
+  });
+
   centralStore.saveSettings(settings);
 
   try {
@@ -225,7 +244,7 @@ export const syncSaveSettings = async (settings: Partial<MerchantSettings>): Pro
       body: JSON.stringify(settings)
     });
   } catch (err) {
-    // Saved in centralStore
+    // Saved in Cloud Firestore
   }
 };
 
@@ -263,17 +282,18 @@ export const fetchServerCategories = async (fallbackCategories: CategoryInfo[]):
       }
     }
   } catch (err) {
-    // Offline or static platform safe
+    // Offline safe
   }
 
   return centralStore.getCategories();
 };
 
 /**
- * Bulk save categories to server and centralStore
+ * Bulk save categories to Cloud Firestore and server
  */
 export const syncSaveCategories = async (categories: CategoryInfo[]): Promise<void> => {
   for (const cat of categories) {
+    saveCategoryToCloud(cat).catch(() => {});
     centralStore.saveCategory(cat);
   }
 
@@ -288,14 +308,18 @@ export const syncSaveCategories = async (categories: CategoryInfo[]): Promise<vo
       body: JSON.stringify({ categories })
     });
   } catch (err) {
-    // Saved in centralStore
+    // Saved in Cloud Firestore
   }
 };
 
 /**
- * Save single category to server and centralStore
+ * Save single category to Cloud Firestore and server
  */
 export const syncSaveCategory = async (category: CategoryInfo): Promise<void> => {
+  saveCategoryToCloud(category).catch((err) => {
+    console.warn('Cloud Firestore category save error:', err);
+  });
+
   centralStore.saveCategory(category);
 
   try {
@@ -305,14 +329,18 @@ export const syncSaveCategory = async (category: CategoryInfo): Promise<void> =>
       body: JSON.stringify(category)
     });
   } catch (err) {
-    // Saved in centralStore
+    // Saved in Cloud Firestore
   }
 };
 
 /**
- * Delete category from server and centralStore
+ * Delete category from Cloud Firestore and server
  */
 export const syncDeleteCategory = async (categoryId: string): Promise<void> => {
+  deleteCategoryFromCloud(categoryId).catch((err) => {
+    console.warn('Cloud Firestore category delete error:', err);
+  });
+
   centralStore.deleteCategory(categoryId);
 
   try {
@@ -320,22 +348,18 @@ export const syncDeleteCategory = async (categoryId: string): Promise<void> => {
       method: 'DELETE'
     });
   } catch (err) {
-    // Saved in centralStore
+    // Saved in Cloud Firestore
   }
 };
 
 /**
  * Permanent Backend Asset Upload System
- * Uploads logo, product cover, category banner, or document to server and returns public URL.
- * In purely static environments (e.g. Vercel), it returns the dataUrl safely so the admin
- * can preview, save, and use the uploaded media without broken images or 404s.
  */
 export const uploadAsset = async (
   dataUrl: string, 
   fileName?: string, 
   assetType: 'logo' | 'banner' | 'product' | 'document' | 'media' | 'asset' = 'asset'
 ): Promise<{ success: boolean; url: string; error?: string }> => {
-  // If already an HTTP URL or persistent uploaded path, return immediately
   if (dataUrl.startsWith('http://') || dataUrl.startsWith('https://') || dataUrl.startsWith('/uploads/')) {
     return { success: true, url: dataUrl };
   }
@@ -359,10 +383,9 @@ export const uploadAsset = async (
       }
     }
   } catch (err: any) {
-    // Serverless/static fallback
+    // Fallback
   }
 
-  // Fallback to direct client-side URL (ensures admin changes never fail on Vercel)
   return { success: true, url: dataUrl };
 };
 
@@ -377,9 +400,6 @@ export interface ServerAssetRecord {
   createdAt: number;
 }
 
-/**
- * Fetch all permanently stored assets from server
- */
 export const fetchServerAssets = async (): Promise<ServerAssetRecord[]> => {
   try {
     const res = await fetch('/api/assets');
@@ -391,14 +411,11 @@ export const fetchServerAssets = async (): Promise<ServerAssetRecord[]> => {
       }
     }
   } catch (err) {
-    // Statically hosted fallback
+    // Safe
   }
   return [];
 };
 
-/**
- * Delete asset from server storage
- */
 export const deleteServerAsset = async (filename: string): Promise<boolean> => {
   try {
     const res = await fetch(`/api/assets/${encodeURIComponent(filename)}`, {

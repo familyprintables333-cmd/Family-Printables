@@ -48,6 +48,14 @@ import {
   syncSaveProduct
 } from './utils/syncService';
 import { 
+  testFirestoreConnection, 
+  subscribeToCloudProducts, 
+  subscribeToCloudCategories, 
+  subscribeToCloudSettings,
+  seedCloudDatabaseIfEmpty 
+} from './lib/firebase';
+import { DEFAULT_STORE_SETTINGS } from './data/centralStore';
+import { 
   Sparkles, 
   ShieldCheck, 
   CheckCircle2, 
@@ -184,23 +192,50 @@ export default function App() {
     ensureGumroadScriptLoaded();
   }, []);
 
-  // Active cross-device synchronization (laptop <-> mobile) and permanent deletion tracking
+  // Active real-time Cloud Database synchronization & permanent cross-device sync
   useEffect(() => {
-    // 1. Initial server fetch to sync products across devices
+    // 1. Validate connection and auto-seed cloud database if initial boot
+    testFirestoreConnection();
+    seedCloudDatabaseIfEmpty(PRODUCTS, CATEGORIES, DEFAULT_STORE_SETTINGS);
+
+    // 2. Real-time Cloud Firestore subscriptions (instantly syncs across all devices globally)
+    const unsubProducts = subscribeToCloudProducts((cloudProducts) => {
+      if (cloudProducts && cloudProducts.length > 0) {
+        setProducts(cloudProducts);
+      }
+    });
+
+    const unsubCategories = subscribeToCloudCategories((cloudCategories) => {
+      if (cloudCategories && cloudCategories.length > 0) {
+        setCategories(cloudCategories);
+      }
+    });
+
+    const unsubSettings = subscribeToCloudSettings((cloudSettings) => {
+      if (cloudSettings) {
+        setMerchantSettings((prev) => ({ ...prev, ...cloudSettings }));
+        if (cloudSettings.logoUrl) {
+          setLogoUrl(cloudSettings.logoUrl);
+        }
+        if (cloudSettings.currency) {
+          setCurrency(cloudSettings.currency);
+        }
+      }
+    });
+
+    // 3. Fallback server/local initial fetches
     fetchServerProducts(PRODUCTS).then((serverProds) => {
       if (serverProds && serverProds.length > 0) {
         setProducts(serverProds);
       }
     });
 
-    // 2. Initial server fetch to sync categories across devices
     fetchServerCategories(CATEGORIES).then((serverCats) => {
       if (serverCats && serverCats.length > 0) {
         setCategories(serverCats);
       }
     });
 
-    // 3. Initial server fetch for store settings, logo, branding, and payout config
     fetchServerSettings().then((serverSettings) => {
       if (serverSettings) {
         setMerchantSettings((prev) => ({ ...prev, ...serverSettings }));
@@ -216,7 +251,7 @@ export default function App() {
       }
     });
 
-    // 2. Real-time multi-tab & cross-window sync listener
+    // 4. Real-time multi-tab & cross-window sync listener
     const unsubscribe = subscribeToSyncEvents((event) => {
       if (event.type === 'PRODUCT_SAVED') {
         setProducts((prev) => {
@@ -244,7 +279,7 @@ export default function App() {
       }
     });
 
-    // 3. Sync when window regains focus or comes back online
+    // 5. Sync when window regains focus or comes back online
     const handleSync = () => {
       performFullSync(products, (data) => {
         if (data.products) setProducts(data.products);
@@ -255,6 +290,9 @@ export default function App() {
     window.addEventListener('online', handleSync);
 
     return () => {
+      unsubProducts();
+      unsubCategories();
+      unsubSettings();
       unsubscribe();
       window.removeEventListener('focus', handleSync);
       window.removeEventListener('online', handleSync);

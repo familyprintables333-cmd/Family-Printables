@@ -1,0 +1,273 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Printable digital workbook, study planner, or digital product item",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the product"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the product"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category identifier"
+        },
+        "categoryLabel": {
+          "type": "string",
+          "description": "Human-readable category label"
+        },
+        "priceUSD": {
+          "type": "number",
+          "description": "Price in USD"
+        },
+        "isFree": {
+          "type": "boolean",
+          "description": "Whether the product is completely free"
+        },
+        "isLocked": {
+          "type": "boolean",
+          "description": "Whether access requires checkout or signup"
+        },
+        "accessType": {
+          "type": "string",
+          "description": "Access model: free or paid"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Customer star rating"
+        },
+        "reviewsCount": {
+          "type": "number",
+          "description": "Number of verified reviews"
+        },
+        "pages": {
+          "type": "number",
+          "description": "Number of printable pages"
+        },
+        "targetAge": {
+          "type": "string",
+          "description": "Recommended age range or audience"
+        },
+        "educationalBenefit": {
+          "type": "string",
+          "description": "Key educational or developmental benefit"
+        },
+        "format": {
+          "type": "array",
+          "description": "Supported file formats"
+        },
+        "image": {
+          "type": "string",
+          "description": "Cover art image URL or asset key"
+        },
+        "shortDesc": {
+          "type": "string",
+          "description": "Short summary text"
+        },
+        "description": {
+          "type": "string",
+          "description": "Full product description"
+        },
+        "features": {
+          "type": "array",
+          "description": "Bullet-point features list"
+        },
+        "fileSize": {
+          "type": "string",
+          "description": "Approximate download size"
+        },
+        "documentFileName": {
+          "type": "string",
+          "description": "Name of the digital document file"
+        },
+        "documentFileType": {
+          "type": "string",
+          "description": "File extension / type: pdf, doc, docx, etc."
+        },
+        "isBestseller": {
+          "type": "boolean",
+          "description": "Whether flagged as bestseller"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Last updated epoch timestamp"
+        }
+      },
+      "required": ["id", "title", "category", "priceUSD"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product category grouping and metadata",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique category identifier"
+        },
+        "title": {
+          "type": "string",
+          "description": "Category title"
+        },
+        "shortTitle": {
+          "type": "string",
+          "description": "Short category title for navigation tabs"
+        },
+        "tagline": {
+          "type": "string",
+          "description": "Category subtitle or tagline"
+        },
+        "description": {
+          "type": "string",
+          "description": "Full category description"
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Concise category description"
+        },
+        "ageRange": {
+          "type": "string",
+          "description": "Target age range"
+        },
+        "accentColor": {
+          "type": "string",
+          "description": "Theme accent color"
+        },
+        "badge": {
+          "type": "string",
+          "description": "Category badge label"
+        },
+        "itemCount": {
+          "type": "number",
+          "description": "Number of items in category"
+        },
+        "image": {
+          "type": "string",
+          "description": "Banner cover image"
+        },
+        "features": {
+          "type": "array",
+          "description": "Highlight features"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Last updated epoch timestamp"
+        }
+      },
+      "required": ["id", "title", "shortTitle"]
+    },
+    "StoreSettings": {
+      "title": "StoreSettings",
+      "description": "Global merchant settings, branding, and payout configurations",
+      "type": "object",
+      "properties": {
+        "storeName": {
+          "type": "string",
+          "description": "Store name"
+        },
+        "storeTagline": {
+          "type": "string",
+          "description": "Store tagline"
+        },
+        "logoUrl": {
+          "type": "string",
+          "description": "Logo URL"
+        },
+        "defaultGateway": {
+          "type": "string",
+          "description": "Default payment gateway"
+        },
+        "gatewayMode": {
+          "type": "string",
+          "description": "Test or live mode"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Store primary currency"
+        },
+        "gumroadBaseUrl": {
+          "type": "string",
+          "description": "Gumroad store URL"
+        },
+        "payoneerEmail": {
+          "type": "string",
+          "description": "Payoneer merchant email"
+        },
+        "socialLinks": {
+          "type": "object",
+          "description": "Social media links"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Last updated epoch timestamp"
+        }
+      }
+    },
+    "UserReview": {
+      "title": "UserReview",
+      "description": "Customer product reviews and ratings",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Review identifier"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Associated product ID"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Reviewer name"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Star rating 1 to 5"
+        },
+        "title": {
+          "type": "string",
+          "description": "Review headline"
+        },
+        "comment": {
+          "type": "string",
+          "description": "Review commentary"
+        },
+        "date": {
+          "type": "string",
+          "description": "Display date"
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Verified buyer status"
+        },
+        "helpfulCount": {
+          "type": "number",
+          "description": "Number of helpful votes"
+        }
+      },
+      "required": ["id", "customerName", "rating", "comment"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Global catalog of printable products"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Product category groupings"
+    },
+    "/settings/{settingId}": {
+      "schema": "StoreSettings",
+      "description": "Global store settings and branding configuration"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "UserReview",
+      "description": "Verified customer reviews and feedback"
+    }
+  }
+}
